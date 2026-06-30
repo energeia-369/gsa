@@ -1,0 +1,147 @@
+.checkout-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0b0c10;
+  padding: 40px 5%;
+}
+
+.checkout-box {
+  width: 600px;
+  background: #12131c;
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(197, 168, 92, 0.25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
+}
+
+.checkout-box h1 {
+  margin-bottom: 20px;
+}
+
+.checkout-box input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: 1px solid rgba(197, 168, 92, 0.2);
+  border-radius: 8px;
+  background: rgba(22, 24, 38, 0.8);
+  color: #fff;
+  outline: none;
+}
+
+.checkout-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Light Theme Overrides */
+body.light-theme .checkout-page {
+  background: #f5f5dc !important;
+  color: #1a1a1a !important;
+}
+
+body.light-theme .checkout-box {
+  background: #ffffff !important;
+  border-color: rgba(197, 168, 92, 0.4) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .checkout-box h1 {
+  color: #8c6010 !important;
+}
+
+body.light-theme .checkout-box h3 {
+  color: #1a1a1a !important;
+  border-bottom-color: rgba(197, 168, 92, 0.3) !important;
+}
+
+body.light-theme .checkout-box > div[style*="background"] {
+  background: #fafaf5 !important;
+  border-color: rgba(197, 168, 92, 0.2) !important;
+  color: #1a1a1a !important;
+}
+
+body.light-theme .checkout-box span,
+body.light-theme .checkout-box div {
+  color: #1a1a1a !important;
+}
+
+body.light-theme .checkout-box span[style*="color: #9aa0b4"] {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .checkout-box input {
+  background: #ffffff !important;
+  border-color: #d1c5a9 !important;
+  color: #1a1a1a !important;
+}
+
+body.light-theme .checkout-box label {
+  color: #8c6010 !important;
+}
+
+body.light-theme #checkoutCancelButton {
+  color: #8c6010 !important;
+  border-color: rgba(197, 168, 92, 0.5) !important;
+}
+
+body.light-theme #checkoutCancelButton:hover {
+  background: rgba(197, 168, 92, 0.1) !important;
+}
+
+body.light-theme #checkoutItemsContainer span {
+  color: #1a1a1a !important;
+}
+/* Congrats Modal (Default Dark Theme) */
+.congrats-modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+  background: rgba(0,0,0,0.85); z-index: 9999; 
+  justify-content: center; align-items: center; 
+  backdrop-filter: blur(8px); opacity: 0; 
+  transition: opacity 0.4s ease;
+}
+.congrats-modal-content {
+  background: linear-gradient(145deg, #161826, #0b0c10); 
+  border: 1px solid #c5a85c; border-radius: 16px; 
+  padding: 40px; text-align: center; max-width: 400px; width: 90%; 
+  box-shadow: 0 10px 40px rgba(197, 168, 92, 0.3); 
+  transform: scale(0.9); 
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.congrats-icon { font-size: 3.5rem; margin-bottom: 15px; animation: bounce 2s infinite; }
+.congrats-title { color: #c5a85c; margin-bottom: 12px; font-size: 1.8rem; }
+.congrats-text { color: #9aa0b4; font-size: 1.05rem; margin-bottom: 25px; line-height: 1.5; }
+.congrats-amount { color: #f5f6fa; font-size: 1.2rem; }
+.congrats-claim-btn {
+  padding: 12px 30px; background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); 
+  color: #0b0c10; font-weight: bold; border: none; border-radius: 8px; 
+  cursor: pointer; font-size: 1.05rem; width: 100%; transition: transform 0.2s ease;
+}
+
+/* Congrats Modal (Light Theme Overrides) */
+body.light-theme .congrats-modal-overlay {
+  background: rgba(255,255,255,0.7);
+}
+body.light-theme .congrats-modal-content {
+  background: #ffffff;
+  border-color: rgba(197, 168, 92, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+body.light-theme .congrats-title {
+  color: #8c6010;
+}
+body.light-theme .congrats-text {
+  color: #4a4a4a;
+}
+body.light-theme .congrats-amount {
+  color: #1a1a1a;
+}
+

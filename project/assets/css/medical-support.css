@@ -1,0 +1,556 @@
+/* ==========================================================================
+   MEDICAL SUPPORT PAGE CSS
+   Theme: Luxury Cream & Gold, Minimal, Corporate Wellness
+   ========================================================================== */
+
+/* --------------------------------------
+   ROOT VARIABLES
+-------------------------------------- */
+:root {
+  --ms-bg-cream: #F5F1E8;
+  --ms-bg-card: #FAF8F5; /* slightly lighter cream for cards */
+  --ms-bg-white: #FFFFFF;
+  --ms-gold: #C89B3C;
+  --ms-gold-hover: #b58b34;
+  --ms-text-dark: #2D2A26;
+  --ms-text-muted: #5A5651;
+  --ms-border: rgba(200, 155, 60, 0.3);
+  --ms-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
+  --ms-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.08);
+  --ms-radius: 20px;
+  --ms-radius-sm: 12px;
+  --ms-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* --------------------------------------
+   GLOBAL OVERRIDES
+-------------------------------------- */
+.medical-support-wrapper {
+  background-color: var(--ms-bg-cream);
+  color: var(--ms-text-dark);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+  padding-bottom: 0;
+}
+
+.medical-support-wrapper h1,
+.medical-support-wrapper h2,
+.medical-support-wrapper h3,
+.medical-support-wrapper h4,
+.medical-support-wrapper h5,
+.medical-support-wrapper h6 {
+  color: var(--ms-text-dark);
+  font-weight: 700;
+}
+
+.medical-support-wrapper p {
+  color: var(--ms-text-muted);
+}
+
+/* Layout Utilities */
+.ms-container-narrow {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Buttons */
+.ms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: var(--ms-transition);
+  cursor: pointer;
+}
+
+.ms-btn-primary {
+  background-color: var(--ms-gold);
+  color: #fff !important;
+  border: 2px solid var(--ms-gold);
+}
+
+.ms-btn-primary:hover {
+  background-color: var(--ms-gold-hover);
+  border-color: var(--ms-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(200, 155, 60, 0.3);
+}
+
+.ms-btn-outline {
+  background-color: transparent;
+  color: var(--ms-text-dark) !important;
+  border: 2px solid var(--ms-border);
+}
+
+.ms-btn-outline:hover {
+  border-color: var(--ms-gold);
+  color: var(--ms-gold) !important;
+  background-color: rgba(200, 155, 60, 0.05);
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------
+   SECTIONS
+-------------------------------------- */
+
+/* 1. HERO SECTION */
+.ms-hero-section {
+  padding: 120px 5% 80px;
+  background: linear-gradient(180deg, #FDFCF9 0%, var(--ms-bg-cream) 100%);
+  position: relative;
+}
+
+.ms-hero-icon {
+  font-size: 3.5rem;
+  color: var(--ms-gold);
+  margin-bottom: 24px;
+}
+
+.ms-small-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--ms-gold);
+  margin-bottom: 16px;
+  font-weight: 800;
+}
+
+.ms-main-heading {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+
+.ms-hero-subtitle {
+  font-size: 1.15rem;
+  margin-bottom: 40px;
+}
+
+.ms-hero-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ms-hero-underline {
+  width: 60px;
+  height: 3px;
+  background-color: var(--ms-gold);
+  margin: 60px auto 0;
+  border-radius: 2px;
+}
+
+/* 2. ABOUT SECTION */
+.ms-about-section {
+  padding: 80px 5%;
+}
+
+.ms-about-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+.ms-about-section p {
+  font-size: 1.1rem;
+}
+
+/* 3. SERVICES SECTION */
+.ms-services-section {
+  padding: 80px 5%;
+}
+
+.ms-service-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.ms-service-card {
+  background-color: var(--ms-bg-card);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  padding: 40px 30px;
+  text-align: center;
+  height: 100%;
+  transition: var(--ms-transition);
+  box-shadow: var(--ms-shadow-soft);
+  cursor: pointer;
+}
+
+.ms-service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--ms-shadow-hover);
+  border-color: var(--ms-gold);
+}
+
+.ms-card-icon {
+  font-size: 2.5rem;
+  color: var(--ms-gold);
+  margin-bottom: 20px;
+}
+
+.ms-service-card h3 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Modal Styling */
+.ms-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 12, 16, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.ms-modal-content {
+  background-color: var(--ms-bg-cream);
+  padding: 50px 40px;
+  border-radius: var(--ms-radius);
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--ms-shadow-hover);
+  border: 1px solid var(--ms-gold);
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ms-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--ms-text-muted);
+  cursor: pointer;
+  line-height: 1;
+  transition: var(--ms-transition);
+}
+
+.ms-modal-close:hover {
+  color: var(--ms-gold);
+}
+
+.ms-modal-icon {
+  font-size: 3.5rem;
+  color: var(--ms-gold);
+  margin-bottom: 20px;
+}
+
+.ms-modal-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.ms-modal-content p {
+  font-size: 1.1rem;
+}
+
+/* --------------------------------------
+   GRID LAYOUTS
+-------------------------------------- */
+.ms-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.ms-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .ms-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .ms-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .ms-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* 4. MEDICAL COVERAGE SECTION */
+.ms-stats-section {
+  padding: 80px 5%;
+  background-color: var(--ms-bg-white);
+}
+
+.ms-stat-card {
+  background-color: var(--ms-bg-card);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: var(--ms-shadow-soft);
+  height: 100%;
+  transition: var(--ms-transition);
+}
+
+.ms-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--ms-gold);
+}
+
+.ms-stat-number {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--ms-gold);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.ms-stat-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ms-text-dark);
+  margin: 0;
+}
+
+/* 5. EMERGENCY RESPONSE PROCESS */
+.ms-process-section {
+  padding: 100px 5%;
+}
+
+.ms-process-section h2 {
+  font-size: 2.2rem;
+}
+
+.ms-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  flex-wrap: wrap; /* for mobile fallback */
+}
+
+.ms-timeline-step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  padding: 20px 10px;
+}
+
+.ms-step-number {
+  width: 50px;
+  height: 50px;
+  background-color: var(--ms-bg-white);
+  border: 2px solid var(--ms-gold);
+  color: var(--ms-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 auto 16px;
+  box-shadow: 0 5px 15px rgba(200, 155, 60, 0.2);
+}
+
+.ms-timeline-step h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.ms-timeline-connector {
+  height: 2px;
+  background-color: var(--ms-border);
+  flex: 1;
+  min-width: 40px;
+}
+
+@media (max-width: 768px) {
+  .ms-timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+  }
+  
+  .ms-timeline-step {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 15px 0;
+  }
+  
+  .ms-step-number {
+    margin: 0 20px 0 0;
+  }
+
+  .ms-timeline-connector {
+    width: 2px;
+    height: 30px;
+    margin-left: 24px;
+    min-width: auto;
+  }
+}
+
+/* 6. ATHLETE WELLNESS SECTION */
+.ms-wellness-section {
+  padding: 80px 5%;
+  background-color: var(--ms-bg-white);
+}
+
+.ms-wellness-section h2 {
+  font-size: 2.2rem;
+}
+
+.ms-wellness-card {
+  background-color: var(--ms-bg-cream);
+  border-radius: var(--ms-radius-sm);
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: var(--ms-transition);
+  cursor: pointer;
+}
+
+.ms-wellness-card:hover {
+  background-color: var(--ms-gold);
+}
+
+.ms-wellness-icon {
+  font-size: 1.8rem;
+  color: var(--ms-gold);
+  transition: var(--ms-transition);
+}
+
+.ms-wellness-card h4 {
+  font-size: 1.1rem;
+  margin: 0;
+  transition: var(--ms-transition);
+}
+
+.ms-wellness-card:hover .ms-wellness-icon,
+.ms-wellness-card:hover h4 {
+  color: #fff;
+}
+
+/* 7. SAFETY COMMITMENT SECTION */
+.ms-commitment-section {
+  padding: 100px 5%;
+}
+
+.ms-commitment-box {
+  background-color: var(--ms-bg-card);
+  border: 1px solid var(--ms-border);
+  padding: 60px 40px;
+  border-radius: var(--ms-radius);
+  box-shadow: var(--ms-shadow-soft);
+}
+
+.ms-commitment-box h2 {
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+.ms-commitment-box p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* 8. CONTACT SECTION */
+.ms-contact-section {
+  padding: 80px 5%;
+  background-color: var(--ms-bg-white);
+}
+
+.ms-contact-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--ms-bg-card);
+  border: 1px solid var(--ms-gold);
+  border-radius: var(--ms-radius);
+  padding: 50px 40px;
+  box-shadow: var(--ms-shadow-hover);
+}
+
+.ms-contact-card h2 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.ms-contact-desc {
+  margin-bottom: 30px;
+}
+
+.ms-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+  background: var(--ms-bg-white);
+  padding: 30px;
+  border-radius: var(--ms-radius-sm);
+  border: 1px solid var(--ms-border);
+  margin-bottom: 30px;
+}
+
+.ms-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.05rem;
+}
+
+.ms-contact-item i {
+  color: var(--ms-gold);
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* 9. FINAL CTA */
+.ms-cta-section {
+  padding: 120px 5%;
+  background: linear-gradient(180deg, var(--ms-bg-cream) 0%, #EFE8D8 100%);
+}
+
+.ms-cta-section h2 {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.ms-cta-section p {
+  font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ms-main-heading {
+    font-size: 2.8rem;
+  }
+  .ms-hero-section, .ms-cta-section {
+    padding: 80px 5%;
+  }
+  .ms-contact-card {
+    padding: 40px 20px;
+  }
+}

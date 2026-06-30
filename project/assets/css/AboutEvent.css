@@ -1,0 +1,416 @@
+.about-page {
+  background: #0b0c10;
+  min-height: 100vh;
+  color: #f5f6fa;
+}
+
+.about-hero {
+  min-height: 520px;
+  background-image: url('../images/Background.png');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(197, 168, 92, 0.25);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  padding: 80px 5%;
+}
+
+.about-hero h1, 
+.about-hero p {
+  text-shadow: 0 0 15px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.about-hero-content {
+  max-width: 800px;
+  margin: 0;
+}
+
+.about-hero h1 {
+  font-size: 68px;
+  font-weight: 800;
+  color: #c5a85c;
+  margin-bottom: 25px;
+}
+
+.about-hero p {
+  font-size: 26px;
+  color: #9aa0b4;
+  margin-bottom: 40px;
+}
+
+.about-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.about-primary-btn,
+.about-secondary-btn {
+  padding: 16px 45px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.about-primary-btn {
+  border: none;
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  color: #0b0c10;
+}
+
+.about-secondary-btn {
+  border: 2px solid #c5a85c;
+  background: transparent;
+  color: #c5a85c;
+}
+
+.about-primary-btn:hover,
+.about-secondary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(197, 168, 92, 0.2);
+}
+
+.about-info {
+  max-width: 950px;
+  margin: 90px auto;
+  background: #12131c;
+  border: 1px solid rgba(197, 168, 92, 0.15);
+  padding: 55px;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+}
+
+.about-info h2 {
+  font-size: 42px;
+  color: #f5f6fa;
+  margin-bottom: 18px;
+}
+
+.about-info p {
+  color: #9aa0b4;
+  font-size: 19px;
+  line-height: 1.8;
+}
+
+.about-features,
+.how-section {
+  padding: 70px 5%;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title span {
+  display: inline-block;
+  background: rgba(197, 168, 92, 0.1);
+  border: 1px solid #c5a85c;
+  color: #c5a85c;
+  padding: 9px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.section-title h2 {
+  font-size: 46px;
+  color: #c5a85c;
+}
+
+.feature-grid,
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 30px;
+}
+
+.about-feature-card,
+.step-card {
+  background: #12131c;
+  border: 1px solid rgba(197, 168, 92, 0.15);
+  padding: 35px 28px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transition: 0.3s;
+}
+
+.about-feature-card:hover,
+.step-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(197, 168, 92, 0.4);
+}
+
+.about-feature-icon,
+.step-icon {
+  font-size: 48px;
+  margin-bottom: 18px;
+}
+
+.about-feature-card h3,
+.step-card h3 {
+  color: #f5f6fa;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.about-feature-card p,
+.step-card p {
+  color: #9aa0b4;
+  line-height: 1.6;
+}
+
+.step-number {
+  display: inline-block;
+  background: rgba(197, 168, 92, 0.1);
+  border: 1px solid #c5a85c;
+  color: #c5a85c;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.nxl-section {
+  width: 92%;
+  margin: 80px auto;
+  background: linear-gradient(135deg, #12131c 0%, #0b0c10 100%);
+  border: 1px solid rgba(197, 168, 92, 0.25);
+  border-radius: 35px;
+  padding: 80px;
+  color: #f5f6fa;
+}
+
+.nxl-tag {
+  display: inline-block;
+  background: rgba(197, 168, 92, 0.1);
+  border: 1px solid #c5a85c;
+  color: #c5a85c;
+  padding: 9px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.nxl-section h2 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.nxl-section p {
+  font-size: 19px;
+  color: #9aa0b4;
+  line-height: 1.7;
+}
+
+.nxl-boxes {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-top: 35px;
+  margin-bottom: 35px;
+}
+
+.nxl-boxes div {
+  background: rgba(22, 24, 38, 0.8);
+  padding: 25px;
+  border-radius: 20px;
+  min-width: 180px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(197, 168, 92, 0.15);
+}
+
+.nxl-boxes div:hover {
+  transform: translateY(-8px);
+  background: rgba(197, 168, 92, 0.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  border-color: rgba(197, 168, 92, 0.5);
+}
+
+.nxl-boxes h3 {
+  color: #c5a85c;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.nxl-boxes div:hover h3 {
+  color: #fce38a;
+  text-shadow: 0 0 8px rgba(214, 175, 55, 0.3);
+}
+
+.nxl-cta-btn {
+  margin-top: 20px;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  color: #0b0c10;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(197, 168, 92, 0.35);
+}
+
+.nxl-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(197, 168, 92, 0.5);
+}
+
+.about-cta {
+  width: 92%;
+  margin: 90px auto;
+  background: linear-gradient(135deg, #12131c 0%, #0b0c10 100%);
+  border: 1px solid rgba(197, 168, 92, 0.25);
+  border-radius: 35px;
+  padding: 90px 40px;
+  text-align: center;
+}
+
+.about-cta h2 {
+  color: #c5a85c;
+  font-size: 52px;
+  margin-bottom: 20px;
+}
+
+.about-cta p {
+  color: #9aa0b4;
+  font-size: 22px;
+  margin-bottom: 40px;
+}
+
+.about-cta .about-secondary-btn {
+  border-color: #c5a85c;
+  color: #c5a85c;
+}
+
+@media (max-width: 768px) {
+  .about-hero h1,
+  .about-cta h2 {
+    font-size: 38px;
+  }
+
+  .about-hero p,
+  .about-cta p {
+    font-size: 18px;
+  }
+
+  .section-title h2,
+  .nxl-section h2 {
+    font-size: 32px;
+  }
+
+  .about-info,
+  .nxl-section,
+  .about-cta {
+    padding: 45px 25px;
+  }
+
+  .nxl-boxes {
+    flex-direction: column;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES (must be at the END to win the cascade)
+   ========================================================================== */
+
+body.light-theme .about-page {
+  background: #f5f5dc !important;
+  color: #1a1a1a !important;
+}
+
+body.light-theme .about-hero {
+  background-image: url('../images/gsa background light.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  border-bottom-color: rgba(197, 168, 92, 0.4) !important;
+}
+
+body.light-theme .about-hero h1 {
+  color: #8c6010 !important;
+  text-shadow: 
+    -1px -1px 0 rgba(255,255,255,0.9),  
+     1px -1px 0 rgba(255,255,255,0.9),
+    -1px  1px 0 rgba(255,255,255,0.9),
+     1px  1px 0 rgba(255,255,255,0.9),
+     0 0 15px rgba(255,255,255,1) !important;
+}
+
+body.light-theme .about-hero p {
+  color: #1a1a1a !important; /* Darkened from #4a4a4a for better contrast */
+  text-shadow: 
+    -1px -1px 0 rgba(255,255,255,0.9),  
+     1px -1px 0 rgba(255,255,255,0.9),
+    -1px  1px 0 rgba(255,255,255,0.9),
+     1px  1px 0 rgba(255,255,255,0.9),
+     0 0 15px rgba(255,255,255,1) !important;
+}
+
+body.light-theme .about-info,
+body.light-theme .about-feature-card,
+body.light-theme .step-card,
+body.light-theme .nxl-boxes div {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(197, 168, 92, 0.6) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .about-info h2,
+body.light-theme .about-feature-card h3,
+body.light-theme .step-card h3 {
+  color: #1a1a1a !important;
+}
+
+body.light-theme .about-info p,
+body.light-theme .about-feature-card p,
+body.light-theme .step-card p {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .step-number {
+  background: rgba(197, 168, 92, 0.15) !important;
+  border-color: #8c6010 !important;
+  color: #8c6010 !important;
+}
+
+body.light-theme .nxl-section,
+body.light-theme .about-cta {
+  background: linear-gradient(135deg, #eae1c9 0%, #f5f5dc 100%) !important;
+  border-color: rgba(197, 168, 92, 0.4) !important;
+  color: #1a1a1a !important;
+}
+
+body.light-theme .nxl-section h2,
+body.light-theme .about-cta h2 {
+  color: #8c6010 !important;
+}
+
+body.light-theme .nxl-section p,
+body.light-theme .about-cta p {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .nxl-tag {
+  background: rgba(197, 168, 92, 0.15) !important;
+  border-color: #8c6010 !important;
+  color: #8c6010 !important;
+}
+
+body.light-theme .about-secondary-btn {
+  border-color: #8c6010 !important;
+  color: #8c6010 !important;
+}
+
+body.light-theme .about-secondary-btn:hover {
+  background: rgba(140, 96, 16, 0.08) !important;
+}

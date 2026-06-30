@@ -1,0 +1,108 @@
+// ----------------------------------------
+// CITY-BASED EXHIBITOR PRICING LOGIC
+// ----------------------------------------
+function renderConfiguredCities() {
+    const listDiv = document.getElementById('configuredCitiesList');
+    if (!listDiv) return;
+    
+    const data = window.exhibitorPricingData || {};
+    const cities = Object.keys(data);
+    
+    if (cities.length === 0) {
+        listDiv.innerHTML = '<span style="color: #9aa0b4; font-size: 0.85rem;">No cities configured yet.</span>';
+        return;
+    }
+    
+    let html = '';
+    cities.forEach(city => {
+        const c = city.charAt(0).toUpperCase() + city.slice(1);
+        html += `<span style="background: rgba(197, 168, 92, 0.1); border: 1px solid rgba(197, 168, 92, 0.3); color: #c5a85c; padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; cursor: pointer;" onclick="document.getElementById('pricingCity').value='${city}'; loadCityPricing('${city}');">${c}</span>`;
+    });
+    listDiv.innerHTML = html;
+}
+
+// Call initially
+setTimeout(renderConfiguredCities, 1000); // Give it a sec to load settings
+function loadCityPricing(city) {
+    if (!city) return;
+    const c = city.trim().toLowerCase();
+    const data = window.exhibitorPricingData || {};
+    
+    if (data[c]) {
+        document.getElementById('pricing_std_size').value = data[c].standard.size || '';
+        document.getElementById('pricing_std_price').value = data[c].standard.price || '';
+        document.getElementById('pricing_prm_size').value = data[c].premium.size || '';
+        document.getElementById('pricing_prm_price').value = data[c].premium.price || '';
+        document.getElementById('pricing_crn_size').value = data[c].corner.size || '';
+        document.getElementById('pricing_crn_price').value = data[c].corner.price || '';
+        document.getElementById('pricing_pvl_size').value = data[c].pavilion.size || '';
+        document.getElementById('pricing_pvl_price').value = data[c].pavilion.price || '';
+    } else {
+        document.getElementById('pricing_std_size').value = '';
+        document.getElementById('pricing_std_price').value = '';
+        document.getElementById('pricing_prm_size').value = '';
+        document.getElementById('pricing_prm_price').value = '';
+        document.getElementById('pricing_crn_size').value = '';
+        document.getElementById('pricing_crn_price').value = '';
+        document.getElementById('pricing_pvl_size').value = '';
+        document.getElementById('pricing_pvl_price').value = '';
+    }
+}
+
+document.getElementById('cityPricingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const city = document.getElementById('pricingCity').value.trim().toLowerCase();
+    if (!city) return;
+
+    const data = window.exhibitorPricingData || {};
+    data[city] = {
+        standard: {
+            size: document.getElementById('pricing_std_size').value.trim(),
+            price: document.getElementById('pricing_std_price').value.trim()
+        },
+        premium: {
+            size: document.getElementById('pricing_prm_size').value.trim(),
+            price: document.getElementById('pricing_prm_price').value.trim()
+        },
+        corner: {
+            size: document.getElementById('pricing_crn_size').value.trim(),
+            price: document.getElementById('pricing_crn_price').value.trim()
+        },
+        pavilion: {
+            size: document.getElementById('pricing_pvl_size').value.trim(),
+            price: document.getElementById('pricing_pvl_price').value.trim()
+        }
+    };
+
+    window.exhibitorPricingData = data;
+
+    const btn = e.target.querySelector("button[type='submit']");
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "Saving...";
+
+    try {
+        const token = localStorage.getItem("globalsportsarena_token");
+        const res = await fetch("api/index.php/settings", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                exhibitor_pricing: data
+            })
+        });
+        const result = await res.json();
+        if (result.success) {
+            alert("City pricing saved successfully!");
+            renderConfiguredCities();
+        } else {
+            alert(result.message || "Failed to save city pricing");
+        }
+    } catch(err) {
+        console.error(err);
+        alert("Error saving city pricing");
+    } finally {
+        btn.innerHTML = originalText;
+    }
+});

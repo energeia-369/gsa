@@ -1,0 +1,4 @@
+SELECT * FROM users;
+SELECT * FROM products;
+SELECT * FROM tournaments;
+SELECT * FROM orders;

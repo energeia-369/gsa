@@ -1,0 +1,172 @@
+
+
+
+/* HERO */
+.gallery-hero {
+  text-align: center;
+  padding: 120px 20px 60px;
+  background: radial-gradient(circle at top, rgba(201,163,74,0.25), transparent 45%);
+}
+
+.tagline {
+  color: #c9a34a;
+  letter-spacing: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.gallery-hero h1 {
+  font-size: 64px;
+  font-weight: 900;
+}
+
+.gallery-hero h1 span {
+  color: #c9a34a;
+}
+
+.hero-text {
+  max-width: 650px;
+  margin: 20px auto;
+  color: #a8adbd;
+  line-height: 1.8;
+}
+
+/* FILTER */
+.filter-section {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 50px;
+}
+
+.filter-btn {
+  padding: 12px 28px;
+  border: 1px solid #c9a34a;
+  background: transparent;
+  color: #ffffff;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: #c9a34a;
+  color: #000;
+}
+
+/* GALLERY */
+.gallery-section {
+  width: 85%;
+  margin: auto;
+  padding-bottom: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.gallery-card {
+  background: #14151f;
+  border: 1px solid rgba(201, 163, 74, 0.35);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: 0.4s;
+}
+
+.gallery-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px rgba(201, 163, 74, 0.25);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-content {
+  padding: 22px;
+}
+
+.gallery-content h3 {
+  color: #ffffff;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.gallery-content p {
+  color: #c9a34a;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .gallery-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-section {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-hero h1 {
+    font-size: 42px;
+  }
+
+  .navbar {
+    padding: 0 25px;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES (must be at the END to win the cascade)
+   ========================================================================== */
+body.light-theme .gallery-hero {
+  background: radial-gradient(circle at top, rgba(201, 163, 74, 0.15), transparent 45%) !important;
+}
+
+body.light-theme .gallery-hero h1 {
+  color: #1a1a1a !important;
+}
+
+body.light-theme .hero-text {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .filter-btn {
+  color: #1a1a1a !important;
+  border-color: #8c6010 !important;
+}
+
+body.light-theme .filter-btn:hover,
+body.light-theme .filter-btn.active {
+  background: #c5a85c !important;
+  color: #0b0c10 !important;
+  border-color: #c5a85c !important;
+}
+
+body.light-theme .gallery-card {
+  background: #ffffff !important;
+  border-color: rgba(197, 168, 92, 0.3) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .gallery-card:hover {
+  box-shadow: 0 15px 30px rgba(197, 168, 92, 0.25) !important;
+}
+
+body.light-theme .gallery-content h3 {
+  color: #1a1a1a !important;
+}
+
+body.light-theme .gallery-content p {
+  color: #8c6010 !important;
+}

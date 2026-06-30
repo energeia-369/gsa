@@ -1,0 +1,137 @@
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.43 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE playarena_db;
+Query OK, 1 row affected (0.08 sec)
+
+mysql> USE playarena_db;
+Database changed
+mysql> CREATE TABLE users ( id BIGINT AUTO_INCREMENT PRIMARY KEY, full_name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255),role VARCHAR(50));
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> CREATE TABLE products ( id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150), category VARCHAR(100),price DOUBLE,description TEXT,image_url VARCHAR(500),stock INT );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE tournaments ( id BIGINT AUTO_INCREMENT PRIMARY KEY,tournament_name VARCHAR(150), sport_name VARCHAR(100), location VARCHAR(150),event_date VARCHAR(100),entry_fee DOUBLE,status VARCHAR(50));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE orders ( id BIGINT AUTO_INCREMENT PRIMARY KEY, user_id BIGINT,total_amount DOUBLE, payment_status VARCHAR(50), order_status VARCHAR(50), order_date DATETIME );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO products  (name, category, price, description, image_url, stock) VALUES ('Sports Shoes', 'Shoes', 1999, 'Premium running and sports shoes', 'sports-shoes.jpg', 50), ('Football Jersey', 'Jersey', 799, 'Comfortable football jersey', 'jersey.jpg', 100), ('Badminton Racket', 'Racket', 1499, 'Lightweight badminton racket', 'racket.jpg', 30), ('Football', 'Ball', 999, 'Professional football', 'football.jpg', 40), ('Water Bottle', 'Accessories', 299, 'Sports water bottle', 'bottle.jpg', 80), ('Gym Gloves', 'Gym Accessories', 499, 'Comfortable gym gloves', 'gloves.jpg', 60);
+Query OK, 6 rows affected (0.02 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO tournaments  (tournament_name, sport_name, location, event_date, entry_fee, status) VALUES ('Badminton Championship', 'Badminton', 'Pune Indoor Stadium', '2026-06-15', 500, 'OPEN'), ('Football League', 'Football', 'Mumbai Sports Ground', '2026-06-20', 1200, 'OPEN'), ('Table Tennis Cup', 'Table Tennis', 'Delhi Indoor Arena', '2026-07-05', 400, 'OPEN');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM users;
+Empty set (0.01 sec)
+
+mysql> SELECT * FROM products;
++----+------------------+-----------------+-------+----------------------------------+------------------+-------+
+| id | name             | category        | price | description                      | image_url        | stock |
++----+------------------+-----------------+-------+----------------------------------+------------------+-------+
+|  1 | Sports Shoes     | Shoes           |  1999 | Premium running and sports shoes | sports-shoes.jpg |    50 |
+|  2 | Football Jersey  | Jersey          |   799 | Comfortable football jersey      | jersey.jpg       |   100 |
+|  3 | Badminton Racket | Racket          |  1499 | Lightweight badminton racket     | racket.jpg       |    30 |
+|  4 | Football         | Ball            |   999 | Professional football            | football.jpg     |    40 |
+|  5 | Water Bottle     | Accessories     |   299 | Sports water bottle              | bottle.jpg       |    80 |
+|  6 | Gym Gloves       | Gym Accessories |   499 | Comfortable gym gloves           | gloves.jpg       |    60 |
++----+------------------+-----------------+-------+----------------------------------+------------------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM tournaments;
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+| id | tournament_name        | sport_name   | location             | event_date | entry_fee | status |
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+|  1 | Badminton Championship | Badminton    | Pune Indoor Stadium  | 2026-06-15 |       500 | OPEN   |
+|  2 | Football League        | Football     | Mumbai Sports Ground | 2026-06-20 |      1200 | OPEN   |
+|  3 | Table Tennis Cup       | Table Tennis | Delhi Indoor Arena   | 2026-07-05 |       400 | OPEN   |
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM orders;
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM tournaments;
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+| id | tournament_name        | sport_name   | location             | event_date | entry_fee | status |
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+|  1 | Badminton Championship | Badminton    | Pune Indoor Stadium  | 2026-06-15 |       500 | OPEN   |
+|  2 | Football League        | Football     | Mumbai Sports Ground | 2026-06-20 |      1200 | OPEN   |
+|  3 | Table Tennis Cup       | Table Tennis | Delhi Indoor Arena   | 2026-07-05 |       400 | OPEN   |
++----+------------------------+--------------+----------------------+------------+-----------+--------+
+3 rows in set (0.04 sec)
+
+mysql> SELECT * FROM orders;
+Empty set (0.00 sec)
+
+mysql> CREATE DATABASE playarena_db;
+ERROR 1007 (HY000): Can't create database 'playarena_db'; database exists
+mysql> USE playarena_db;
+Database changed
+mysql> CREATE TABLE users ( id BIGINT AUTO_INCREMENT PRIMARY KEY,full_name VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, role VARCHAR(50));
+ERROR 1050 (42S01): Table 'users' already exists
+mysql>  SELECT * FROM users;
+Empty set (0.02 sec)
+
+mysql> SELECT * FROM users;
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM users;
+Empty set (0.00 sec)
+
+mysql> USE playarena_db;
+Database changed
+mysql> SELECT * FROM users;
++----+-----------------+------------------------------+--------------------------------------------------------------+------+
+| id | full_name       | email                        | password                                                     | role |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+
+|  1 | SANKET SHËÑ?ÄGË | sanketshendage3487@gmail.com | $2a$10$wblyNovI.IYasIy4lP2EkeQ.QGCXV3qmsfexGpgSxSdklhak0Rtti | USER |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+
+1 row in set (0.00 sec)
+
+mysql> ALTER TABLE users ADD wallet_balance INT DEFAULT 0, ADD credits INT DEFAULT 0, ADD total_orders INT DEFAULT 0, ADD events_joined INT DEFAULT 0;
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM users;
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+| id | full_name       | email                        | password                                                     | role | wallet_balance | credits | total_orders | events_joined |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+|  1 | SANKET SHËÑ?ÄGË | sanketshendage3487@gmail.com | $2a$10$wblyNovI.IYasIy4lP2EkeQ.QGCXV3qmsfexGpgSxSdklhak0Rtti | USER |              0 |       0 |            0 |             0 |
+|  2 | hacker          | sank123@gmail.com            | $2a$10$/SVlY.S1xJTXsXDMhsGGieyiu8F3yrgmmoSeziVaRuDZIYGPwoc1i | USER |              0 |       0 |            0 |             0 |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> CREATE TABLE event_registrations ( id BIGINT AUTO_INCREMENT PRIMARY KEY, team_name VARCHAR(100), captain_name VARCHAR(100), captain_contact VARCHAR(20), email VARCHAR(100), sport VARCHAR(50), team_category VARCHAR(50), team_members INT, notes TEXT, registration_fee DOUBLE, payment_status VARCHAR(50) );
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> SELECT * FROM event_registrations;
+Empty set (0.02 sec)
+
+mysql> SELECT * FROM event_registrations;
+Empty set (0.01 sec)
+
+mysql> SELECT * FROM users;
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+| id | full_name       | email                        | password                                                     | role | wallet_balance | credits | total_orders | events_joined |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+|  1 | SANKET SHËÑ?ÄGË | sanketshendage3487@gmail.com | $2a$10$wblyNovI.IYasIy4lP2EkeQ.QGCXV3qmsfexGpgSxSdklhak0Rtti | USER |              0 |       0 |            0 |             0 |
+|  2 | hacker          | sank123@gmail.com            | $2a$10$/SVlY.S1xJTXsXDMhsGGieyiu8F3yrgmmoSeziVaRuDZIYGPwoc1i | USER |              0 |       0 |            0 |             0 |
++----+-----------------+------------------------------+--------------------------------------------------------------+------+----------------+---------+--------------+---------------+
+2 rows in set (0.01 sec)
+
+mysql>

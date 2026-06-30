@@ -1,0 +1,614 @@
+.gsa-detail-page {
+  background-color: #0b0c10;
+  color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.gsa-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 3%;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header span {
+  color: #00f2fe;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+.section-header h2 {
+  font-size: 2.2rem;
+  color: #c5a85c;
+  margin: 0;
+  font-weight: 800;
+}
+
+/* 1. Hero Section */
+.gsa-hero {
+  position: relative;
+  background-image: linear-gradient(rgba(11, 12, 16, 0.3), #0b0c10), url("https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=1200&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  padding: 80px 5% 40px 5%;
+  border-bottom: 1px solid rgba(197, 168, 92, 0.2);
+}
+
+.gsa-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(18, 19, 28, 0.1) 0%, rgba(11, 12, 16, 0.95) 100%);
+  z-index: 1;
+}
+
+.gsa-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.gsa-back-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(197, 168, 92, 0.25);
+  color: #c5a85c;
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.gsa-back-btn:hover {
+  background: rgba(197, 168, 92, 0.15);
+  color: #f8fafc;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 15px rgba(197, 168, 92, 0.2);
+}
+
+.gsa-badge {
+  color: #00f2fe;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: inline-block;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+.gsa-hero-content h1 {
+  font-size: 3.8rem;
+  font-weight: 900;
+  margin: 0 0 16px 0;
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, #f8fafc 40%, #c5a85c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gsa-hero-content p {
+  font-size: 1.35rem;
+  color: #9aa0b4;
+  margin: 0;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* 2. About Arena */
+.gsa-about-section {
+  padding: 80px 0;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.about-text-box h2 {
+  font-size: 2.2rem;
+  color: #c5a85c;
+  margin: 0 0 20px 0;
+  font-weight: 800;
+}
+
+.about-text-box p {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+
+.about-stats-box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(197, 168, 92, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  border-color: rgba(197, 168, 92, 0.4);
+  transform: translateY(-2px);
+  background: rgba(197, 168, 92, 0.05);
+}
+
+.stat-card h3 {
+  font-size: 2rem;
+  color: #00f2fe;
+  margin: 0 0 5px 0;
+  font-weight: 800;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* 3. Features Section */
+.gsa-features-section {
+  background-color: #12131c;
+  padding: 80px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.feature-card {
+  background: rgba(11, 12, 16, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 30px;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 242, 254, 0.1);
+}
+
+.feature-icon-circle {
+  width: 60px;
+  height: 60px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  color: #f8fafc;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* 4. Upcoming Events */
+.gsa-events-section {
+  padding: 80px 0;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.event-card {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  min-height: 320px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: scale(1.02);
+  border-color: rgba(197, 168, 92, 0.3);
+}
+
+.event-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 25px;
+  width: 100%;
+}
+
+.event-datetime {
+  display: flex;
+  gap: 8px;
+  color: #00f2fe;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.event-card-content h3 {
+  font-size: 1.4rem;
+  margin: 0 0 15px 0;
+  color: #fff;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.event-card-btn {
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  color: #0b0c10;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.event-card-btn:hover {
+  background: linear-gradient(135deg, #f5d76e 0%, #c5a85c 100%);
+  transform: translateY(-2px);
+}
+
+/* 5. Gallery Section */
+.gsa-gallery-section {
+  background-color: #12131c;
+  padding: 80px 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gallery-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 40%, rgba(11, 12, 16, 0.9) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.08);
+}
+
+.gallery-item:hover .gallery-hover-overlay {
+  opacity: 1;
+}
+
+.gallery-hover-overlay h4 {
+  margin: 0;
+  color: #c5a85c;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* 6. Booking Section */
+.gsa-booking-section {
+  padding: 80px 0;
+}
+
+.booking-box {
+  padding: 40px;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid rgba(197, 168, 92, 0.2);
+}
+
+.booking-box h2 {
+  font-size: 2.2rem;
+  color: #c5a85c;
+  margin: 0 0 10px 0;
+  font-weight: 800;
+}
+
+.booking-box p {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin: 0 0 30px 0;
+}
+
+.booking-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.booking-btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.booking-btn.primary {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #0b0c10;
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+}
+
+.booking-btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+}
+
+.booking-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+.booking-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+.booking-btn.highlight {
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  color: #0b0c10;
+  box-shadow: 0 4px 15px rgba(197, 168, 92, 0.2);
+}
+
+.booking-btn.highlight:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(197, 168, 92, 0.4);
+}
+
+/* Glassmorphism utility card */
+.card-glass {
+  background: rgba(18, 19, 28, 0.6);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* 7. Reviews Section */
+.gsa-reviews-section {
+  background-color: #12131c;
+  padding: 80px 0;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.review-card {
+  background: rgba(11, 12, 16, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.stars-row {
+  display: flex;
+  gap: 2px;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.review-comment {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  font-style: italic;
+  margin: 0 0 15px 0;
+}
+
+.review-author {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #c5a85c;
+  font-weight: 700;
+}
+
+/* 8. Location Section */
+.gsa-location-section {
+  padding: 80px 0;
+}
+
+.location-box {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  padding: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  align-items: center;
+}
+
+.location-info h3 {
+  font-size: 1.6rem;
+  color: #c5a85c;
+  margin: 0 0 15px 0;
+  font-weight: 700;
+}
+
+.location-info p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+
+/* 9. Footer CTA */
+.gsa-footer-cta {
+  position: relative;
+  background-image: linear-gradient(rgba(11, 12, 16, 0.6), rgba(11, 12, 16, 0.85)), url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 100px 5%;
+  text-align: center;
+  border-top: 1px solid rgba(197, 168, 92, 0.2);
+}
+
+.cta-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(11, 12, 16, 0.5);
+  z-index: 1;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 15px 0;
+  letter-spacing: -0.5px;
+}
+
+.cta-content p {
+  font-size: 1.15rem;
+  color: #94a3b8;
+  margin: 0 0 30px 0;
+}
+
+.cta-btn-book {
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+  color: #0b0c10;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(197, 168, 92, 0.3);
+}
+
+.cta-btn-book:hover {
+  background: linear-gradient(135deg, #f5d76e 0%, #c5a85c 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(197, 168, 92, 0.45);
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .location-box {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gsa-hero-content h1 {
+    font-size: 2.8rem;
+  }
+  .gsa-hero-content p {
+    font-size: 1.1rem;
+  }
+  .booking-box {
+    padding: 30px 20px;
+  }
+  .cta-content h2 {
+    font-size: 2rem;
+  }
+}

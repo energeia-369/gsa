@@ -1,0 +1,849 @@
+/* PILLARS CSS - Enhanced Creative Version with Pillar Cards */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.pillar-page {
+  padding: 120px 20px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #3A342B;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated Background Effect */
+.pillar-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(197, 168, 92, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* HERO SECTION - Enhanced */
+.pillar-hero {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.pillar-hero h1 {
+  font-size: 5rem;
+  background: linear-gradient(135deg, #c5a85c 0%, #e8d5a3 50%, #c5a85c 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: shimmer 3s ease infinite;
+  position: relative;
+  display: inline-block;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.pillar-hero h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #c5a85c, transparent);
+}
+
+.pillar-hero .subtitle {
+  font-size: 1.3rem;
+  color: #9aa0b4;
+  max-width: 700px;
+  margin: 20px auto 0;
+}
+
+/* CREATIVE PILLAR CARDS - New Feature from Your Image */
+.pillar-showcase {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 25px;
+  margin-bottom: 30px;
+  padding: 20px 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Hide scrollbar for carousel look */
+}
+
+.pillar-showcase::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+/* Carousel Buttons */
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #12131c;
+  border: 2px solid #c5a85c;
+  color: #c5a85c;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.carousel-btn:hover {
+  background: #c5a85c;
+  color: #12131c;
+}
+
+.prev-btn {
+  left: -25px;
+}
+
+.next-btn {
+  right: -25px;
+}
+
+@media (max-width: 1024px) {
+  .prev-btn { left: 0; }
+  .next-btn { right: 0; }
+}
+
+@media (max-width: 1024px) {
+  /* No change needed for responsive columns since it's a flex row now, just let it scroll */
+}
+
+@media (max-width: 640px) {
+  .pillar-showcase {
+    gap: 15px;
+  }
+}
+
+.creative-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 28px 20px;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(197, 168, 92, 0.1);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 calc(20% - 20px); /* Adjust to fit 5 cards on screen */
+  min-width: 210px; /* Reduce minimum width to allow 5 cards to fit */
+  scroll-snap-align: start;
+}
+
+.creative-card::before {
+  display: none;
+}
+
+/* Card Hover Effect */
+.creative-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* EKONAMIA Card (Gold/Finance Theme) */
+.creative-card.ekonamia {
+  border-bottom: 4px solid #1e88ff;
+}
+.creative-card.ekonamia .card-icon {
+  color: #6fb6ff;
+}
+.creative-card.ekonamia .card-title {
+  color: #fff;
+}
+.creative-card.ekonamia:hover {
+  border-color: #c5a85c;
+  box-shadow: 0 20px 40px rgba(197, 168, 92, 0.15);
+}
+
+/* ENERGEIA Card (Green/Sustainability Theme) */
+.creative-card.energeia {
+  border-bottom: 4px solid #19b66a;
+}
+.creative-card.energeia .card-icon {
+  color: #f7931e;
+}
+.creative-card.energeia .card-title {
+  color: #fff;
+}
+.creative-card.energeia:hover {
+  border-color: #4caf50;
+  box-shadow: 0 20px 40px rgba(76, 175, 80, 0.15);
+}
+
+/* EXPLORIA Card (Blue/Travel Theme) */
+.creative-card.exploria {
+  border-bottom: 4px solid #b56a2a;
+}
+.creative-card.exploria .card-icon {
+  color: #6fb6ff;
+}
+.creative-card.exploria .card-title {
+  color: #fff;
+}
+.creative-card.exploria:hover {
+  border-color: #2196f3;
+  box-shadow: 0 20px 40px rgba(33, 150, 243, 0.15);
+}
+
+/* EVEXIA Card (Purple/Wellness Theme) */
+.creative-card.evexia {
+  border-bottom: 4px solid #b832c8;
+}
+.creative-card.evexia .card-icon {
+  color: #ff8ab4;
+}
+.creative-card.evexia .card-title {
+  color: #fff;
+}
+.creative-card.evexia:hover {
+  border-color: #9c27b0;
+  box-shadow: 0 20px 40px rgba(156, 39, 176, 0.15);
+}
+
+/* METROXIA Card (White/Infrastructure Theme) */
+.creative-card.metroxia {
+  border-bottom: 4px solid #ffffff;
+}
+.creative-card.metroxia .card-icon {
+  color: #a0a0a0;
+}
+.creative-card.metroxia .card-title {
+  color: #fff;
+}
+.creative-card.metroxia:hover {
+  border-color: #ffffff;
+  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
+}
+
+/* Card Content */
+.creative-card .card-icon {
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #c5a85c;
+  background: #12131c;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creative-card .card-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.creative-card .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin: 10px 0 20px;
+}
+
+.creative-card .card-badge {
+  background: transparent !important;
+  color: #c5a85c !important;
+  padding: 0 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  border-radius: 0;
+}
+
+.creative-card .card-badge:nth-child(odd):not(:last-child)::after {
+  content: ' •';
+  padding-left: 6px;
+  color: #c5a85c;
+}
+
+.creative-card .card-description {
+  font-size: 0.85rem;
+  color: #7A7061;
+  line-height: 1.5;
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+/* Stats Section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.stat-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 25px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(197, 168, 92, 0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.stat-card:hover {
+  background: rgba(197, 168, 92, 0.1);
+  transform: scale(1.03);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #c5a85c;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #7A7061;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* GRID SECTIONS */
+.pillar-section {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FDFBF7 100%);
+  border: 1px solid rgba(197, 168, 92, 0.3);
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: 40px;
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.pillar-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #c5a85c, transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.pillar-section:hover::before {
+  transform: scaleX(1);
+}
+
+.pillar-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(197, 168, 92, 0.3);
+}
+
+.pillar-section h2 {
+  color: #c5a85c;
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  border-left: 4px solid #c5a85c;
+  padding-left: 20px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.pillar-section:hover h2 {
+  transform: translateX(5px);
+}
+
+.pillar-section h2 i {
+  margin-right: 12px;
+  font-size: 1.8rem;
+}
+
+/* CARDS */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.pillar-card-box {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F9F6F0 100%);
+  border: 1px solid rgba(197, 168, 92, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+}
+
+.pillar-card-box::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c5a85c, transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+
+.pillar-card-box:hover::after {
+  transform: translateX(0);
+}
+
+.pillar-card-box:hover {
+  transform: translateY(-5px);
+  border-color: rgba(197, 168, 92, 0.3);
+  box-shadow: 0 10px 30px rgba(197, 168, 92, 0.1);
+}
+
+.pillar-card-box .card-icon {
+  font-size: 2.5rem;
+  color: #c5a85c;
+  margin-bottom: 15px;
+}
+
+.pillar-card-box h3 {
+  color: #3A342B;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.pillar-card-box ul {
+  color: #7A7061;
+  line-height: 1.8;
+  margin-left: 0;
+  list-style: none;
+  padding-left: 0;
+}
+
+.pillar-card-box ul li {
+  padding: 5px 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.pillar-card-box ul li::before {
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: #c5a85c;
+  font-size: 0.8rem;
+}
+
+/* TABLES */
+.pillar-table-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.pillar-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pillar-table th, .pillar-table td {
+  padding: 16px 20px;
+  text-align: left;
+}
+
+.pillar-table th {
+  background: rgba(197, 168, 92, 0.08);
+  color: #c5a85c;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.pillar-table th:first-child { border-radius: 12px 0 0 0; }
+.pillar-table th:last-child { border-radius: 0 12px 0 0; }
+
+.pillar-table td {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(197, 168, 92, 0.05);
+}
+
+.pillar-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.pillar-table tbody tr:hover {
+  background: rgba(197, 168, 92, 0.03);
+  transform: scale(1.01);
+}
+
+/* Timeline/Event Cards */
+.event-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 15px 20px;
+  transition: all 0.3s ease;
+  border-left: 3px solid #c5a85c;
+  border: 1px solid rgba(197, 168, 92, 0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.event-item:hover {
+  transform: translateX(10px);
+  background: rgba(197, 168, 92, 0.05);
+}
+
+.event-date {
+  min-width: 140px;
+  color: #c5a85c;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.event-location {
+  flex: 1;
+  color: #3A342B;
+  font-weight: 500;
+}
+
+.event-theme {
+  color: #7A7061;
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pillar-hero h1 {
+    font-size: 3rem;
+  }
+  
+  .pillar-section {
+    padding: 25px;
+  }
+  
+  .pillar-section h2 {
+    font-size: 1.6rem;
+  }
+  
+  .pillar-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .event-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .event-date {
+    min-width: auto;
+  }
+}
+
+
+/* ================================
+   PAGE-WISE PILLAR COLOR THEMES
+   Add at bottom of pillars.css
+================================ */
+
+/* Default variables */
+.pillar-page {
+  --theme-color: #c5a85c;
+  --theme-light: #e8d5a3;
+  --theme-rgb: 197, 168, 92;
+}
+
+/* ENERGEIA - Green */
+.pillar-page.energeia-page {
+  --theme-color: #19b66a;
+  --theme-light: #70f2ad;
+  --theme-rgb: 25, 182, 106;
+}
+
+/* EKONAMIA - Blue */
+.pillar-page.ekonamia-page {
+  --theme-color: #1e88ff;
+  --theme-light: #7bbcff;
+  --theme-rgb: 30, 136, 255;
+}
+
+/* EXPLORIA - Brown / Orange */
+.pillar-page.exploria-page {
+  --theme-color: #b56a2a;
+  --theme-light: #f0a45b;
+  --theme-rgb: 181, 106, 42;
+}
+
+/* EVEXIA - Purple / Pink */
+.pillar-page.evexia-page {
+  --theme-color: #b832c8;
+  --theme-light: #ff7be8;
+  --theme-rgb: 184, 50, 200;
+}
+
+/* Background glow */
+.pillar-page::before {
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(var(--theme-rgb), 0.08) 0%,
+    transparent 50%
+  );
+}
+
+/* Hero title */
+.pillar-hero h1 {
+  background: linear-gradient(
+    135deg,
+    var(--theme-color) 0%,
+    var(--theme-light) 50%,
+    var(--theme-color) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hero underline */
+.pillar-hero h1::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--theme-color),
+    transparent
+  );
+}
+
+/* Accent dots/lines */
+.hero-accent span {
+  background: var(--theme-color);
+  box-shadow: 0 0 15px rgba(var(--theme-rgb), 0.7);
+}
+
+/* Stats */
+.stat-card {
+  background: rgba(var(--theme-rgb), 0.06);
+  border: 1px solid rgba(var(--theme-rgb), 0.18);
+}
+
+.stat-card:hover {
+  background: rgba(var(--theme-rgb), 0.12);
+  box-shadow: 0 15px 35px rgba(var(--theme-rgb), 0.12);
+}
+
+.stat-number {
+  color: var(--theme-color);
+}
+
+/* Sections */
+.pillar-section {
+  border: 1px solid rgba(var(--theme-rgb), 0.18);
+}
+
+.pillar-section::before {
+  background: linear-gradient(90deg, var(--theme-color), transparent);
+}
+
+.pillar-section:hover {
+  border-color: rgba(var(--theme-rgb), 0.45);
+  box-shadow: 0 20px 40px rgba(var(--theme-rgb), 0.12);
+}
+
+.pillar-section h2 {
+  color: var(--theme-color);
+  border-left: 4px solid var(--theme-color);
+}
+
+.pillar-section h2 i {
+  color: var(--theme-color);
+}
+
+/* Inner cards */
+.pillar-card-box {
+  border: 1px solid rgba(var(--theme-rgb), 0.14);
+}
+
+.pillar-card-box::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--theme-color),
+    transparent
+  );
+}
+
+.pillar-card-box:hover {
+  border-color: rgba(var(--theme-rgb), 0.4);
+  box-shadow: 0 10px 30px rgba(var(--theme-rgb), 0.12);
+}
+
+.pillar-card-box .card-icon {
+  color: var(--theme-color);
+}
+
+.pillar-card-box ul li::before {
+  color: var(--theme-color);
+}
+
+/* Tables */
+.pillar-table th {
+  background: rgba(var(--theme-rgb), 0.12);
+  color: var(--theme-color);
+}
+
+.pillar-table td {
+  border-bottom: 1px solid rgba(var(--theme-rgb), 0.08);
+}
+
+.pillar-table tbody tr:hover {
+  background: rgba(var(--theme-rgb), 0.06);
+}
+
+/* Timeline */
+.event-item {
+  border-left: 3px solid var(--theme-color);
+}
+
+.event-item:hover {
+  background: rgba(var(--theme-rgb), 0.08);
+}
+
+.event-date {
+  color: var(--theme-color);
+}
+
+/* Icons inside paragraphs */
+.pillar-section p i {
+  color: var(--theme-color) !important;
+}
+
+/* Color fixes removed to avoid overriding new styles */
+
+
+
+/* ================================
+   ADD BACKGROUND IMAGES TO PILLAR CARDS
+================================ */
+
+.creative-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 330px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* dark overlay */
+.creative-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 70%,
+    #12131c 70%,
+    #12131c 100%
+  );
+}
+
+/* keep content above image */
+.creative-card .card-icon,
+.creative-card .card-title,
+.creative-card .card-tags,
+.creative-card .card-description {
+  position: relative;
+  z-index: 2;
+}
+
+/* images for each card */
+.creative-card.energeia {
+  background-image:
+    linear-gradient(rgba(16, 80, 50, 0.5), rgba(5, 40, 20, 0.5)),
+    url("https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=500&auto=format&fit=crop&q=60");
+}
+
+.creative-card.ekonamia {
+  background-image:
+    linear-gradient(rgba(10, 40, 80, 0.5), rgba(5, 20, 45, 0.5)),
+    url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&auto=format&fit=crop&q=60");
+}
+
+.creative-card.exploria {
+  background-image:
+    linear-gradient(rgba(100, 50, 10, 0.5), rgba(50, 25, 5, 0.5)),
+    url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=500&auto=format&fit=crop&q=60");
+}
+
+.creative-card.evexia {
+  background-image:
+    linear-gradient(rgba(80, 10, 80, 0.5), rgba(40, 5, 40, 0.5)),
+    url("https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=500&auto=format&fit=crop&q=60");
+}

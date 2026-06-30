@@ -1,0 +1,68 @@
+  <!-- 🏙️ CITY-BASED EXHIBITOR PRICING -->
+  <div style="margin-top: 40px;">
+    <div class="admin-card" style="background: linear-gradient(135deg, #12131c 0%, #0b0f1e 100%); border: 1px solid rgba(197, 168, 92, 0.35); border-radius: 20px; padding: 30px; position: relative; overflow: hidden;">
+      <h2 style="color: #c5a85c; margin: 0 0 6px 0; font-size: 1.2rem;">
+        🏙️ City-Based Exhibitor Pricing
+      </h2>
+      <p style="color: #9aa0b4; font-size: 0.82rem; margin: 0 0 24px 0;">
+        Manage the booth sizes and prices based on the event's city.
+      </p>
+
+      <form id="cityPricingForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="grid-column: span 2;">
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">City (e.g. Pune)</label>
+          <input type="text" id="pricingCity" placeholder="Enter city name..." style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" required onblur="loadCityPricing(this.value)" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Standard Stall Size</label>
+          <input type="text" id="pricing_std_size" placeholder="e.g. 3m x 3m" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Standard Stall Price (₹)</label>
+          <input type="number" id="pricing_std_price" placeholder="e.g. 30000" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Premium Stall Size</label>
+          <input type="text" id="pricing_prm_size" placeholder="e.g. 6m x 3m" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Premium Stall Price (₹)</label>
+          <input type="number" id="pricing_prm_price" placeholder="e.g. 60000" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Corner Premium Size</label>
+          <input type="text" id="pricing_crn_size" placeholder="e.g. 6m x 6m" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Corner Premium Price (₹)</label>
+          <input type="number" id="pricing_crn_price" placeholder="e.g. 90000" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Pavilion Partner Size</label>
+          <input type="text" id="pricing_pvl_size" placeholder="e.g. Custom" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #c5a85c; margin-bottom: 5px; font-weight: 600;">Pavilion Partner Price (string)</label>
+          <input type="text" id="pricing_pvl_price" placeholder="e.g. 2,00,000+" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; margin-bottom: 8px;" />
+        </div>
+        
+        <div style="grid-column: span 2; margin-top: 10px;">
+          <button type="submit" id="btnSaveCityPricing" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.95rem; cursor: pointer; letter-spacing: 0.4px;">
+            💾 Save City Pricing
+          </button>
+        </div>
+      </form>
+
+      <div style="margin-top: 25px; border-top: 1px solid rgba(197, 168, 92, 0.2); padding-top: 20px;">
+        <h3 style="color: #c5a85c; font-size: 1rem; margin-bottom: 10px;">Configured Cities</h3>
+        <div id="configuredCitiesList" style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <span style="color: #9aa0b4; font-size: 0.85rem;">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+

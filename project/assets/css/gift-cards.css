@@ -1,0 +1,265 @@
+:root {
+  /* Default dark theme */
+  --gc-bg: #050816;
+  --gc-card-bg: #11131c;
+  --gc-text: #ffffff;
+  --gc-gold: #d4af37;
+  --gc-border: rgba(212, 175, 55, 0.45);
+  --gc-hover-bg: rgba(212, 175, 55, 0.1);
+}
+
+body.light-theme {
+  --gc-bg: #f7f1dc;
+  --gc-card-bg: #ffffff;
+  --gc-text: #111111;
+  --gc-gold: #c9a34a;
+  --gc-border: rgba(201, 163, 74, 0.35);
+  --gc-hover-bg: rgba(201, 163, 74, 0.1);
+}
+
+/* Base styles */
+.gc-container {
+  background-color: var(--gc-bg);
+  color: var(--gc-text);
+  min-height: 100vh;
+  padding: 100px 20px 40px;
+  font-family: inherit;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hero Section */
+.gc-hero {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.gc-hero h1 {
+  font-size: 3rem;
+  color: var(--gc-gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.gc-hero p {
+  font-size: 1.1rem;
+  color: var(--gc-text);
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+.gc-hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Buttons */
+.gc-btn {
+  background: var(--gc-hover-bg);
+  color: var(--gc-gold);
+  border: 1px solid var(--gc-gold);
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.gc-btn:hover {
+  background: var(--gc-gold);
+  color: #fff;
+  box-shadow: 0 0 15px var(--gc-border);
+}
+.gc-btn-solid {
+  background: var(--gc-gold);
+  color: #fff;
+}
+.gc-btn-solid:hover {
+  background: transparent;
+  color: var(--gc-gold);
+}
+
+/* Card Grid */
+.gc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Single Card */
+.gc-card {
+  background: var(--gc-card-bg);
+  border: 1px solid var(--gc-border);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.gc-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px var(--gc-border);
+}
+.gc-card-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+.gc-card-title {
+  font-size: 1.5rem;
+  color: var(--gc-gold);
+  margin-bottom: 10px;
+}
+.gc-card-price {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.gc-card-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  text-align: left;
+  flex-grow: 1;
+}
+.gc-card-benefits li {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gc-card-benefits li::before {
+  content: "✓";
+  color: var(--gc-gold);
+  font-weight: bold;
+}
+.gc-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: var(--gc-gold);
+  color: #111;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Forms (Checkout & Redeem) */
+.gc-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--gc-card-bg);
+  border: 1px solid var(--gc-border);
+  padding: 30px;
+  border-radius: 16px;
+}
+.gc-form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+.gc-form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--gc-text);
+  font-size: 0.9rem;
+}
+.gc-form-input, .gc-form-select {
+  width: 100%;
+  padding: 12px;
+  background: var(--gc-bg);
+  border: 1px solid var(--gc-border);
+  color: var(--gc-text);
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+.gc-form-input:focus, .gc-form-select:focus {
+  outline: none;
+  border-color: var(--gc-gold);
+  box-shadow: 0 0 8px var(--gc-border);
+}
+
+/* Order Summary */
+.gc-summary {
+  background: var(--gc-bg);
+  border: 1px solid var(--gc-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.gc-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+.gc-summary-total {
+  border-top: 1px solid var(--gc-border);
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--gc-gold);
+}
+
+/* Payment Options */
+.gc-payment-options {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.gc-payment-option {
+  flex: 1;
+  min-width: 120px;
+  padding: 15px;
+  border: 1px solid var(--gc-border);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.gc-payment-option.active {
+  background: var(--gc-hover-bg);
+  border-color: var(--gc-gold);
+}
+
+/* Success Card */
+.gc-success-card {
+  text-align: center;
+  padding: 40px;
+}
+.gc-code-box {
+  background: var(--gc-hover-bg);
+  border: 2px dashed var(--gc-gold);
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin: 30px 0;
+  font-family: monospace;
+  color: var(--gc-gold);
+  user-select: all;
+}
+.gc-qr-box {
+  margin: 20px auto;
+  background: #fff;
+  padding: 10px;
+  display: inline-block;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gc-hero h1 { font-size: 2.2rem; }
+  .gc-grid { grid-template-columns: 1fr; }
+  .gc-form-container { padding: 20px; }
+}

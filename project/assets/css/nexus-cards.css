@@ -1,0 +1,186 @@
+.nexus-section {
+  padding: 4rem 2rem;
+  background-color: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nexus-container {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nexus-card {
+  flex: 1;
+  min-width: 320px;
+  max-width: 380px;
+  background: #11121a;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nexus-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+/* Specific Card Themes */
+.card-blue { border: 1px solid rgba(42, 75, 140, 0.5); }
+.card-blue .nexus-card-header { border-bottom: 2px solid #2a4b8c; }
+.card-blue .nexus-logo-circle { color: #87b2ff; border-color: #87b2ff; }
+.card-blue .nexus-header-text h3 { color: #fff; }
+.card-blue .nexus-header-text span { color: #87b2ff; }
+
+.card-brown { border: 1px solid rgba(139, 94, 52, 0.5); }
+.card-brown .nexus-card-header { border-bottom: 2px solid #8b5e34; }
+.card-brown .nexus-logo-circle { color: #dcb38a; border-color: #dcb38a; }
+.card-brown .nexus-header-text h3 { color: #fff; }
+.card-brown .nexus-header-text span { color: #dcb38a; }
+
+.card-purple { border: 1px solid rgba(93, 33, 114, 0.5); }
+.card-purple .nexus-card-header { border-bottom: 2px solid #5d2172; }
+.card-purple .nexus-logo-circle { color: #d28bea; border-color: #d28bea; font-size: 0.8rem;}
+.card-purple .nexus-header-text h3 { color: #fff; }
+.card-purple .nexus-header-text span { color: #d28bea; }
+
+/* Header */
+.nexus-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #0b0c10;
+}
+
+.nexus-logo-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nexus-header-text h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.nexus-header-text span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Image */
+.nexus-card-image {
+  width: 100%;
+  height: 180px;
+  position: relative;
+}
+
+.nexus-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Body */
+.nexus-card-body {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.nexus-card-body p {
+  color: #9aa0b4;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.nexus-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+
+.nexus-btn:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+/* Footer */
+.nexus-card-footer {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #0b0c10;
+}
+
+.footer-icon {
+  width: 30px;
+  height: 30px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.footer-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-text strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.footer-text span {
+  color: #9aa0b4;
+  font-size: 0.75rem;
+}
+
+/* Theme-based image visibility toggle for Nexus Elite card */
+.nexus-card-light-img {
+  display: none !important;
+}
+
+body.light-theme .nexus-card-dark-img {
+  display: none !important;
+}
+
+body.light-theme .nexus-card-light-img {
+  display: block !important;
+}

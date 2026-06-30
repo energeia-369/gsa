@@ -1,0 +1,79 @@
+{
+    "delete_event_password": "admin",
+    "pillars_title": "Our Five Pillars",
+    "custom_link_text": "",
+    "custom_link_url": "",
+    "pillars": [
+        {
+            "id": "energeia",
+            "title": "ENERGEIA",
+            "icon": "fas fa-leaf",
+            "tags": [
+                "Energy",
+                "Sustainability",
+                "EV",
+                "Climate Tech"
+            ],
+            "description": "Building a sustainable future through clean energy, EV innovation and climate action.",
+            "link": "energeia.php"
+        },
+        {
+            "id": "ekonamia",
+            "title": "EKONAMIA",
+            "icon": "fas fa-chart-line",
+            "tags": [
+                "Economy",
+                "Fintech",
+                "Investment",
+                "Trade"
+            ],
+            "description": "Empowering global economy through finance, investment, trade and business growth.",
+            "link": "ekonamia.php"
+        },
+        {
+            "id": "exploria",
+            "title": "EXPLORIA",
+            "icon": "fas fa-globe-americas",
+            "tags": [
+                "Tourism",
+                "Destinations",
+                "Fintech",
+                "Tech Showcase"
+            ],
+            "description": "Exploring the world through tourism, destinations and technology showcases.",
+            "link": "exploria.php"
+        },
+        {
+            "id": "evexia",
+            "title": "EVEXIA",
+            "icon": "fas fa-heartbeat",
+            "logo": "data:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAALgAAACUCAMAAAAXgxO4AAABAlBMVEX\/\/\/9ccK9tfrZdbavz9vpmlMhcbq5pjMKRUZtnkMSaUJuIUp18ZqdyZ6l2Z6ptg7y2X6R2nMuEZahUi8RlaanCXaOzxN52U52PZaVfaqzTbay0TJmBU5yaY6bHXKKVZKbs1OXLqcqhT5urTZs+gL+rd696lsb58\/ehcKyYebFxd7Pxx9zr2uigSJmORZaTg7fo6\/PZUp7Zrs+\/bKqiQJFvS5qNibtMY6mEXaOQmMK9qctUWaKNcq6hjr26utXJ0eSfqM1\/jLtZe7jcZ6jbxtu0g7S2j73NoMWouNioYqSKpc7ET5zHttLY0OE8VaPW4O7gpsp2M5BVTZ+4dK6om8O6PpT8me3WAAAFyElEQVR4nO2aiVPiSBSH7RAS8eJSMLt4zCAewGhmUGNECTCzLl7LrMf\/\/69sv35Jh9tYIDG176upqQJ6wje\/eunXnWZhgSAIgiAIgiAIgiAIgiAIgiAIgiCI6KIKwrZ4P426YawbduTMzfMyR2FO2CLvpWEo3Fspt8IWeSdmnYsrHK0Rtsr7sOtGTEEiVeWmZXji5UhFbnPvWBnNk2bYNsFxwDvm1UqEIrct8NaUqFW5U49B4orZRHE7bKGgMFEoVmfBxNDbEalyBwvF4hXSZPzmTCajEbmqGMIb7kmzDd5JJRKNvyG8NbwlG0yIR2GtZSoaeFs5fNUC8WQ7ApF3mFJmmtZyM86JWknq4UoFQDVgHmGajDiJkedm+zUHu2OQI6r4uhr0is3ywNTtiCrX9dlWeeUn8IektlHb2EjVaqkf3ohft1tbh4eHWwG\/t4stx+qZufeFd3K2kVe+f0ftbWCDk0KKB96Qvxa3gJtgF7Qx8GbPW12urXP37lzEU397Q6rH4L2zE6hYnBELQrXJvXW93fkw8V7v1K0UvRHiwSK3scX3O3b1fZ65PtPGz8XR3BWX3qnijVcspgh8Z\/Px7cs52sgVeGd\/H9TvZi0O0vf393\/yP0CxKMRPd71BXxa5986F\/J+MBwuFDd6HZoKb7ydmWeViOqxy8O9edqVnFbw3Nwu\/3rqag3cmG\/ogp3PxdPpu3o3\/Erw3N3feGGa20Hu4vZtp8E7rc2\/8W0K88DB5VINh7xmRaw6804n0vCN\/WAbxzNHEKlfdjdqoWM07EE9n5x35QemCe2cuJkbeNMYGLiNPfIzfeB6FeOZqwlRs\/sOgVNiYqUMknsjOeK31Jur1BffO5C\/HD7Etpk3YGHfjIvH0vLefjxA4Nx\/7vY6mMR45GzdAvePm8fjcI1\/AyDPXYz5WeeCM7x\/GL0i6aRCPx+cduXkmxFfGNH7HYCCuTGiOHSGenWXjD8RLHrxXXkZPxYomxJsTLmDGhfje3CO\/Au+V0ZHnoFAYK09sMB1uns1m0x\/jN57LCzBfOxnxkVoWgVuTH2+qwjs7ky5U\/f37Rx9f+rgEvLE8ckj8aUTkDaxw5gWuOrkhnJxzJ7yzs1hrVe6B7e1aDdfip8XiN2DpGFleXv5Xij7kuffa2trQVUyscEtG6eD+GEggcZwMBXsziLzibtlSNXf7UPwKLHEWAS6+fCQDWkHxoYLoiArXZLNX73R9QDuOdyaKZ6ePvOLtfGqud9HzXvK8CxdyHd44A+\/Vk4G1lmloolD8wNvD3kh2TzB9F\/LEN2qud7HXG8ULR94EdnDCxVdX6wORNzFw\/2CwPVgmImzfe29v6sgr9z3irnd\/pRQ4clH4CIFz+qbiLk6F\/qOUDusTB+0ElAiX98Sn7kJcfEMAtVIs9kTuBc7NNwsyoBMhXu9bSdk4pcj3TL3dlmmjd1biik\/f+A8CIYd38yLxp57vdWIicM1\/Sw3AtN7v5lqIr\/r1rLZEpVgzfdzzAZhCfH3dn0HwzlQ+\/TFPsw7i\/s852Nurq8+BWYbA1+tu5DkLxcOVCkRTiBtl8UJVgqyuPgeqEHcjb4jAtWicHTfqIG7EVKgb4a1F4GgKKBsgDuXRxMCjcBgIOBC5YSimaomtvRGRwPmO3uDePHIbl4XROPAGHAg8FosZInDr0\/cen3MDf0kjvEMJfLcmSd0+P5eeS6XSoc\/RFXKC+NvPJ1dcY1o5lMAr96+veHxyenr6lW82YUl77O8hCoV8\/uwsn8E925p83GNb+EsDLh7O6qoiz324+bfB3SaKczzxF+\/fma44YyGtriqvPeKnIzY\/veKrq37kjTqKh9XsK6JQfPH+bbIUX3HF6\/JpkKkYMXgePnxQNS\/x1x7x\/gcqIH6GZESlwNZHPmTpiPMHK6ze480qz5zb25LPUS9X19fnLrLKVdu2W62oNHuCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIP6v\/AdEBuzNZCU8KwAAAABJRU5ErkJggg==",
+            "tags": [
+                "Wellness",
+                "Hospitality",
+                "Lifestyle",
+                "Experiences"
+            ],
+            "description": "Enhancing life through wellness, hospitality, lifestyle and memorable experiences.",
+            "link": "https:\/\/cybeorch.com\/evaone\/",
+            "image": ""
+        },
+        {
+            "id": "metroxia",
+            "title": "METROXIA",
+            "icon": "fas fa-city",
+            "logo": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcTQ7f5B0GGWXJTZY7VoTIsjG1815AsaxYiS3U_P3GyJ6A&s=10",
+            "tags": [
+                "Urban",
+                "Infrastructure",
+                "Smart City",
+                "Real Estate"
+            ],
+            "description": "Building smart, sustainable, and modern urban infrastructure for the future.",
+            "link": "https:\/\/cybeorch.com\/metroone\/login",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcRhlzvywqlPzaNGIcB0qX-LT0mv3feP4Wjr7hb3OGpxmg&s=10"
+        }
+    ],
+    "nxl_cashback_percentage": 0.05,
+    "membership_plans": "{\"standard\":{\"name\":\"STANDARD MEMBER\",\"price\":2499,\"cashback_percent\":0.05,\"perks\":[\"Access to local tournaments\",\"7% standard NXL coin cashback\",\"Basic newsletter updates\",\"Standard Customer Support\"]},\"premium\":{\"name\":\"PREMIUM MEMBER\",\"price\":3499,\"cashback_percent\":0.1,\"perks\":[\"Pre-sale booking for major finals\",\"10% upgraded NXL coin cashback\",\"Exclusive weekly sports digest\",\"Priority Customer Support\",\"Free delivery on sports merch\"]},\"elite\":{\"name\":\"ELITE MEMBER\",\"price\":10999,\"cashback_percent\":0.15,\"perks\":[\"VIP seating lounge event passes\",\"15% elite NXL coin cashback\",\"1-on-1 coaching consultations\",\"Dedicated account manager support\",\"Invitation to annual offline gala\"]}}"
+}

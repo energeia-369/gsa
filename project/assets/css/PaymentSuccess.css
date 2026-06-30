@@ -1,0 +1,411 @@
+.success-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Animated Background Circles */
+.bg-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.3;
+  animation: float 20s infinite ease-in-out;
+}
+
+.circle-1 {
+  width: 500px;
+  height: 500px;
+  background: #16a34a;
+  top: -250px;
+  left: -250px;
+  animation-delay: 0s;
+}
+
+.circle-2 {
+  width: 400px;
+  height: 400px;
+  background: #22c55e;
+  bottom: -200px;
+  right: -200px;
+  animation-delay: 5s;
+  animation-duration: 25s;
+}
+
+.circle-3 {
+  width: 300px;
+  height: 300px;
+  background: #15803d;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 10s;
+  animation-duration: 30s;
+  opacity: 0.2;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+/* Success Box */
+.success-box {
+  background: rgba(30, 41, 59, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 50px 60px;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  max-width: 550px;
+  width: 90%;
+  z-index: 10;
+  animation: slideUp 0.6s ease-out;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success Animation */
+.success-animation {
+  margin-bottom: 30px;
+}
+
+.checkmark-circle {
+  width: 100px;
+  height: 100px;
+  background: #16a34a;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  animation: pulse 0.8s ease-out;
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark {
+  width: 50px;
+  height: 25px;
+  border-left: 4px solid white;
+  border-bottom: 4px solid white;
+  position: absolute;
+  top: 35px;
+  left: 25px;
+  transform: rotate(-45deg);
+  animation: drawCheckmark 0.5s ease-out 0.3s both;
+}
+
+@keyframes drawCheckmark {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    width: 50px;
+    height: 25px;
+    opacity: 1;
+  }
+}
+
+/* Typography */
+.success-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #fff 0%, #86efac 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.success-message {
+  font-size: 18px;
+  color: #cbd5e1;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/* Order Details */
+.order-details {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: left;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #86efac;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.home-btn, .orders-btn {
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.home-btn {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+}
+
+.home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+}
+
+.home-btn:active {
+  transform: translateY(0);
+}
+
+.orders-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.orders-btn:hover {
+  background: rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+  border-color: rgba(34, 197, 94, 0.8);
+}
+
+.orders-btn:active {
+  transform: translateY(0);
+}
+
+/* Redirect Info */
+.redirect-info {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 20px;
+  animation: fadeInOut 1s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .success-box {
+    padding: 35px 25px;
+    width: 85%;
+  }
+
+  .success-title {
+    font-size: 24px;
+  }
+
+  .success-message {
+    font-size: 16px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .home-btn, .orders-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .checkmark-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .checkmark {
+    width: 40px;
+    height: 20px;
+    top: 28px;
+    left: 20px;
+  }
+
+  @keyframes drawCheckmark {
+    to {
+      width: 40px;
+      height: 20px;
+    }
+  }
+}
+
+/* Add a subtle glow effect */
+.success-box::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #16a34a, #22c55e, #16a34a);
+  border-radius: 32px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.success-box:hover::before {
+  opacity: 0.3;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================== */
+
+body.light-theme .success-page {
+  background: #f5f5dc !important;
+}
+
+body.light-theme .success-box {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(197, 168, 92, 0.6) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-theme .success-title {
+  color: #8c6010 !important;
+}
+
+body.light-theme .success-message {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .ticket-display {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgba(197, 168, 92, 0.5) !important;
+}
+
+body.light-theme .ticket-header {
+  color: #8c6010 !important;
+}
+
+body.light-theme .ticket-row {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .ticket-val {
+  color: #1a1a1a !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme .ticket-val-green {
+  color: #15803d !important;
+}
+
+body.light-theme .ticket-val-gold {
+  color: #8c6010 !important;
+}
+
+body.light-theme .qr-scan-text {
+  color: #8c6010 !important;
+}
+
+body.light-theme #successQrImg {
+  background: #ffffff !important;
+}
+
+body.light-theme .order-details {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(197, 168, 92, 0.3) !important;
+}
+
+body.light-theme .detail-label {
+  color: #4a4a4a !important;
+}
+
+body.light-theme .detail-value {
+  color: #1a1a1a !important;
+}
+
+body.light-theme .redirect-info {
+  color: #4a4a4a !important;
+}

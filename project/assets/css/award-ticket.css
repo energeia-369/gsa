@@ -1,0 +1,210 @@
+/* award-ticket.css */
+
+.ticket-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.award-ticket {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    border: 1px solid #d1c5a9;
+    color: #1a1a1a;
+}
+
+/* Dark Mode Support via class */
+.award-ticket.dark-mode {
+    background: #12131c;
+    border: 1px solid rgba(197, 168, 92, 0.3);
+    color: #f5f6fa;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+.ticket-left {
+    flex: 3;
+    padding: 30px;
+    border-right: 2px dashed #d1c5a9;
+    position: relative;
+}
+
+.award-ticket.dark-mode .ticket-left {
+    border-right: 2px dashed rgba(197, 168, 92, 0.3);
+}
+
+/* Cutout effect for boarding pass */
+.ticket-left::before, .ticket-left::after {
+    content: '';
+    position: absolute;
+    right: -15px;
+    width: 30px;
+    height: 30px;
+    background: #fdfbf7;
+    border-radius: 50%;
+    border: 1px solid #d1c5a9;
+}
+
+.award-ticket.dark-mode .ticket-left::before,
+.award-ticket.dark-mode .ticket-left::after {
+    background: #0b0c10;
+    border-color: rgba(197, 168, 92, 0.3);
+}
+
+.ticket-left::before { top: -16px; border-top: none; border-left: none; transform: rotate(45deg); }
+.ticket-left::after { bottom: -16px; border-bottom: none; border-left: none; transform: rotate(-45deg); }
+
+.ticket-right {
+    flex: 1;
+    padding: 30px;
+    background: rgba(197, 168, 92, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #d1c5a9;
+    padding-bottom: 15px;
+}
+
+.award-ticket.dark-mode .ticket-header {
+    border-bottom-color: rgba(197, 168, 92, 0.3);
+}
+
+.ticket-header h2 {
+    color: #8c6010;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.award-ticket.dark-mode .ticket-header h2 {
+    color: #c5a85c;
+}
+
+.ticket-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.ticket-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.ticket-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.ticket-label {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.award-ticket.dark-mode .ticket-label {
+    color: #9aa0b4;
+}
+
+.ticket-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.ticket-value.large {
+    font-size: 1.4rem;
+    color: #8c6010;
+}
+
+.award-ticket.dark-mode .ticket-value.large {
+    color: #c5a85c;
+}
+
+.ticket-qr {
+    width: 120px;
+    height: 120px;
+    background: #fff;
+    padding: 5px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.ticket-pass-no {
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #8c6010;
+    letter-spacing: 2px;
+}
+
+.award-ticket.dark-mode .ticket-pass-no {
+    color: #c5a85c;
+}
+
+.ticket-status-badge {
+    background: #22c55e;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 15px;
+}
+
+.ticket-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-download {
+    background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
+    color: #0b0c10;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .ticket-container, .ticket-container * {
+        visibility: visible;
+    }
+    .ticket-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .ticket-actions {
+        display: none !important;
+    }
+}

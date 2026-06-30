@@ -1,0 +1,1084 @@
+/* MainLayout.css */
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F5EF;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px; /* offset for the sticky header */
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F5EF;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C8A96B;
+}
+
+/* Selection styling */
+::selection {
+  background-color: #D4AF37;
+  color: #6B3E26;
+}
+
+::-moz-selection {
+  background-color: #D4AF37;
+  color: #6B3E26;
+}
+
+/* Loading animation for page transitions */
+.main-content {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+  .main-content {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0;
+  }
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .main-content {
+    animation: none;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ==========================================================================
+   ADMIN NEON THEME (Global & Page Overrides when Admin is logged in)
+   ========================================================================== */
+
+/* Main Layout & Global Elements */
+.admin-theme {
+  background-color: #080A0F !important;
+}
+
+.admin-theme .main-layout {
+  background-color: #080A0F !important;
+}
+
+/* Custom scrollbar under Admin Theme */
+.admin-theme::-webkit-scrollbar-track {
+  background: #080A0F !important;
+}
+
+.admin-theme::-webkit-scrollbar-thumb {
+  background: #00F0FF !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5) !important;
+}
+
+/* Selection under Admin Theme */
+.admin-theme ::selection {
+  background-color: rgba(0, 240, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   1. NAVBAR - Black & Neon Blue
+   -------------------------------------------------------------------------- */
+.admin-theme .navbar {
+  background: linear-gradient(135deg, #0B0E14 0%, #151A24 100%) !important;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.25) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-theme .nav-brand a {
+  color: #00F0FF !important;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.6) !important;
+}
+
+.admin-theme .nav-brand a:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 20px #00F0FF !important;
+}
+
+.admin-theme .nav-links a,
+.admin-theme .nav-link-btn,
+.admin-theme .nav-dropdown-trigger {
+  color: #E2E8F0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.admin-theme .nav-links a::after,
+.admin-theme .nav-link-btn::after,
+.admin-theme .nav-dropdown-trigger::after {
+  background-color: #00F0FF !important;
+  box-shadow: 0 0 8px #00F0FF !important;
+}
+
+.admin-theme .nav-links a:hover,
+.admin-theme .nav-links a.active,
+.admin-theme .nav-link-btn:hover,
+.admin-theme .nav-link-btn.active,
+.admin-theme .nav-dropdown-trigger:hover,
+.admin-theme .nav-dropdown-trigger.active {
+  color: #00F0FF !important;
+  background: transparent !important;
+}
+
+.admin-theme .nav-dropdown-menu {
+  background: #0B0E14 !important;
+  border: 1px solid rgba(0, 240, 255, 0.25) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+.admin-theme .nav-dropdown-item {
+  color: #E2E8F0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.admin-theme .nav-dropdown-item:hover {
+  background: rgba(0, 240, 255, 0.1) !important;
+  color: #00F0FF !important;
+}
+
+.admin-theme .nav-icon {
+  color: #E2E8F0 !important;
+}
+
+.admin-theme .nav-icon:hover {
+  color: #00F0FF !important;
+  background-color: rgba(0, 240, 255, 0.1) !important;
+  border: 1px solid rgba(0, 240, 255, 0.25) !important;
+}
+
+.admin-theme .cart-count {
+  background-color: #00F0FF !important;
+  color: #080A0F !important;
+  box-shadow: 0 0 5px rgba(0, 240, 255, 0.5) !important;
+}
+
+.admin-theme .login-btn {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.25) !important;
+  border: none !important;
+}
+
+.admin-theme .login-btn:hover {
+  background: #00F0FF !important;
+  color: #080A0F !important;
+  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .mobile-menu-btn {
+  color: #00F0FF !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. FOOTER - Black & Neon Blue
+   -------------------------------------------------------------------------- */
+.admin-theme .footer {
+  background-color: #0B0E14 !important;
+  border-top: 3px solid #00F0FF !important;
+  color: #8E9AA8 !important;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.admin-theme .footer-section h3,
+.admin-theme .footer-section h4 {
+  color: #00F0FF !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .footer-section h4::after {
+  background-color: #00F0FF !important;
+}
+
+.admin-theme .footer-section p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .footer-section ul li a {
+  color: #E2E8F0 !important;
+}
+
+.admin-theme .footer-section ul li a:hover {
+  color: #00F0FF !important;
+}
+
+.admin-theme .contact-info li {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .social-links a {
+  color: #E2E8F0 !important;
+  background-color: rgba(0, 240, 255, 0.05) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .social-links a:hover {
+  color: #080A0F !important;
+  background-color: #00F0FF !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .footer-bottom {
+  border-top: 1px solid rgba(0, 240, 255, 0.1) !important;
+}
+
+.admin-theme .footer-bottom p {
+  color: #8E9AA8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. USER DASHBOARD (Dynamic Overrides inside Admin Theme)
+   -------------------------------------------------------------------------- */
+.admin-theme .dashboard-page {
+  background: #080A0F !important;
+}
+
+.admin-theme .dashboard-hero {
+  background: linear-gradient(135deg, #0B0E14 0%, #151A24 100%) !important;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .welcome-badge {
+  background-color: rgba(0, 240, 255, 0.15) !important;
+  color: #00F0FF !important;
+  border: 1px solid rgba(0, 240, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.1) !important;
+}
+
+.admin-theme .dashboard-hero h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.5) !important;
+}
+
+.admin-theme .dashboard-hero p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .profile-card {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.admin-theme .profile-avatar {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .profile-details h2 {
+  color: #ffffff !important;
+}
+
+.admin-theme .profile-details p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .profile-details span {
+  color: #00F0FF !important;
+}
+
+.admin-theme .edit-profile-btn,
+.admin-theme .card-btn {
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #00F0FF !important;
+  transition: all 0.3s ease !important;
+}
+
+.admin-theme .edit-profile-btn:hover,
+.admin-theme .card-btn:hover {
+  background: rgba(0, 240, 255, 0.1) !important;
+  border-color: #00F0FF !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
+}
+
+.admin-theme .dashboard-card {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.admin-theme .dashboard-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: rgba(0, 240, 255, 0.35) !important;
+  box-shadow: 0 12px 30px rgba(0, 240, 255, 0.15), 0 0 15px rgba(0, 240, 255, 0.05) !important;
+}
+
+.admin-theme .card-content h3 {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .card-content h2 {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.05) !important;
+}
+
+.admin-theme .card-content p {
+  color: #00F0FF !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. GLOBAL DYNAMIC THEME OVERRIDES FOR ALL OTHER PAGES
+   -------------------------------------------------------------------------- */
+
+/* Global body backgrounds under Admin Theme */
+.admin-theme,
+.admin-theme body {
+  background-color: #080A0F !important;
+  color: #E2E8F0 !important;
+}
+
+/* Page containers & Sections */
+.admin-theme .home-page,
+.admin-theme .about-page,
+.admin-theme .about-event-page,
+.admin-theme .categories-page,
+.admin-theme .sports-categories,
+.admin-theme .products-page,
+.admin-theme .product-details-page,
+.admin-theme .cart-page,
+.admin-theme .checkout-page,
+.admin-theme .event-page,
+.admin-theme .wallet-page,
+.admin-theme .credits-page,
+.admin-theme .orders-page,
+.admin-theme .login-page,
+.admin-theme .register-page,
+.admin-theme .support-page,
+.admin-theme section,
+.admin-theme .features-section,
+.admin-theme .events-section,
+.admin-theme .cta-section,
+.admin-theme .hero-section,
+.admin-theme .about-section,
+.admin-theme .support-section,
+.admin-theme .features-grid,
+.admin-theme .events-grid,
+.admin-theme .products-grid,
+.admin-theme .categories-grid,
+.admin-theme .sports-page,
+.admin-theme .filter-bar,
+.admin-theme .stats-bar,
+.admin-theme .quick-stats,
+.admin-theme .featured-products,
+.admin-theme .newsletter,
+.admin-theme .product-image-container,
+.admin-theme .cart-header,
+.admin-theme .cart-items-section {
+  background-color: #080A0F !important;
+  background-image: none !important;
+  background: #080A0F !important;
+  color: #E2E8F0 !important;
+}
+
+/* Header overlays & hero banners */
+.admin-theme .hero-section,
+.admin-theme .about-hero,
+.admin-theme .products-hero,
+.admin-theme .categories-hero,
+.admin-theme .page-hero,
+.admin-theme .cta-overlay,
+.admin-theme .hero-overlay {
+  background: linear-gradient(135deg, #0B0E14 0%, #151A24 100%) !important;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+/* Headings across all elements */
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4,
+.admin-theme h5,
+.admin-theme h6,
+.admin-theme .section-title h2,
+.admin-theme .hero-content h1,
+.admin-theme .product-details h1,
+.admin-theme .form-header h2,
+.admin-theme .faq-question,
+.admin-theme .section-header h2 {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
+}
+
+/* Paragraphs, descriptions and lists */
+.admin-theme p,
+.admin-theme span:not(.cart-count):not(.status-badge):not(.price-off):not(.price):not(.cart-item-quantity),
+.admin-theme label,
+.admin-theme li,
+.admin-theme td,
+.admin-theme .subtitle,
+.admin-theme .form-header p,
+.admin-theme .hero-content p {
+  color: #8E9AA8 !important;
+}
+
+/* Inputs, Textareas, Select fields on all pages */
+.admin-theme input,
+.admin-theme textarea,
+.admin-theme select,
+.admin-theme .search-input,
+.admin-theme .sort-select,
+.admin-theme .discount-input {
+  background-color: #11141C !important;
+  border: 1.5px solid rgba(0, 240, 255, 0.25) !important;
+  color: #ffffff !important;
+  outline: none !important;
+}
+
+.admin-theme input:focus,
+.admin-theme textarea:focus,
+.admin-theme select:focus {
+  border-color: #00F0FF !important;
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.15) !important;
+  background-color: #151A24 !important;
+}
+
+.admin-theme input::placeholder,
+.admin-theme textarea::placeholder {
+  color: #5A6E7F !important;
+}
+
+/* All Cards, Grid Items, Product/Category listings */
+.admin-theme .product-card,
+.admin-theme .category-card,
+.admin-theme .sports-card,
+.admin-theme .feature-card,
+.admin-theme .cart-item,
+.admin-theme .checkout-card,
+.admin-theme .checkout-form,
+.admin-theme .event-container,
+.admin-theme .event-info,
+.admin-theme .event-form,
+.admin-theme .wallet-card,
+.admin-theme .credit-card,
+.admin-theme .order-card,
+.admin-theme .faq-item,
+.admin-theme .contact-container,
+.admin-theme .login-container,
+.admin-theme .register-container,
+.admin-theme .login-card,
+.admin-theme .register-card,
+.admin-theme .support-card,
+.admin-theme .price-card,
+.admin-theme .cart-summary,
+.admin-theme .checkout-summary,
+.admin-theme .order-summary,
+.admin-theme .support-sidebar,
+.admin-theme .support-content,
+.admin-theme .faq-answer,
+.admin-theme .event-card,
+.admin-theme .about-info,
+.admin-theme .about-feature-card,
+.admin-theme .step-card,
+.admin-theme .nxl-section,
+.admin-theme .about-cta,
+.admin-theme .product-item,
+.admin-theme .stat-card,
+.admin-theme .item-image,
+.admin-theme .nxl-coins-section,
+.admin-theme .nxl-credits {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+  color: #E2E8F0 !important;
+}
+
+/* Hover effects for all cards */
+.admin-theme .product-card:hover,
+.admin-theme .category-card:hover,
+.admin-theme .sports-card:hover,
+.admin-theme .feature-card:hover,
+.admin-theme .wallet-card:hover,
+.admin-theme .credit-card:hover,
+.admin-theme .order-card:hover,
+.admin-theme .faq-item:hover,
+.admin-theme .support-card:hover,
+.admin-theme .event-card:hover,
+.admin-theme .about-feature-card:hover,
+.admin-theme .step-card:hover,
+.admin-theme .product-item:hover,
+.admin-theme .stat-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: rgba(0, 240, 255, 0.35) !important;
+  box-shadow: 0 12px 30px rgba(0, 240, 255, 0.15), 0 0 15px rgba(0, 240, 255, 0.05) !important;
+}
+
+/* All Buttons (Primary action buttons on all pages) */
+.admin-theme button:not(.quick-action-btn):not(.mobile-menu-btn):not(.nav-icon):not(.quantity-btn):not(.nav-link-btn):not(.nav-dropdown-item),
+.admin-theme .register-btn,
+.admin-theme .checkout-btn,
+.admin-theme .recharge-btn,
+.admin-theme .login-btn:not(.nav-actions .login-btn),
+.admin-theme .signup-btn,
+.admin-theme .add-to-cart-btn,
+.admin-theme .btn-primary,
+.admin-theme .submit-btn,
+.admin-theme .about-primary-btn,
+.admin-theme .search-btn,
+.admin-theme .product-item button,
+.admin-theme .shop-category,
+.admin-theme .newsletter-form button,
+.admin-theme .apply-btn,
+.admin-theme .continue-shopping-btn {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.25) !important;
+  transition: all 0.3s ease !important;
+}
+
+.admin-theme button:not(.quick-action-btn):not(.mobile-menu-btn):not(.nav-icon):not(.quantity-btn):not(.nav-link-btn):not(.nav-dropdown-item):hover,
+.admin-theme .register-btn:hover,
+.admin-theme .checkout-btn:hover,
+.admin-theme .recharge-btn:hover,
+.admin-theme .login-btn:not(.nav-actions .login-btn):hover,
+.admin-theme .signup-btn:hover,
+.admin-theme .add-to-cart-btn:hover,
+.admin-theme .submit-btn:hover {
+  background: #00F0FF !important;
+  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Secondary / Outline Buttons on all pages */
+.admin-theme .btn-outline,
+.admin-theme .back-btn,
+.admin-theme .clear-btn,
+.admin-theme .social-btn,
+.admin-theme .quantity-btn,
+.admin-theme .action-btn,
+.admin-theme .support-nav-btn,
+.admin-theme .about-secondary-btn,
+.admin-theme .filter-btn,
+.admin-theme .explore-category,
+.admin-theme .qty-btn,
+.admin-theme .clear-cart-btn,
+.admin-theme .apply-coins-btn {
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: #00F0FF !important;
+}
+
+.admin-theme .btn-outline:hover,
+.admin-theme .back-btn:hover,
+.admin-theme .social-btn:hover,
+.admin-theme .quantity-btn:hover,
+.admin-theme .support-nav-btn:hover,
+.admin-theme .support-nav-btn.active {
+  background: rgba(0, 240, 255, 0.1) !important;
+  border-color: #00F0FF !important;
+  color: #ffffff !important;
+}
+
+/* Price texts and offers */
+.admin-theme .price,
+.admin-theme .product-price,
+.admin-theme .amount,
+.admin-theme .total-amount,
+.admin-theme .price-amount .price,
+.admin-theme .cart-item-price,
+.admin-theme .summary-row.total .summary-value {
+  color: #00F0FF !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .price-old,
+.admin-theme .old-price {
+  color: #5A6E7F !important;
+}
+
+.admin-theme .price-off,
+.admin-theme .discount-badge {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #22C55E !important;
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Badges / Labels & Highlights */
+.admin-theme .event-badge,
+.admin-theme .category-badge,
+.admin-theme .new-badge,
+.admin-theme .badge,
+.admin-theme .tag,
+.admin-theme .step-number,
+.admin-theme .section-title span,
+.admin-theme .nxl-tag {
+  background-color: rgba(0, 240, 255, 0.15) !important;
+  color: #00F0FF !important;
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .highlight {
+  color: #00F0FF !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.6) !important;
+}
+
+.admin-theme .highlight::after {
+  display: none !important;
+}
+
+/* Left / Info sections side headers (like in Event Registration info) */
+.admin-theme .event-info h1,
+.admin-theme .event-info strong,
+.admin-theme .detail-item strong,
+.admin-theme .info-title {
+  color: #00F0FF !important;
+}
+
+/* Specific page fixes to prevent default light color leaks */
+.admin-theme .product-details,
+.admin-theme .cart-summary,
+.admin-theme .checkout-summary,
+.admin-theme .order-details,
+.admin-theme .cart-table th,
+.admin-theme .checkout-summary-container {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(0, 240, 255, 0.1) !important;
+}
+
+/* Specific About Events nxl-boxes highlights under Admin Theme */
+.admin-theme .nxl-boxes div {
+  background: rgba(0, 240, 255, 0.05) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .nxl-boxes h3 {
+  color: #00F0FF !important;
+}
+
+/* Specific Cart Page overrides under Admin Theme */
+.admin-theme .cart-header {
+  background: linear-gradient(135deg, #0B0E14 0%, #151A24 100%) !important;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .cart-header-content h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .cart-header-content p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .cart-items-section {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.admin-theme .cart-header-actions {
+  border-bottom: 2px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .cart-items-header {
+  color: #00F0FF !important;
+}
+
+.admin-theme .clear-cart-btn {
+  background: rgba(255, 74, 74, 0.05) !important;
+  border: 1px solid rgba(255, 74, 74, 0.4) !important;
+  color: #ff4a4a !important;
+}
+
+.admin-theme .clear-cart-btn:hover {
+  background: #ff4a4a !important;
+  color: #080A0F !important;
+  box-shadow: 0 0 12px rgba(255, 74, 74, 0.4) !important;
+}
+
+.admin-theme .cart-item {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.admin-theme .cart-item:hover {
+  background: rgba(0, 240, 255, 0.02) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.admin-theme .item-image {
+  background: linear-gradient(135deg, #0B0E14, #151A24) !important;
+  border: 1.5px solid rgba(0, 240, 255, 0.3) !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1) !important;
+}
+
+.admin-theme .item-details h3 {
+  color: #ffffff !important;
+}
+
+.admin-theme .item-category {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .item-savings {
+  background: rgba(0, 230, 118, 0.1) !important;
+  color: #00E676 !important;
+  border: 1px solid rgba(0, 230, 118, 0.2) !important;
+}
+
+.admin-theme .current-price {
+  color: #00F0FF !important;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .original-price {
+  color: #5A6E7F !important;
+}
+
+.admin-theme .qty-btn {
+  border: 1.5px solid rgba(0, 240, 255, 0.3) !important;
+  background: #11141C !important;
+  color: #00F0FF !important;
+}
+
+.admin-theme .qty-btn:hover {
+  background: #00F0FF !important;
+  color: #080A0F !important;
+  border-color: #00F0FF !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .qty-value {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.admin-theme .item-total {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.admin-theme .remove-btn {
+  opacity: 0.7 !important;
+  filter: drop-shadow(0 0 5px rgba(255, 74, 74, 0.2)) !important;
+}
+
+.admin-theme .remove-btn:hover {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 74, 74, 0.6)) !important;
+  transform: scale(1.15) !important;
+}
+
+.admin-theme .order-summary {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-theme .order-summary h2 {
+  border-bottom: 2px solid rgba(0, 240, 255, 0.25) !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .summary-row.total {
+  color: #ffffff !important;
+  border-top: 2px solid rgba(0, 240, 255, 0.25) !important;
+}
+
+.admin-theme .summary-row.total span:last-child {
+  color: #00F0FF !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .summary-row.savings,
+.admin-theme .savings-amount {
+  color: #00E676 !important;
+}
+
+.admin-theme .discount-input {
+  background-color: #151A24 !important;
+  border: 1px solid rgba(0, 240, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.admin-theme .discount-input:focus {
+  border-color: #00F0FF !important;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .apply-btn {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+}
+
+.admin-theme .apply-btn:hover {
+  background: #00F0FF !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .coins-info strong {
+  color: #00F0FF !important;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .apply-coins-btn {
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  background: transparent !important;
+  color: #00F0FF !important;
+}
+
+.admin-theme .apply-coins-btn:hover {
+  background: rgba(0, 240, 255, 0.1) !important;
+  border-color: #00F0FF !important;
+  color: #ffffff !important;
+}
+
+.admin-theme .nxl-info strong {
+  color: #00F0FF !important;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .checkout-btn {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .checkout-btn:hover {
+  background: #00F0FF !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.admin-theme .payment-methods {
+  border-top: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .cart-footer {
+  background: #0B0E14 !important;
+  color: #8E9AA8 !important;
+  border-top: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .empty-cart h3 {
+  color: #ffffff !important;
+}
+
+.admin-theme .empty-cart p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .empty-cart-icon {
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.4) !important;
+}
+
+/* Specific Login Page overrides under Admin Theme */
+.admin-theme.login-page,
+.admin-theme .login-page {
+  background: #080A0F !important;
+  background-image: linear-gradient(135deg, #080A0F 0%, #0B0E14 100%) !important;
+}
+
+.admin-theme .login-container {
+  background: linear-gradient(180deg, #11141C 0%, #0D0F14 100%) !important;
+  border: 1.5px solid rgba(0, 240, 255, 0.25) !important;
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), 0 25px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+.admin-theme .login-left {
+  background: linear-gradient(135deg, #0B0E14 0%, #151A24 100%) !important;
+  border-right: 1.5px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .login-left::before {
+  color: #00F0FF !important;
+  opacity: 0.1 !important;
+  text-shadow: 0 0 30px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .brand-box h2 {
+  color: #00F0FF !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .brand-box h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .brand-box p {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .login-stats {
+  border-top: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.admin-theme .login-stats h3 {
+  color: #00F0FF !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .login-stats span {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .login-right {
+  background: transparent !important;
+}
+
+.admin-theme .login-card h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .login-subtitle {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .input-group label {
+  color: #00F0FF !important;
+}
+
+.admin-theme .input-group input {
+  background: #151A24 !important;
+  border: 2px solid rgba(0, 240, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.admin-theme .input-group input:focus {
+  border-color: #00F0FF !important;
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.15) !important;
+  background: #1B212D !important;
+}
+
+.admin-theme .input-group input::placeholder {
+  color: #5A6E7F !important;
+}
+
+.admin-theme .login-options {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .login-options input {
+  accent-color: #00F0FF !important;
+}
+
+.admin-theme .login-options a {
+  color: #00F0FF !important;
+}
+
+.admin-theme .login-options a:hover {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .login-btn {
+  background: linear-gradient(135deg, #00F0FF 0%, #0A84FF 100%) !important;
+  color: #080A0F !important;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3) !important;
+}
+
+.admin-theme .login-btn:hover {
+  background: #00F0FF !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.admin-theme .signup-text {
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .signup-text a {
+  color: #00F0FF !important;
+}
+
+.admin-theme .signup-text a:hover {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4) !important;
+}
+
+.admin-theme .divider::before,
+.admin-theme .divider::after {
+  background: rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .divider span {
+  background: #0D0F14 !important;
+  color: #8E9AA8 !important;
+}
+
+.admin-theme .social-buttons button {
+  background: #11141C !important;
+  border: 2px solid rgba(0, 240, 255, 0.25) !important;
+  color: #00F0FF !important;
+}
+
+.admin-theme .social-buttons button:hover {
+  background: rgba(0, 240, 255, 0.1) !important;
+  border-color: #00F0FF !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+}
+
+.admin-theme .demo-box {
+  background: rgba(0, 240, 255, 0.05) !important;
+  border: 1.5px solid rgba(0, 240, 255, 0.15) !important;
+  color: #00F0FF !important;
+}

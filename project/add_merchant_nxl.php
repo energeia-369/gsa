@@ -1,0 +1,1 @@
+<?php require_once __DIR__ . '/config/Database.php'; $db = Database::getConnection(); $db->exec('ALTER TABLE merchants ADD COLUMN nxl_balance INT DEFAULT 0'); echo 'Added nxl_balance column to merchants table.'; 

@@ -1,0 +1,295 @@
+/* src/styles/UserDashboard.css */
+
+.dashboard-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F9F6F0;
+  color: #B89C62;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.dashboard-page {
+  min-height: 100vh;
+  background: #F9F6F0;
+  color: #3A342B;
+}
+
+.dashboard-hero {
+  background: linear-gradient(135deg, #FDFBF7 0%, #F5F0E6 100%);
+  border-bottom: 1px solid rgba(189, 168, 131, 0.25);
+  padding: 100px 20px 140px;
+  text-align: center;
+  position: relative;
+}
+
+.welcome-badge {
+  display: inline-block;
+  background: #FFFFFF;
+  border: 1px solid #B89C62;
+  color: #B89C62;
+  padding: 8px 22px;
+  border-radius: 30px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(184, 156, 98, 0.1);
+}
+
+.dashboard-hero h1 {
+  color: #3A342B;
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.dashboard-hero p {
+  color: #7A7061;
+  font-size: 18px;
+}
+
+.profile-card {
+  width: 84%;
+  margin: -70px auto 40px;
+  background: #FFFFFF;
+  border: 1px solid rgba(189, 168, 131, 0.3);
+  border-radius: 26px;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 15px 35px rgba(138, 122, 95, 0.1);
+  position: relative;
+  z-index: 5;
+}
+
+.profile-left {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4C3A3, #B89C62);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  box-shadow: 0 6px 15px rgba(184, 156, 98, 0.2);
+}
+
+.profile-details h2 {
+  color: #3A342B;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.profile-details p {
+  color: #7A7061;
+  margin: 5px 0;
+}
+
+.profile-details span {
+  color: #B89C62;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.edit-profile-btn,
+.card-btn {
+  border: 1px solid #B89C62;
+  background: transparent;
+  color: #B89C62;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover,
+.card-btn:hover {
+  background: linear-gradient(135deg, #CBB48A 0%, #A48951 100%);
+  color: #FFFFFF;
+  box-shadow: 0 5px 15px rgba(184, 156, 98, 0.3);
+}
+
+.dashboard-grid {
+  width: 84%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  padding-bottom: 50px;
+}
+
+.dashboard-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(189, 168, 131, 0.3);
+  border-radius: 24px;
+  padding: 35px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 8px 25px rgba(138, 122, 95, 0.08);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  border-color: #B89C62;
+  box-shadow: 0 12px 30px rgba(184, 156, 98, 0.15);
+}
+
+.dashboard-card .card-icon {
+  font-size: 46px;
+  background: #FDFBF7;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  border: 1px solid rgba(189, 168, 131, 0.2);
+}
+
+.dashboard-card .card-content {
+  flex: 1;
+}
+
+.dashboard-card .card-content h3 {
+  color: #5C5446;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.dashboard-card .card-content h2 {
+  color: #B89C62;
+  font-size: 36px;
+  font-weight: 800;
+  margin: 8px 0;
+}
+
+.dashboard-card .card-content p {
+  color: #7A7061;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .profile-card,
+  .dashboard-grid {
+    width: 92%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .profile-left {
+    flex-direction: column;
+  }
+}
+
+/* --- DARK THEME OVERRIDES --- */
+body:not(.light-theme) .dashboard-loading {
+  background: #0b0c10 !important;
+  color: #c5a85c !important;
+}
+body:not(.light-theme) .dashboard-page {
+  background: #0b0c10 !important;
+  color: #f5f6fa !important;
+}
+body:not(.light-theme) .dashboard-hero {
+  background: linear-gradient(135deg, #15161c 0%, #0b0c10 100%) !important;
+  border-bottom-color: rgba(197, 168, 92, 0.2) !important;
+}
+body:not(.light-theme) .welcome-badge {
+  background: #15161c !important;
+  color: #c5a85c !important;
+}
+body:not(.light-theme) .dashboard-hero h1 {
+  color: #ffffff !important;
+}
+body:not(.light-theme) .dashboard-hero p {
+  color: #9aa0b4 !important;
+}
+body:not(.light-theme) .profile-card,
+body:not(.light-theme) .dashboard-card {
+  background: #12131c !important;
+  border-color: rgba(197, 168, 92, 0.2) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+body:not(.light-theme) .profile-details h2 {
+  color: #ffffff !important;
+}
+body:not(.light-theme) .profile-details p {
+  color: #9aa0b4 !important;
+}
+body:not(.light-theme) .dashboard-card .card-icon {
+  background: #15161c !important;
+  border-color: rgba(197, 168, 92, 0.2) !important;
+}
+body:not(.light-theme) .dashboard-card .card-content h3 {
+  color: #9aa0b4 !important;
+}
+body:not(.light-theme) .dashboard-card .card-content h2 {
+  color: #c5a85c !important;
+}
+body:not(.light-theme) .dashboard-card .card-content p {
+  color: #888888 !important;
+}
+
+/* Modals & Inline elements overrides for Dark Theme */
+body:not(.light-theme) #notifPanel,
+body:not(.light-theme) #editProfileModal > div,
+body:not(.light-theme) #qrPassModal > div {
+  background: #12131c !important;
+  border-color: #c5a85c !important;
+}
+body:not(.light-theme) #notifPanel > div:first-child,
+body:not(.light-theme) #editProfileModal > div > div:first-child {
+  background: #1a1b2e !important;
+  border-bottom-color: rgba(197,168,92,0.2) !important;
+}
+body:not(.light-theme) #editProfileModal input {
+  background: #15161c !important;
+  color: #ffffff !important;
+  border-color: rgba(197,168,92,0.3) !important;
+}
+body:not(.light-theme) #editProfileModal label {
+  color: #9aa0b4 !important;
+}
+body:not(.light-theme) #notifBtn {
+  background: rgba(197, 168, 92, 0.1) !important;
+}
+body:not(.light-theme) #editProfileModal button[style*="background: none"] {
+  color: #fff !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE TABLES
+   ========================================================================== */
+@media (max-width: 767px) {
+  table, .orders-table, .wallet-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}

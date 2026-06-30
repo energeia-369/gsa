@@ -1,0 +1,178 @@
+/* exhibitor.css */
+
+body {
+    background: #11121a;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.exhibitor-wrapper {
+    min-height: 100vh;
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(201, 163, 74, 0.05) 0%, #11121a 100%);
+}
+
+.exhibitor-card {
+    background: rgba(9, 10, 15, 0.8);
+    border: 1px solid rgba(242, 201, 76, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 700px;
+    width: 100%;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(242, 201, 76, 0.1);
+    padding-bottom: 20px;
+}
+
+.card-header h1 {
+    font-size: 2.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.card-header p {
+    color: #a0a5b5;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #f2c94c;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #f2c94c;
+    box-shadow: 0 0 15px rgba(242, 201, 76, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.form-control option {
+    background: #11121a;
+    color: #fff;
+}
+
+.apply-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #f2c94c 0%, #c9a34a 100%);
+    border: none;
+    border-radius: 8px;
+    color: #11121a;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.apply-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(242, 201, 76, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+    .exhibitor-card {
+        padding: 30px 20px;
+    }
+    .card-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES (must be at the END to win the cascade)
+   ========================================================================== */
+body.light-theme .exhibitor-card {
+    background: #ffffff !important;
+    border-color: rgba(197, 168, 92, 0.3) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-theme .card-header h1 {
+    color: #8c6010 !important;
+}
+
+body.light-theme .card-header p,
+body.light-theme .form-group label {
+    color: #4a4a4a !important;
+}
+
+body.light-theme .card-header {
+    border-bottom-color: rgba(197, 168, 92, 0.2) !important;
+}
+
+body.light-theme .form-control {
+    background: #ffffff !important;
+    border-color: #d1c5a9 !important;
+    color: #1a1a1a !important;
+}
+
+body.light-theme .form-control:focus {
+    border-color: #8c6010 !important;
+    box-shadow: 0 0 10px rgba(140, 96, 16, 0.2) !important;
+}
+
+body.light-theme .form-control option {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+}
+
+body.light-theme .form-control[disabled],
+body.light-theme #registrationFeeInput {
+    background: rgba(197, 168, 92, 0.1) !important;
+    color: #8c6010 !important;
+    border-color: rgba(197, 168, 92, 0.3) !important;
+}
+
+body.light-theme .apply-btn {
+    background: linear-gradient(135deg, #c5a85c, #8c7237) !important;
+    color: #0b0c10 !important;
+}
+
+body.light-theme .apply-btn:hover {
+    box-shadow: 0 8px 20px rgba(197, 168, 92, 0.3) !important;
+}

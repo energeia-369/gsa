@@ -1,0 +1,43 @@
+# Node/Frontend dependencies
+node_modules/
+**/node_modules/
+
+# IDE files and workspace settings
+.metadata/
+**/metadata/
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+*.log
+*.pma
+Breadcrumbs
+settings.dat
+Crashpad/
+EBWebView/
+
+# Build and output directories
+target/
+**/target/
+dist/
+**/dist/
+build/
+**/build/
+bin/
+**/bin/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+db.db
+
+# Local Maven and IDE plugins
+maven/
+Springboot/.plugins/
