@@ -102,6 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $gala_date = $_POST['gala_date'] ?? '';
         $gala_time = $_POST['gala_time'] ?? '';
         $gala_description = $_POST['gala_description'] ?? '';
+        $custom_html = $_POST['custom_html'] ?? null;
+        $delegate_fee = !empty($_POST['delegate_fee']) ? $_POST['delegate_fee'] : null;
+        $delegate_currency = !empty($_POST['delegate_currency']) ? $_POST['delegate_currency'] : null;
 
         // Handle dynamic Schedule Data
         $schedule_data = null;
@@ -248,13 +251,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($eventId) {
-            $update = $pdo->prepare("UPDATE events SET title=?, slug=?, status=?, location=?, description=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, start_date=?, end_date=?, timer_start_date=?, hero_banner_url=?, logo_url=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, gala_passes_data=? WHERE id=?");
-            $update->execute([$title, $slug, $status, $location, $description, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $hero_banner_url, $logo_url, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data, $eventId]);
+            $update = $pdo->prepare("UPDATE events SET title=?, slug=?, status=?, location=?, description=?, custom_html=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, start_date=?, end_date=?, timer_start_date=?, hero_banner_url=?, logo_url=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, gala_passes_data=?, delegate_fee=?, delegate_currency=? WHERE id=?");
+            $update->execute([$title, $slug, $status, $location, $description, $custom_html, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $hero_banner_url, $logo_url, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data, $delegate_fee, $delegate_currency, $eventId]);
             
             $msg_type = 'updated';
         } else {
-            $insert = $pdo->prepare("INSERT INTO events (title, slug, status, location, description, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, start_date, end_date, timer_start_date, hero_banner_url, logo_url, gala_title, gala_venue, gala_date, gala_time, gala_description, gala_passes_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $insert->execute([$title, $slug, $status, $location, $description, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $hero_banner_url, $logo_url, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data]);
+            $insert = $pdo->prepare("INSERT INTO events (title, slug, status, location, description, custom_html, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, start_date, end_date, timer_start_date, hero_banner_url, logo_url, gala_title, gala_venue, gala_date, gala_time, gala_description, gala_passes_data, delegate_fee, delegate_currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $insert->execute([$title, $slug, $status, $location, $description, $custom_html, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $hero_banner_url, $logo_url, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data, $delegate_fee, $delegate_currency]);
             $msg_type = 'created';
         }
         
@@ -407,6 +410,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="form-group">
           <label>Description</label>
           <textarea name="description" rows="5"><?= $event ? htmlspecialchars($event['description'] ?? '') : '' ?></textarea>
+      </div>
+
+      <div class="form-group">
+          <label>Custom HTML / Rich Text Section (Optional)</label>
+          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 8px;">Use this field to paste completely custom layouts, such as the Thailand Festival Concept. This will be rendered directly on the Event Details page below the overview.</p>
+          <textarea name="custom_html" rows="10" style="font-family: monospace;"><?= $event ? htmlspecialchars($event['custom_html'] ?? '') : '' ?></textarea>
+      </div>
+
+      <div class="dynamic-block">
+          <h3>Event-Specific Delegate Pricing (Optional)</h3>
+          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 15px;">Leave blank to use the global delegate fee set in Delegate Settings.</p>
+          <div class="form-group" style="display: flex; gap: 15px;">
+              <div style="flex: 1;">
+                  <label>Delegate Registration Fee</label>
+                  <input type="number" step="0.01" name="delegate_fee" value="<?= $event ? htmlspecialchars($event['delegate_fee'] ?? '') : '' ?>" placeholder="e.g. 200.00">
+              </div>
+              <div style="flex: 1;">
+                  <label>Currency</label>
+                  <select name="delegate_currency">
+                      <option value="">Select Currency...</option>
+                      <option value="USD" <?= ($event && ($event['delegate_currency'] ?? '') == 'USD') ? 'selected' : '' ?>>USD ($)</option>
+                      <option value="EUR" <?= ($event && ($event['delegate_currency'] ?? '') == 'EUR') ? 'selected' : '' ?>>EUR (€)</option>
+                      <option value="GBP" <?= ($event && ($event['delegate_currency'] ?? '') == 'GBP') ? 'selected' : '' ?>>GBP (£)</option>
+                      <option value="AED" <?= ($event && ($event['delegate_currency'] ?? '') == 'AED') ? 'selected' : '' ?>>AED</option>
+                      <option value="INR" <?= ($event && ($event['delegate_currency'] ?? '') == 'INR') ? 'selected' : '' ?>>INR (₹)</option>
+                  </select>
+              </div>
+          </div>
       </div>
       <!-- Event Schedule Section -->
       <hr>

@@ -7,20 +7,23 @@ require_once __DIR__ . '/../config/Config.php';
 // Dynamically set title and meta defaults
 $pageTitle = $pageTitle ?? 'GLOBAL SPORTS ARENA';
 $pageDescription = $pageDescription ?? 'One Ecosystem. Infinite Possibilities. The leading championship platform for sports tournament bookings and authentic merchandise.';
+
+$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="<?php echo htmlspecialchars($basePath); ?>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
     
-    <!-- Google Fonts Outfit -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,7 +34,7 @@ $pageDescription = $pageDescription ?? 'One Ecosystem. Infinite Possibilities. T
     
     <!-- Global and Main CSS -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -40,8 +43,15 @@ $pageDescription = $pageDescription ?? 'One Ecosystem. Infinite Possibilities. T
         body {
             background-color: #0b0c10 !important;
             color: #f5f6fa !important;
-            font-family: 'Outfit', sans-serif !important;
+            font-family: 'Inter', sans-serif !important;
             overflow-x: clip;
+        }
+        h1, h2, h3, h4, h5, h6, .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .accent-font {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
         }
         a {
             text-decoration: none;
@@ -49,7 +59,7 @@ $pageDescription = $pageDescription ?? 'One Ecosystem. Infinite Possibilities. T
         }
         button {
             cursor: pointer;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         /* Premium Scrollbar Customization */
         ::-webkit-scrollbar {

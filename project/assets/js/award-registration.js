@@ -77,6 +77,9 @@ function selectPass(passType, price, sym, element) {
     document.getElementById('hiddenPassType').value = passType;
     document.getElementById('hiddenBasePrice').value = price;
     
+    let currencyVal = (currencySym === '$') ? 'USD' : 'INR';
+    document.getElementById('hiddenCurrency').value = currencyVal;
+    
     // Check Membership container display
     const memContainer = document.getElementById("membershipOptionContainer");
     const display = document.getElementById("membershipDisplay");
@@ -246,7 +249,10 @@ function calculateTotal() {
     if (productPrice < 0) productPrice = 0;
     
     // 3. GST (18%)
-    let gst = parseFloat((productPrice * 0.18).toFixed(2));
+    let gst = 0;
+    if (currencySym !== '$') {
+        gst = parseFloat((productPrice * 0.18).toFixed(2));
+    }
     document.getElementById('summaryGst').innerText = '+ ' + currencySym + gst.toFixed(2);
     
     let amountAfterGST = parseFloat((productPrice + gst).toFixed(2));

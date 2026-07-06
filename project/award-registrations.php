@@ -72,7 +72,7 @@ require_once __DIR__ . '/includes/admin_navbar.php';
 }
 
 body {
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     background: #0b0c10;
     color: #f5f6fa;
     min-height: 100vh;
@@ -89,7 +89,7 @@ body.light-theme {
     max-width: 1440px;
     margin: 0 auto;
     padding: 100px 24px 40px;
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 /* ----- header / title ----- */
@@ -218,7 +218,7 @@ body.light-theme .filter-bar {
     border: 1px solid rgba(197, 168, 92, 0.25);
     border-radius: 40px;
     color: #f5f6fa;
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     font-size: 0.9rem;
     min-width: 160px;
     transition: 0.2s;
@@ -250,7 +250,7 @@ body.light-theme .filter-bar select {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 .filter-bar button:hover {
     transform: scale(1.02);
@@ -353,7 +353,7 @@ body.light-theme .reg-table tr:hover td {
 .badge-not { background: rgba(255,255,255,0.04); color: #9aa0b4; padding: 4px 14px; border-radius: 40px; font-weight: 600; font-size: 0.7rem; }
 body.light-theme .badge-not { background: rgba(0,0,0,0.03); color: #6a6a6a; }
 
-.reg-no { font-family: 'Outfit', monospace; font-weight: 600; color: #c5a85c; letter-spacing: -0.02em; }
+.reg-no { font-family: 'Inter', monospace; font-weight: 600; color: #c5a85c; letter-spacing: -0.02em; }
 body.light-theme .reg-no { color: #8c6010; }
 
 .qr-preview {
@@ -375,7 +375,7 @@ body.light-theme .reg-no { color: #8c6010; }
     align-items: center;
     gap: 6px;
     transition: 0.15s;
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 .btn-view {
     background: rgba(197, 168, 92, 0.12);

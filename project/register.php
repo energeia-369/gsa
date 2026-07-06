@@ -38,7 +38,6 @@ require_once __DIR__ . '/includes/navbar.php';
       <div class="w-full max-w-lg">
         <h1>Create Account</h1>
         <p>Get started with GLOBAL SPORTS ARENA today</p>
-      </div>
 
       <!-- Clean, professional verification dispatch status indicator -->
       <div class="otp-test-alert" id="otpAlertBox" style="
@@ -195,6 +194,7 @@ require_once __DIR__ . '/includes/navbar.php';
           Already have an account? <a href="login.php">Sign In</a>
         </div>
       </form>
+      </div>
     </div>
   </div>
 </div>

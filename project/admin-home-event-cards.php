@@ -32,10 +32,10 @@ require_once __DIR__ . '/includes/navbar.php';
   
   <div class="admin-header" style="border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h1>🎪 Home Event Cards</h1>
+      <h1><i class="fas fa-list-alt"></i> Events Cards</h1>
       <p>Manage the dynamic carousel event cards on the home page.</p>
     </div>
-    <a href="admin-add-home-event-card.php" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none;">➕ Add New Card</a>
+    <a href="admin-add-home-event-card.php" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none;"><i class="fas fa-plus"></i> Add New Card</a>
   </div>
 
   <div class="admin-content" style="display: block; margin-top: 30px;">
@@ -49,6 +49,7 @@ require_once __DIR__ . '/includes/navbar.php';
           <tr style="border-bottom: 1px solid rgba(197,168,92,0.25); color: #c5a85c;">
             <th style="padding: 15px 10px;">ID</th>
             <th style="padding: 15px 10px;">Image</th>
+            <th style="padding: 15px 10px;">Module Type</th>
             <th style="padding: 15px 10px;">Title</th>
             <th style="padding: 15px 10px;">Type</th>
             <th style="padding: 15px 10px;">Date</th>
@@ -67,6 +68,15 @@ require_once __DIR__ . '/includes/navbar.php';
               <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
                 <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['id']); ?></td>
                 <td style="padding: 15px 10px;"><img src="<?php echo htmlspecialchars($card['image']); ?>" alt="Card" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
+                <td style="padding: 15px 10px;">
+                    <?php 
+                        if (isset($card['module_type']) && $card['module_type'] === 'gsa_carousel') {
+                            echo '<span style="background: rgba(197, 168, 92, 0.2); color: #c5a85c; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">GSA Page</span>';
+                        } else {
+                            echo '<span style="background: rgba(255, 255, 255, 0.1); color: #9aa0b4; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">Home Page</span>';
+                        }
+                    ?>
+                </td>
                 <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['event_title']); ?></td>
                 <td style="padding: 15px 10px;">
                   <span style="background: rgba(197,168,92,0.1); padding: 4px 8px; border-radius: 4px; color: #c5a85c; font-size: 0.8rem; text-transform: uppercase;">

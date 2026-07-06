@@ -1,5 +1,1 @@
-<?php
-require 'config/Database.php';
-$db = (new Database())->getConnection();
-$stmt = $db->query("SELECT slug, title, hero_banner_url FROM events");
-print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
+<?php require_once 'config/Database.php'; $db = Database::getConnection(); $q = $db->query('SELECT * FROM home_event_cards'); print_r($q->fetchAll(PDO::FETCH_ASSOC));

@@ -483,6 +483,101 @@ document.addEventListener("DOMContentLoaded", async function() {
                   }
                 </div>
               </div>
+              
+              <!-- Custom Thailand Festival Concept Section -->
+              ${destination.country === 'THAILAND' ? `
+                <div class="dest-section card-glass thailand-festival-concept">
+                  <h2 style="color: #c5a85c; margin-bottom: 15px;">GSA Thailand – Official Festival Concept</h2>
+                  <p style="margin-bottom: 25px; line-height: 1.6; color: #d4d4d4;">This three-city concept positions GSA Thailand as a destination festival that combines sports, business, tourism, investment, culture, sustainability, and international networking, making it attractive to participants, sponsors, government agencies, and global media.</p>
+                  
+                  <div class="festival-phases" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="phase-card" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.2);">
+                      <h3 style="color: #c5a85c; font-size: 1.1rem; margin-bottom: 10px;">📍 Phase 1: Bangkok <br><span style="color: #fff; font-size: 0.95rem;">"NEXUS ELITE"</span></h3>
+                      <p style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Duration:</strong> 2 Days</p>
+                      <p style="font-size: 0.9rem; margin-bottom: 15px;"><strong>Venue:</strong> Queen Sirikit National Convention Center / Bangkok Intl Trade & Exhibition Centre</p>
+                      <h4 style="font-size: 0.9rem; color: #a3a3a3; margin-bottom: 8px;">Activities:</h4>
+                      <ul style="font-size: 0.85rem; padding-left: 18px; line-height: 1.6; color: #e2e2e2;">
+                          <li>Global Opening Ceremony</li>
+                          <li>Sports Business Summit</li>
+                          <li>Investor & Startup Pitch Sessions</li>
+                          <li>Sports Technology & AI Expo</li>
+                          <li>EV & Sustainable Mobility Pavilion</li>
+                          <li>Health & Wellness Expo</li>
+                          <li>Government & Embassy Networking</li>
+                          <li>B2B and B2G Meetings</li>
+                          <li>Franchise & Investment Expo</li>
+                          <li>Innovation Awards</li>
+                      </ul>
+                    </div>
+
+                    <div class="phase-card" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.2);">
+                      <h3 style="color: #c5a85c; font-size: 1.1rem; margin-bottom: 10px;">📍 Phase 2: Pattaya <br><span style="color: #fff; font-size: 0.95rem;">"OCEAN ADVENTURE & SPORTS FEST"</span></h3>
+                      <p style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Duration:</strong> 2 Days</p>
+                      <p style="font-size: 0.9rem; margin-bottom: 15px;"><strong>Locations:</strong> Jomtien Beach, Pattaya Beach</p>
+                      <h4 style="font-size: 0.9rem; color: #a3a3a3; margin-bottom: 8px;">Activities:</h4>
+                      <ul style="font-size: 0.85rem; padding-left: 18px; line-height: 1.6; color: #e2e2e2;">
+                          <li>Jet Ski Championship</li>
+                          <li>Parasailing & Flyboard Competition</li>
+                          <li>Beach Volleyball, Football & Kabaddi</li>
+                          <li>Dragon Boat Demonstration</li>
+                          <li>Paddle Board Competition</li>
+                          <li>Sailing Showcase</li>
+                          <li>Beach Fitness Challenge</li>
+                          <li>Food Festival</li>
+                          <li>Night Cultural Performances</li>
+                      </ul>
+                    </div>
+
+                    <div class="phase-card" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.2);">
+                      <h3 style="color: #c5a85c; font-size: 1.1rem; margin-bottom: 10px;">📍 Phase 3: Phuket <br><span style="color: #fff; font-size: 0.95rem;">"GLOBAL EXCELLENCE & AWARDS"</span></h3>
+                      <p style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Duration:</strong> 2 Days</p>
+                      <p style="font-size: 0.9rem; margin-bottom: 15px;"><strong>Venue:</strong> Phuket Convention Exhibition Hall</p>
+                      <h4 style="font-size: 0.9rem; color: #a3a3a3; margin-bottom: 8px;">Activities:</h4>
+                      <ul style="font-size: 0.85rem; padding-left: 18px; line-height: 1.6; color: #e2e2e2;">
+                          <li>International Leadership Summit</li>
+                          <li>Tourism & Hospitality Forum</li>
+                          <li>Sustainability Forum</li>
+                          <li>Luxury Yacht Showcase</li>
+                          <li>Global Business Networking</li>
+                          <li>International Cultural Festival</li>
+                          <li>GSA Excellence Awards</li>
+                          <li>Closing Ceremony & Gala Dinner</li>
+                          <li>Entertainment Show & International Artist Performances</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <h3 style="color: #c5a85c; margin-bottom: 15px;">Proposed 6-Day Schedule</h3>
+                  <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; text-align: left; font-size: 0.95rem;">
+                      <thead>
+                        <tr style="background: rgba(197, 168, 92, 0.15); color: #c5a85c;">
+                          <th style="padding: 12px; border-bottom: 1px solid rgba(197,168,92,0.3);">Day</th>
+                          <th style="padding: 12px; border-bottom: 1px solid rgba(197,168,92,0.3);">City</th>
+                          <th style="padding: 12px; border-bottom: 1px solid rgba(197,168,92,0.3);">Theme</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 12px;">Day 1</td><td style="padding: 12px;">Bangkok</td><td style="padding: 12px;">Opening Ceremony & Expo</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 12px;">Day 2</td><td style="padding: 12px;">Bangkok</td><td style="padding: 12px;">Conferences, Investors & B2B</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 12px;">Day 3</td><td style="padding: 12px;">Pattaya</td><td style="padding: 12px;">Water Sports Festival</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 12px;">Day 4</td><td style="padding: 12px;">Pattaya</td><td style="padding: 12px;">Beach Sports & Cultural Night</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><td style="padding: 12px;">Day 5</td><td style="padding: 12px;">Phuket</td><td style="padding: 12px;">Leadership Summit & Networking</td></tr>
+                        <tr><td style="padding: 12px;">Day 6</td><td style="padding: 12px;">Phuket</td><td style="padding: 12px;">GSA Global Awards & Grand Closing</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div style="background: rgba(197, 168, 92, 0.08); padding: 20px; border-radius: 8px; border-left: 4px solid #c5a85c;">
+                    <h4 style="color: #c5a85c; margin-bottom: 10px; font-size: 1rem;">Why this format works:</h4>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; line-height: 1.6;">
+                      <li style="margin-bottom: 5px;"><strong>Bangkok</strong> serves as the business and innovation hub.</li>
+                      <li style="margin-bottom: 5px;"><strong>Pattaya</strong> becomes the sports and adventure destination.</li>
+                      <li><strong>Phuket</strong> provides a premium setting for leadership, tourism, networking, and the prestigious GSA Awards Ceremony.</li>
+                    </ul>
+                  </div>
+                </div>
+              ` : ''}
             </div>
 
             <!-- Sidebar -->

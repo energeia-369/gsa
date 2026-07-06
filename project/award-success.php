@@ -18,7 +18,7 @@ if (!$reg) { header("Location: award-registration.php"); exit; }
 ?>
 <link rel="stylesheet" href="assets/css/award-registration.css?v=1">
 <style>
-.success-page { min-height: 100vh; background: #0b0c10; color: #f5f6fa; padding: 60px 20px; font-family: 'Outfit', sans-serif; }
+.success-page { min-height: 100vh; background: #0b0c10; color: #f5f6fa; padding: 60px 20px; font-family: 'Inter', sans-serif; }
 body.light-theme .success-page { background: linear-gradient(135deg, #fdfbf7 0%, #f4eee1 100%); color: #1a1a1a; }
 
 .success-anim { text-align: center; margin-bottom: 40px; }

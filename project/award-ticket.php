@@ -16,7 +16,7 @@ $autoPrint = isset($_GET['print']) && $_GET['print'] == '1';
 ?>
 <link rel="stylesheet" href="assets/css/award-ticket.css?v=1">
 <style>
-body { background: #f4eee1; margin: 0; font-family: 'Outfit', sans-serif; }
+body { background: #f4eee1; margin: 0; font-family: 'Inter', sans-serif; }
 body.light-theme { background: #f4eee1; }
 </style>
 

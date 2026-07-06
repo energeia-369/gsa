@@ -4,6 +4,91 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/config/Database.php';
 
+$allDestinations = [
+    'international' => [],
+    'national' => []
+];
+
+try {
+    $db = Database::getConnection();
+    
+    // Handle activate/deactivate for existing cards
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_status_id'])) {
+        $id = intval($_POST['toggle_status_id']);
+        $newStatus = $_POST['current_status'] === 'active' ? 'inactive' : 'active';
+        $stmt = $db->prepare("UPDATE home_event_cards SET status = ? WHERE id = ?");
+        $stmt->execute([$newStatus, $id]);
+        header("Location: admin-add-home-event-card.php");
+        exit;
+    }
+    
+    // Fetch all existing cards for the table at the bottom
+    $stmtCards = $db->query("SELECT * FROM home_event_cards ORDER BY id DESC");
+    $cards = $stmtCards->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt1 = $db->query("SELECT city, country FROM home_carousel_destinations WHERE is_deleted = 0");
+    $dest1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt2 = $db->query("SELECT city, country FROM custom_destinations WHERE is_deleted = 0");
+    $dest2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt3 = $db->query("SELECT state AS city, country FROM home_carousel_events WHERE state IS NOT NULL AND country IS NOT NULL");
+    $dest3 = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt4 = $db->query("SELECT city, country_or_state AS country FROM home_event_cards");
+    $dest4 = $stmt4->fetchAll(PDO::FETCH_ASSOC);
+    
+    $hardcodedDests = [
+        ['city' => 'Multiple Cities', 'country' => 'INDIA'],
+        ['city' => 'Singapore', 'country' => 'SINGAPORE'],
+        ['city' => 'Multiple Cities', 'country' => 'SWITZERLAND'],
+        ['city' => 'Dubai', 'country' => 'UAE'],
+        ['city' => 'Phuket', 'country' => 'THAILAND'],
+        ['city' => 'Las Vegas', 'country' => 'USA - LAS VEGAS'],
+        ['city' => 'New York', 'country' => 'USA - NEW YORK'],
+        ['city' => 'Kuala Lumpur', 'country' => 'MALAYSIA'],
+        ['city' => 'Bali', 'country' => 'INDONESIA'],
+        ['city' => 'Ho Chi Minh', 'country' => 'VIETNAM'],
+        ['city' => 'Sydney', 'country' => 'AUSTRALIA'],
+        ['city' => 'Berlin', 'country' => 'GERMANY'],
+        ['city' => 'London', 'country' => 'UNITED KINGDOM'],
+        ['city' => 'Toronto', 'country' => 'CANADA'],
+        ['city' => 'Chennai', 'country' => 'TAMIL NADU'],
+        ['city' => 'Pune', 'country' => 'PUNE'],
+        ['city' => 'Mumbai', 'country' => 'MAHARASHTRA'],
+        ['city' => 'Bangalore', 'country' => 'KARNATAKA'],
+        ['city' => 'New Delhi', 'country' => 'DELHI'],
+        ['city' => 'Panaji', 'country' => 'GOA'],
+        ['city' => 'Kochi', 'country' => 'KERALA'],
+        ['city' => 'Jaipur', 'country' => 'RAJASTHAN'],
+        ['city' => 'Ahmedabad', 'country' => 'GUJARAT']
+    ];
+    
+    $combined = array_merge($dest1, $dest2, $dest3, $dest4, $hardcodedDests);
+    $uniqueDests = [];
+    
+    foreach ($combined as $d) {
+        $c = trim(strtoupper($d['country']));
+        $city = trim($d['city']);
+        $key = $city . '|' . $c;
+        if (!isset($uniqueDests[$key])) {
+            $uniqueDests[$key] = [
+                'city' => $city,
+                'country' => $c
+            ];
+            
+            $isNational = ($c === 'INDIA' || in_array($c, ['MAHARASHTRA', 'KARNATAKA', 'TAMIL NADU', 'DELHI', 'GOA', 'KERALA', 'RAJASTHAN', 'GUJARAT', 'PUNE']));
+            if ($isNational) {
+                $allDestinations['national'][] = $uniqueDests[$key];
+            } else {
+                $allDestinations['international'][] = $uniqueDests[$key];
+            }
+        }
+    }
+} catch (Exception $e) {
+    // Fail silently, fallback to empty arrays
+}
+
 $error = '';
 $success = '';
 
@@ -47,8 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 try {
                     $db = Database::getConnection();
-                    $stmt = $db->prepare("INSERT INTO home_event_cards (event_title, event_type, image, event_date, city, country_or_state, link, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->execute([$title, $type, $dbImagePath, $date, $city, $countryState, $link, $status]);
+                    $stmt = $db->prepare("INSERT INTO home_event_cards (event_title, event_type, image, event_date, city, country_or_state, link, status, module_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([$title, $type, $dbImagePath, $date, $city, $countryState, $link, $status, $_POST['module_type'] ?? 'home_carousel']);
                     
                     $success = "Event card added successfully!";
                 } catch (Exception $e) {
@@ -65,12 +150,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="admin-dashboard px-4 sm:px-8 py-10" style="background: #0b0c10; color: #f5f6fa; min-height: 100vh;">
   <?php require_once __DIR__ . '/includes/admin_navbar.php'; ?>
   
-  <div class="admin-header" style="border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 20px;">
-    <h1>? Add Home Event Card</h1>
-    <p>Create a new dynamic card for the home page carousel.</p>
+  <div class="admin-header" style="border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1><i class="fas fa-plus-circle"></i> Add Events Card</h1>
+      <p>Create a new dynamic card for the home page carousel.</p>
+    </div>
+    <a href="admin-home-event-cards.php" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none;"><i class="fas fa-list"></i> Manage Old Cards</a>
   </div>
-
-  <div class="admin-content" style="max-width: 100%; margin-top: 30px;">
+  <div class="admin-content" style="max-width: 100%; margin-top: 30px; display: block;">
     <?php if ($error): ?>
         <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <?php echo htmlspecialchars($error); ?>
@@ -84,6 +171,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" enctype="multipart/form-data" class="admin-card" style="border-radius: 20px; padding: 30px; display: grid; gap: 20px;">
       
+      <div style="background: rgba(197, 168, 92, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.2); margin-bottom: 10px;">
+        <h3 style="margin-top: 0; color: #c5a85c; margin-bottom: 15px; font-size: 1.1rem; font-weight: normal;">Event Management Type</h3>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="module_type" value="gsa_carousel" required>
+                <span>GSA Page Carousel Events</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="module_type" value="home_carousel" checked required>
+                <span>Home Page Carousel Events</span>
+            </label>
+        </div>
+      </div>
+
       <div>
         <label style="display: block; font-size: 0.9rem; color: #9aa0b4; margin-bottom: 8px;">Event Title *</label>
         <input type="text" name="event_title" required style="width: 100%; padding: 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; box-sizing: border-box;">
@@ -118,36 +219,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div>
         <label style="display: block; font-size: 0.9rem; color: #9aa0b4; margin-bottom: 8px;">Destination (City & Country/State) *</label>
-        <select name="destination" required style="width: 100%; padding: 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; box-sizing: border-box;">
-            <option value="">Select Carousel Destination</option>
-            <optgroup label="Overseas Events">
-                <option value="Pune / Mumbai|INDIA">INDIA</option>
-                <option value="Singapore|SINGAPORE">SINGAPORE</option>
-                <option value="Zurich|SWITZERLAND">SWITZERLAND</option>
-                <option value="Dubai / Abu Dhabi|UAE">UAE</option>
-                <option value="Phuket / Bangkok|THAILAND">THAILAND</option>
-                <option value="Las Vegas|USA - LAS VEGAS">USA - LAS VEGAS</option>
-                <option value="New York|USA - NEW YORK">USA - NEW YORK</option>
-                <option value="Kuala Lumpur|MALAYSIA">MALAYSIA</option>
-                <option value="Bali / Jakarta|INDONESIA">INDONESIA</option>
-                <option value="Ho Chi Minh|VIETNAM">VIETNAM</option>
-                <option value="Sydney|AUSTRALIA">AUSTRALIA</option>
-                <option value="Berlin|GERMANY">GERMANY</option>
-                <option value="London|UNITED KINGDOM">UNITED KINGDOM</option>
-                <option value="Toronto|CANADA">CANADA</option>
-            </optgroup>
-            <optgroup label="Indian State Events">
-                <option value="Mumbai / Pune|MAHARASHTRA">MAHARASHTRA</option>
-                <option value="Bangalore|KARNATAKA">KARNATAKA</option>
-                <option value="New Delhi|DELHI">DELHI</option>
-                <option value="Panaji|GOA">GOA</option>
-                <option value="Kochi|KERALA">KERALA</option>
-                <option value="Jaipur|RAJASTHAN">RAJASTHAN</option>
-                <option value="Ahmedabad|GUJARAT">GUJARAT</option>
-                <option value="Coimbatore|TAMIL NADU">TAMIL NADU</option>
-                <option value="Pune|PUNE">PUNE</option>
-            </optgroup>
-        </select>
+          <select name="destination" required style="width: 100%; padding: 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; box-sizing: border-box;">
+              <option value="">Select Carousel Destination</option>
+              <optgroup label="Overseas Events">
+                  <?php foreach ($allDestinations['international'] as $dest): ?>
+                      <option value="<?= htmlspecialchars($dest['city'] . '|' . $dest['country']) ?>">
+                          <?= htmlspecialchars($dest['country'] . ' - ' . $dest['city']) ?>
+                      </option>
+                  <?php endforeach; ?>
+                  
+                  <?php if (empty($allDestinations['international'])): ?>
+                      <option value="Dubai|UAE">UAE - Dubai</option>
+                  <?php endif; ?>
+              </optgroup>
+              <optgroup label="Indian State Events">
+                  <?php foreach ($allDestinations['national'] as $dest): ?>
+                      <option value="<?= htmlspecialchars($dest['city'] . '|' . $dest['country']) ?>">
+                          <?= htmlspecialchars($dest['country'] . ' - ' . $dest['city']) ?>
+                      </option>
+                  <?php endforeach; ?>
+                  
+                  <?php if (empty($allDestinations['national'])): ?>
+                      <option value="Mumbai|INDIA">INDIA - Mumbai</option>
+                  <?php endif; ?>
+              </optgroup>
+          </select>
       </div>
 
       <div>
@@ -164,6 +260,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
       </div>
     </form>
+    
+    <!-- Table of existing cards -->
+    <div class="admin-header" style="margin-top: 50px; border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 15px;">
+      <h2><i class="fas fa-list-alt"></i> Existing Event Cards</h2>
+      <p style="color: #9aa0b4; font-size: 0.9rem;">Manage, edit, or remove your existing carousel cards here.</p>
+    </div>
+    
+    <div class="admin-card" style="border-radius: 20px; padding: 25px; overflow-x: auto; margin-top: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(197,168,92,0.15);">
+      <div class="overflow-x-auto"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+        <thead class="orders-table">
+          <tr style="border-bottom: 1px solid rgba(197,168,92,0.25); color: #c5a85c;">
+            <th style="padding: 15px 10px;">ID</th>
+            <th style="padding: 15px 10px;">Image</th>
+            <th style="padding: 15px 10px;">Module Type</th>
+            <th style="padding: 15px 10px;">Title</th>
+            <th style="padding: 15px 10px;">Type</th>
+            <th style="padding: 15px 10px;">Date</th>
+            <th style="padding: 15px 10px;">Location</th>
+            <th style="padding: 15px 10px;">Status</th>
+            <th style="padding: 15px 10px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (empty($cards)): ?>
+            <tr id="no-cards-row">
+              <td colspan="9" style="text-align: center; padding: 20px; color: #9aa0b4;">No cards found.</td>
+            </tr>
+          <?php else: ?>
+            <?php foreach ($cards as $card): ?>
+              <tr class="card-row" data-module="<?php echo htmlspecialchars($card['module_type'] ?? 'home_carousel'); ?>" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['id']); ?></td>
+                <td style="padding: 15px 10px;"><img src="<?php echo htmlspecialchars($card['image']); ?>" alt="Card" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
+                <td style="padding: 15px 10px;">
+                    <?php 
+                        if (isset($card['module_type']) && $card['module_type'] === 'gsa_carousel') {
+                            echo '<span style="background: rgba(197, 168, 92, 0.2); color: #c5a85c; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">GSA Page</span>';
+                        } else {
+                            echo '<span style="background: rgba(255, 255, 255, 0.1); color: #9aa0b4; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">Home Page</span>';
+                        }
+                    ?>
+                </td>
+                <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['event_title']); ?></td>
+                <td style="padding: 15px 10px;">
+                  <span style="background: rgba(197,168,92,0.1); padding: 4px 8px; border-radius: 4px; color: #c5a85c; font-size: 0.8rem; text-transform: uppercase;">
+                    <?php echo htmlspecialchars($card['event_type']); ?>
+                  </span>
+                </td>
+                <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['event_date']); ?></td>
+                <td style="padding: 15px 10px;"><?php echo htmlspecialchars($card['city'] . ', ' . $card['country_or_state']); ?></td>
+                <td style="padding: 15px 10px;">
+                  <?php if ($card['status'] === 'active'): ?>
+                    <span style="color: #22c55e; font-weight: bold;">Active</span>
+                  <?php else: ?>
+                    <span style="color: #eab308; font-weight: bold;">Inactive</span>
+                  <?php endif; ?>
+                </td>
+                <td style="padding: 15px 10px; display: flex; gap: 10px; align-items: center;">
+                  <a href="admin-edit-home-event-card.php?id=<?php echo $card['id']; ?>" style="color: #38bdf8; text-decoration: none;"><i class="fas fa-edit"></i> Edit</a>
+                  <a href="admin-delete-home-event-card.php?id=<?php echo $card['id']; ?>" style="color: #ef4444; text-decoration: none;" onclick="return confirm('Are you sure you want to delete this card?');"><i class="fas fa-trash"></i> Delete</a>
+                  <form method="POST" action="admin-add-home-event-card.php" style="display:inline; margin:0;">
+                    <input type="hidden" name="toggle_status_id" value="<?php echo $card['id']; ?>">
+                    <input type="hidden" name="current_status" value="<?php echo $card['status']; ?>">
+                    <button type="submit" style="background: none; border: none; color: #c5a85c; cursor: pointer; padding: 0; font-size: 0.9rem;">
+                      <?php echo $card['status'] === 'active' ? '<i class="fas fa-times-circle"></i> Deactivate' : '<i class="fas fa-check-circle"></i> Activate'; ?>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+            <tr id="no-cards-row" style="display: none;">
+              <td colspan="9" style="text-align: center; padding: 20px; color: #9aa0b4;">No cards match the selected type.</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+      </table></div>
+    </div>
+    
   </div>
 </div>
 
@@ -177,6 +350,38 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "login.php";
         return;
     }
+
+    // Filter table rows by Event Management Type
+    const radioButtons = document.querySelectorAll('input[name="module_type"]');
+    const rows = document.querySelectorAll('.card-row');
+
+    function filterTable() {
+        const selectedType = document.querySelector('input[name="module_type"]:checked').value;
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.getAttribute('data-module') === selectedType) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Show/hide the "No cards found" row
+        const noCardsRow = document.getElementById('no-cards-row');
+        if (noCardsRow) {
+            noCardsRow.style.display = visibleCount === 0 ? '' : 'none';
+        }
+    }
+
+    // Add event listeners to radio buttons
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', filterTable);
+    });
+
+    // Initial filter
+    filterTable();
 });
 </script>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

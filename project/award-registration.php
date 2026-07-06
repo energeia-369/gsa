@@ -24,6 +24,19 @@ if (!empty($eventSlug)) {
     $evtStmt = $db->prepare("SELECT title, gala_passes_data FROM events WHERE slug = ?");
     $evtStmt->execute([$eventSlug]);
     $evt = $evtStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$evt) {
+        $evtStmt = $db->prepare("SELECT title, gala_passes_data FROM home_carousel_events WHERE slug = ?");
+        $evtStmt->execute([$eventSlug]);
+        $evt = $evtStmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    if (!$evt) {
+        $evtStmt = $db->prepare("SELECT tournament_name as title, gala_passes_data FROM gsa_carousel_events WHERE slug = ?");
+        $evtStmt->execute([$eventSlug]);
+        $evt = $evtStmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     if ($evt) {
         if (!empty($evt['gala_passes_data'])) {
             $galaPasses = json_decode($evt['gala_passes_data'], true) ?? [];
@@ -61,6 +74,7 @@ if (empty($galaPasses)) {
             <input type="hidden" id="hiddenEventSlug" name="event_slug" value="<?= htmlspecialchars($eventSlug) ?>">
             <input type="hidden" id="hiddenPassType" name="pass_type" value="">
             <input type="hidden" id="hiddenBasePrice" name="base_amount" value="0">
+            <input type="hidden" id="hiddenCurrency" name="currency" value="INR">
             
             <div class="award-form-section">
                 <h3>1. Select Your Gala Pass</h3>

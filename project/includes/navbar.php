@@ -1,7 +1,7 @@
 <nav class="navbar" style="position: sticky; top: 0; z-index: 1000;">
 
   <!-- NEW BACKGROUND LOGO GIF -->
-  <img src="assets/images/logo_original_colors.gif?v=2" id="underNavLogo" alt="" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; transform: scale(1.65); mix-blend-mode: multiply;">
+  <img src="assets/images/logo_original_colors.gif?v=2" id="underNavLogo" alt="" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; transform: scale(1.45); mix-blend-mode: multiply;">
 
   <!-- ✨ THE PILL ✨ -->
   <div class="nav-container" id="mainNavContainer" style="background: transparent !important; border: none !important; box-shadow: none !important;">
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Logo -->
-    <a href="index.php" class="nav-brand" onclick="closeMenu()" style="position: relative;">
+    <a href="index.php" class="nav-brand" onclick="closeMenu()" style="position: relative; margin-left: 15px; margin-right: 30px;">
       <img src="assets/images/logo 2.png" class="nav-logo" id="dummyNavLogo" alt="Logo" style="opacity: 0; height: 52px !important; width: 52px !important; object-fit: contain;">
     </a>
 
@@ -43,6 +43,7 @@
             <button class="nav-dropdown-item" onclick="handleNavClick('flagship-events')">Flagship Tournaments</button>
             <button class="nav-dropdown-item" onclick="handleNavClick('active-tournaments')">Active Tournaments</button>
             <a href="event-registration.php" class="nav-dropdown-item" data-page="event-registration" onclick="closeMenu()">Register Event</a>
+            <a href="delegate-registration.php" class="nav-dropdown-item" data-page="delegate-registration" onclick="closeMenu()">Register as Delegate</a>
             <a href="visitor-pass.php" class="nav-dropdown-item" data-page="visitor-pass" onclick="closeMenu()">Visitor Pass</a>
             <a href="exhibitor.php" class="nav-dropdown-item" data-page="exhibitor" onclick="closeMenu()">Exhibitor Registration</a>
             <a href="gallery.php" class="nav-dropdown-item" data-page="gallery" onclick="closeMenu()">Photo Gallery</a>
@@ -160,9 +161,9 @@ function updateNavbarAuth() {
         dashLink.href = (userRole === "ADMIN") ? "admin-dashboard.php" : "user-dashboard.php";
 
         const membership = localStorage.getItem("userMembership");
-        let premiumHtml  = "";
+        let nameStyle = "";
         if (membership && membership.toLowerCase() !== "none") {
-            premiumHtml = `<span class="premium-badge">${membership}</span>`;
+            nameStyle = "color: #60a5fa !important; text-shadow: 0 0 10px rgba(96, 165, 250, 0.6) !important; font-weight: 800 !important;";
         }
         const roleHtml = (userRole === "ADMIN")
             ? `<span style="font-size:0.68rem;background:rgba(197,168,92,0.15);padding:2px 6px;border-radius:4px;margin-left:4px;color:#f5d87a;font-weight:700;letter-spacing:0.04em;">ADMIN</span>`
@@ -176,7 +177,7 @@ function updateNavbarAuth() {
         
         container.innerHTML =
             `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;">
-                <span class="nav-greeting">Hi, ${userName}${premiumHtml}${roleHtml}</span>
+                <span class="nav-greeting" style="display: flex; align-items: center; gap: 6px;">Hi, <span style="${nameStyle}">${userName}</span>${roleHtml}</span>
                 <span id="adminNxlDisplay"></span>
             </div>` +
             `<button onclick="handleLogout()" class="login-btn">Logout</button>`;
@@ -189,7 +190,7 @@ function updateNavbarAuth() {
             .then(res => res.json())
             .then(data => {
                 if (data.nxlCredits !== undefined && document.getElementById('adminNxlDisplay')) {
-                    document.getElementById('adminNxlDisplay').innerHTML = `<span style="font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 6px; margin-top: 4px; color: inherit; letter-spacing: -0.5px;">💎 ${data.nxlCredits.toLocaleString()}</span>`;
+                    document.getElementById('adminNxlDisplay').innerHTML = `<span style="font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 4px; color: inherit; letter-spacing: 0.5px; margin-top: 3px;">💎 ${data.nxlCredits.toLocaleString()}</span>`;
                 }
             })
             .catch(err => console.error("Error fetching admin NXL", err));

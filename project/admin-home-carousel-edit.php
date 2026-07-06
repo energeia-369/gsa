@@ -1,405 +1,1017 @@
 <?php
-$pageTitle = "GLOBAL SPORTS ARENA | Event Editor";
+$pageTitle = "Edit Home Carousel Event";
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 
-// Auth check via JS
-?>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (!localStorage.getItem("token") || localStorage.getItem("userRole") !== "ADMIN") {
-            alert("Access Denied: Admin login required!");
-            window.location.href = "login.php";
-        }
-    });
-</script>
-<?php
-
 require_once 'config/Database.php';
+require_once 'includes/media_utils.php';
 $pdo = Database::getConnection();
 
-// Process Event Deletion
-if (isset($_GET['delete'])) {
-    $delId = (int)$_GET['delete'];
-    
-    // Server side password check could be implemented, but right now JS checks it. 
-    // Ideally we'd send it via POST, but to keep the current flow:
-    $pdo->query("DELETE FROM home_carousel_events WHERE id = $delId");
-    header("Location: admin-events.php?type=home_carousel");
-    exit;
-}
-
-// Fetch delete event password
-$delPassStmt = $pdo->query("SELECT setting_value FROM system_settings WHERE setting_key = 'delete_event_password'");
-$delPassRow = $delPassStmt->fetch();
-$deleteEventPassword = $delPassRow ? $delPassRow['setting_value'] : 'admin123';
-
-$eventId = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $event = null;
-$msg = '';
 
-if ($eventId) {
+    $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+    $timer_start_date = !empty($_POST['timer_start_date']) ? $_POST['timer_start_date'] : null;
+    $gala_title = $_POST['gala_title'] ?? '';
+    $gala_venue = $_POST['gala_venue'] ?? '';
+    $gala_date = $_POST['gala_date'] ?? '';
+    $gala_time = $_POST['gala_time'] ?? '';
+    $gala_description = $_POST['gala_description'] ?? '';
+    $custom_html = $_POST['custom_html'] ?? null;
+    $delegate_fee = !empty($_POST['delegate_fee']) ? $_POST['delegate_fee'] : null;
+    $delegate_currency = !empty($_POST['delegate_currency']) ? $_POST['delegate_currency'] : null;
+
+    // Handle dynamic Schedule Data
+    $schedule_data = null;
+    if (isset($_POST['schedule_day']) && is_array($_POST['schedule_day'])) {
+        $schedule_arr = [];
+        for ($i = 0; $i < count($_POST['schedule_day']); $i++) {
+            if (!empty($_POST['schedule_day'][$i]) || !empty($_POST['schedule_title'][$i])) {
+                $schedule_arr[] = [
+                    'day' => $_POST['schedule_day'][$i] ?? '',
+                    'title' => $_POST['schedule_title'][$i] ?? '',
+                    'time' => $_POST['schedule_time'][$i] ?? '',
+                    'description' => $_POST['schedule_desc'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($schedule_arr)) {
+            $schedule_data = json_encode($schedule_arr);
+        }
+    }
+
+    // Handle dynamic Sports Data
+    $sports_data = null;
+    if (isset($_POST['sport_title']) && is_array($_POST['sport_title'])) {
+        $sports_arr = [];
+        for ($i = 0; $i < count($_POST['sport_title']); $i++) {
+            if (!empty($_POST['sport_title'][$i])) {
+                $sportImg = $_POST['sport_image_existing'][$i] ?? '';
+                if (isset($_FILES['sport_image_file']['name'][$i]) && $_FILES['sport_image_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    
+                    $fileArr = [
+                        'name' => $_FILES['sport_image_file']['name'][$i],
+                        'type' => $_FILES['sport_image_file']['type'][$i],
+                        'tmp_name' => $_FILES['sport_image_file']['tmp_name'][$i],
+                        'error' => $_FILES['sport_image_file']['error'][$i],
+                        'size' => $_FILES['sport_image_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $sportImg = $uploaded;
+                    }
+                }
+                $sports_arr[] = [
+                    'title' => $_POST['sport_title'][$i] ?? '',
+                    'icon' => $_POST['sport_icon'][$i] ?? 'fa-table-tennis',
+                    'image' => $sportImg,
+                    'prize' => $_POST['sport_prize'][$i] ?? '',
+                    'prize_currency' => $_POST['sport_prize_currency'][$i] ?? 'INR',
+                    'badge' => $_POST['sport_badge'][$i] ?? 'Popular',
+                    'categories' => $_POST['sport_categories'][$i] ?? '',
+                    'currency' => $_POST['sport_currency'][$i] ?? 'INR',
+                    'price_individual' => $_POST['sport_price_individual'][$i] ?? '',
+                    'price_pair' => $_POST['sport_price_pair'][$i] ?? '',
+                    'price_team' => $_POST['sport_price_team'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sports_arr)) {
+            $sports_data = json_encode($sports_arr);
+        }
+    }
+
+    // Handle dynamic Sponsors Data
+    $sponsors_data = null;
+    if (isset($_POST['sponsor_name']) && is_array($_POST['sponsor_name'])) {
+        $sponsors_arr = [];
+        for ($i = 0; $i < count($_POST['sponsor_name']); $i++) {
+            if (!empty($_POST['sponsor_name'][$i]) || !empty($_POST['sponsor_img'][$i])) {
+                $sponsors_arr[] = [
+                    'name' => $_POST['sponsor_name'][$i] ?? '',
+                    'website' => $_POST['sponsor_website'][$i] ?? '',
+                    'type' => $_POST['sponsor_type'][$i] ?? '',
+                    'img' => $_POST['sponsor_img'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sponsors_arr)) {
+            $sponsors_data = json_encode($sponsors_arr);
+        }
+    }
+
+    // Handle dynamic Exhibitor Data
+    $exhibitor_data = null;
+    if (isset($_POST['exhibitor_title']) && is_array($_POST['exhibitor_title'])) {
+        $exhibitor_arr = [];
+        for ($i = 0; $i < count($_POST['exhibitor_title']); $i++) {
+            if (!empty($_POST['exhibitor_title'][$i])) {
+                $exhibitor_arr[] = [
+                    'title' => $_POST['exhibitor_title'][$i] ?? '',
+                    'icon' => $_POST['exhibitor_icon'][$i] ?? 'fa-store',
+                    'size' => $_POST['exhibitor_size'][$i] ?? '',
+                    'desc' => $_POST['exhibitor_desc'][$i] ?? '',
+                    'currency' => $_POST['exhibitor_currency'][$i] ?? 'INR',
+                    'price' => $_POST['exhibitor_price'][$i] ?? '',
+                    'badge' => $_POST['exhibitor_badge'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($exhibitor_arr)) {
+            $exhibitor_data = json_encode($exhibitor_arr);
+        }
+    }
+
+    // Handle dynamic Locations Data
+    $locations_data = null;
+    if (isset($_POST['loc_name']) && is_array($_POST['loc_name'])) {
+        $locations_arr = [];
+        for ($i = 0; $i < count($_POST['loc_name']); $i++) {
+            if (!empty($_POST['loc_name'][$i])) {
+                $locBg = $_POST['loc_bg_existing'][$i] ?? '';
+                if (isset($_FILES['loc_bg_file']['name'][$i]) && $_FILES['loc_bg_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    $fileArr = [
+                        'name' => $_FILES['loc_bg_file']['name'][$i],
+                        'type' => $_FILES['loc_bg_file']['type'][$i],
+                        'tmp_name' => $_FILES['loc_bg_file']['tmp_name'][$i],
+                        'error' => $_FILES['loc_bg_file']['error'][$i],
+                        'size' => $_FILES['loc_bg_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $locBg = $uploaded;
+                    }
+                }
+                $locations_arr[] = [
+                    'name' => $_POST['loc_name'][$i] ?? '',
+                    'subtitle' => $_POST['loc_subtitle'][$i] ?? '',
+                    'bg' => $locBg,
+                    'items' => $_POST['loc_items'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($locations_arr)) {
+            $locations_data = json_encode($locations_arr);
+        }
+    }
+
+    // Handle dynamic Gala Passes
+    $gala_passes_data = null;
+    if (isset($_POST['gala_pass_title']) && is_array($_POST['gala_pass_title'])) {
+        $passes_arr = [];
+        for ($i = 0; $i < count($_POST['gala_pass_title']); $i++) {
+            if (!empty($_POST['gala_pass_title'][$i])) {
+                $passes_arr[] = [
+                    'title' => $_POST['gala_pass_title'][$i] ?? '',
+                    'currency' => $_POST['gala_pass_currency'][$i] ?? 'INR',
+                    'price' => $_POST['gala_pass_price'][$i] ?? '0',
+                    'features' => $_POST['gala_pass_features'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($passes_arr)) {
+            $gala_passes_data = json_encode($passes_arr);
+        }
+    }
+        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+    $timer_start_date = !empty($_POST['timer_start_date']) ? $_POST['timer_start_date'] : null;
+    $gala_title = $_POST['gala_title'] ?? '';
+    $gala_venue = $_POST['gala_venue'] ?? '';
+    $gala_date = $_POST['gala_date'] ?? '';
+    $gala_time = $_POST['gala_time'] ?? '';
+    $gala_description = $_POST['gala_description'] ?? '';
+    $custom_html = $_POST['custom_html'] ?? null;
+    $delegate_fee = !empty($_POST['delegate_fee']) ? $_POST['delegate_fee'] : null;
+    $delegate_currency = !empty($_POST['delegate_currency']) ? $_POST['delegate_currency'] : null;
+
+    // Handle dynamic Schedule Data
+    $schedule_data = null;
+    if (isset($_POST['schedule_day']) && is_array($_POST['schedule_day'])) {
+        $schedule_arr = [];
+        for ($i = 0; $i < count($_POST['schedule_day']); $i++) {
+            if (!empty($_POST['schedule_day'][$i]) || !empty($_POST['schedule_title'][$i])) {
+                $schedule_arr[] = [
+                    'day' => $_POST['schedule_day'][$i] ?? '',
+                    'title' => $_POST['schedule_title'][$i] ?? '',
+                    'time' => $_POST['schedule_time'][$i] ?? '',
+                    'description' => $_POST['schedule_desc'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($schedule_arr)) {
+            $schedule_data = json_encode($schedule_arr);
+        }
+    }
+
+    // Handle dynamic Sports Data
+    $sports_data = null;
+    if (isset($_POST['sport_title']) && is_array($_POST['sport_title'])) {
+        $sports_arr = [];
+        for ($i = 0; $i < count($_POST['sport_title']); $i++) {
+            if (!empty($_POST['sport_title'][$i])) {
+                $sportImg = $_POST['sport_image_existing'][$i] ?? '';
+                if (isset($_FILES['sport_image_file']['name'][$i]) && $_FILES['sport_image_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    
+                    $fileArr = [
+                        'name' => $_FILES['sport_image_file']['name'][$i],
+                        'type' => $_FILES['sport_image_file']['type'][$i],
+                        'tmp_name' => $_FILES['sport_image_file']['tmp_name'][$i],
+                        'error' => $_FILES['sport_image_file']['error'][$i],
+                        'size' => $_FILES['sport_image_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $sportImg = $uploaded;
+                    }
+                }
+                $sports_arr[] = [
+                    'title' => $_POST['sport_title'][$i] ?? '',
+                    'icon' => $_POST['sport_icon'][$i] ?? 'fa-table-tennis',
+                    'image' => $sportImg,
+                    'prize' => $_POST['sport_prize'][$i] ?? '',
+                    'prize_currency' => $_POST['sport_prize_currency'][$i] ?? 'INR',
+                    'badge' => $_POST['sport_badge'][$i] ?? 'Popular',
+                    'categories' => $_POST['sport_categories'][$i] ?? '',
+                    'currency' => $_POST['sport_currency'][$i] ?? 'INR',
+                    'price_individual' => $_POST['sport_price_individual'][$i] ?? '',
+                    'price_pair' => $_POST['sport_price_pair'][$i] ?? '',
+                    'price_team' => $_POST['sport_price_team'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sports_arr)) {
+            $sports_data = json_encode($sports_arr);
+        }
+    }
+
+    // Handle dynamic Sponsors Data
+    $sponsors_data = null;
+    if (isset($_POST['sponsor_name']) && is_array($_POST['sponsor_name'])) {
+        $sponsors_arr = [];
+        for ($i = 0; $i < count($_POST['sponsor_name']); $i++) {
+            if (!empty($_POST['sponsor_name'][$i]) || !empty($_POST['sponsor_img'][$i])) {
+                $sponsors_arr[] = [
+                    'name' => $_POST['sponsor_name'][$i] ?? '',
+                    'website' => $_POST['sponsor_website'][$i] ?? '',
+                    'type' => $_POST['sponsor_type'][$i] ?? '',
+                    'img' => $_POST['sponsor_img'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sponsors_arr)) {
+            $sponsors_data = json_encode($sponsors_arr);
+        }
+    }
+
+    // Handle dynamic Exhibitor Data
+    $exhibitor_data = null;
+    if (isset($_POST['exhibitor_title']) && is_array($_POST['exhibitor_title'])) {
+        $exhibitor_arr = [];
+        for ($i = 0; $i < count($_POST['exhibitor_title']); $i++) {
+            if (!empty($_POST['exhibitor_title'][$i])) {
+                $exhibitor_arr[] = [
+                    'title' => $_POST['exhibitor_title'][$i] ?? '',
+                    'icon' => $_POST['exhibitor_icon'][$i] ?? 'fa-store',
+                    'size' => $_POST['exhibitor_size'][$i] ?? '',
+                    'desc' => $_POST['exhibitor_desc'][$i] ?? '',
+                    'currency' => $_POST['exhibitor_currency'][$i] ?? 'INR',
+                    'price' => $_POST['exhibitor_price'][$i] ?? '',
+                    'badge' => $_POST['exhibitor_badge'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($exhibitor_arr)) {
+            $exhibitor_data = json_encode($exhibitor_arr);
+        }
+    }
+
+    // Handle dynamic Locations Data
+    $locations_data = null;
+    if (isset($_POST['loc_name']) && is_array($_POST['loc_name'])) {
+        $locations_arr = [];
+        for ($i = 0; $i < count($_POST['loc_name']); $i++) {
+            if (!empty($_POST['loc_name'][$i])) {
+                $locBg = $_POST['loc_bg_existing'][$i] ?? '';
+                if (isset($_FILES['loc_bg_file']['name'][$i]) && $_FILES['loc_bg_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    $fileArr = [
+                        'name' => $_FILES['loc_bg_file']['name'][$i],
+                        'type' => $_FILES['loc_bg_file']['type'][$i],
+                        'tmp_name' => $_FILES['loc_bg_file']['tmp_name'][$i],
+                        'error' => $_FILES['loc_bg_file']['error'][$i],
+                        'size' => $_FILES['loc_bg_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $locBg = $uploaded;
+                    }
+                }
+                $locations_arr[] = [
+                    'name' => $_POST['loc_name'][$i] ?? '',
+                    'subtitle' => $_POST['loc_subtitle'][$i] ?? '',
+                    'bg' => $locBg,
+                    'items' => $_POST['loc_items'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($locations_arr)) {
+            $locations_data = json_encode($locations_arr);
+        }
+    }
+
+    // Handle dynamic Gala Passes
+    $gala_passes_data = null;
+    if (isset($_POST['gala_pass_title']) && is_array($_POST['gala_pass_title'])) {
+        $passes_arr = [];
+        for ($i = 0; $i < count($_POST['gala_pass_title']); $i++) {
+            if (!empty($_POST['gala_pass_title'][$i])) {
+                $passes_arr[] = [
+                    'title' => $_POST['gala_pass_title'][$i] ?? '',
+                    'currency' => $_POST['gala_pass_currency'][$i] ?? 'INR',
+                    'price' => $_POST['gala_pass_price'][$i] ?? '0',
+                    'features' => $_POST['gala_pass_features'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($passes_arr)) {
+            $gala_passes_data = json_encode($passes_arr);
+        }
+    }
+    if ($id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM home_carousel_events WHERE id = ?");
-    $stmt->execute([$eventId]);
+    $stmt->execute([$id]);
     $event = $stmt->fetch();
     if (!$event) {
-        echo "<script>alert('Event not found.'); window.location.href='admin-events.php?type=home_carousel';</script>";
-        exit();
+        die("Event not found");
     }
 }
 
-$homeCardsStmt = $pdo->query("SELECT id, event_title FROM home_event_cards ORDER BY id ASC");
-$homeCards = $homeCardsStmt->fetchAll();
+function generateSlug($string) {
+    $slug = preg_replace('/[^A-Za-z0-9-]+/', '-', strtolower($string));
+    return trim($slug, '-');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['add_tournament']) && $eventId) {
-        $t_title = $_POST['t_title'] ?? '';
-        $t_dates = $_POST['t_dates'] ?? '';
-        $t_insert = $pdo->prepare("INSERT INTO event_tournaments (event_id, title, dates) VALUES (?, ?, ?)");
-        $t_insert->execute([$eventId, $t_title, $t_dates]);
-        $msg = "Tournament added successfully!";
-    } elseif (isset($_POST['add_pricing']) && $eventId) {
-        $p_tier = $_POST['p_tier'] ?? '';
-        $p_price = $_POST['p_price'] ?? 0;
-        $p_insert = $pdo->prepare("INSERT INTO event_pricing (event_id, tier_name, price) VALUES (?, ?, ?)");
-        $p_insert->execute([$eventId, $p_tier, $p_price]);
-        $msg = "Pricing tier added successfully!";
-    } else {
-        $title = $_POST['title'] ?? '';
-        $slug = $_POST['slug'] ?? '';
-        $status = $_POST['status'] ?? 'draft';
-        $description = $_POST['description'] ?? '';
-        $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
-        $timer_start_date = !empty($_POST['timer_start_date']) ? $_POST['timer_start_date'] : null;
-        
-        $banner = $_POST['banner'] ?? '';
-        $thumbnail = $_POST['thumbnail'] ?? '';
-
-        if (isset($_FILES['hero_banner_file']) && $_FILES['hero_banner_file']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'assets/images/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $fileName = time() . '_' . basename($_FILES['hero_banner_file']['name']);
-            $uploadFile = $uploadDir . $fileName;
-            if (move_uploaded_file($_FILES['hero_banner_file']['tmp_name'], $uploadFile)) {
-                $banner = $uploadFile;
-            }
-        }
-
-        if (isset($_FILES['logo_file']) && $_FILES['logo_file']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'assets/images/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $fileName = time() . '_logo_' . basename($_FILES['logo_file']['name']);
-            $uploadFile = $uploadDir . $fileName;
-            if (move_uploaded_file($_FILES['logo_file']['tmp_name'], $uploadFile)) {
-                $thumbnail = $uploadFile;
-            }
-        }
-        $location = $_POST['location'] ?? '';
-        
-        $gala_title = $_POST['gala_title'] ?? '';
-        $gala_venue = $_POST['gala_venue'] ?? '';
-        $gala_date = $_POST['gala_date'] ?? '';
-        $gala_time = $_POST['gala_time'] ?? '';
-        $gala_description = $_POST['gala_description'] ?? '';
-
-        // Handle dynamic Schedule Data
-        $schedule_data = null;
-        if (isset($_POST['schedule_day']) && is_array($_POST['schedule_day'])) {
-            $schedule_arr = [];
-            for ($i = 0; $i < count($_POST['schedule_day']); $i++) {
-                if (!empty($_POST['schedule_day'][$i]) || !empty($_POST['schedule_title'][$i])) {
-                    $schedule_arr[] = [
-                        'day' => $_POST['schedule_day'][$i] ?? '',
-                        'title' => $_POST['schedule_title'][$i] ?? '',
-                        'time' => $_POST['schedule_time'][$i] ?? '',
-                        'description' => $_POST['schedule_desc'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($schedule_arr)) {
-                $schedule_data = json_encode($schedule_arr);
-            }
-        }
-
-        // Handle dynamic Sports Data
-        $sports_data = null;
-        if (isset($_POST['sport_title']) && is_array($_POST['sport_title'])) {
-            $sports_arr = [];
-            for ($i = 0; $i < count($_POST['sport_title']); $i++) {
-                if (!empty($_POST['sport_title'][$i])) {
-                    $sportImg = $_POST['sport_image_existing'][$i] ?? '';
-                    if (isset($_FILES['sport_image_file']['name'][$i]) && $_FILES['sport_image_file']['error'][$i] === UPLOAD_ERR_OK) {
-                        $uploadDir = 'assets/images/';
-                        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                        $fileName = time() . '_sport_' . basename($_FILES['sport_image_file']['name'][$i]);
-                        $uploadFile = $uploadDir . $fileName;
-                        if (move_uploaded_file($_FILES['sport_image_file']['tmp_name'][$i], $uploadFile)) {
-                            $sportImg = $uploadFile;
-                        }
-                    }
-                    $sports_arr[] = [
-                        'title' => $_POST['sport_title'][$i] ?? '',
-                        'icon' => $_POST['sport_icon'][$i] ?? 'fa-table-tennis',
-                        'image' => $sportImg,
-                        'prize' => $_POST['sport_prize'][$i] ?? '',
-                        'prize_currency' => $_POST['sport_prize_currency'][$i] ?? 'INR',
-                        'badge' => $_POST['sport_badge'][$i] ?? 'Popular',
-                        'categories' => $_POST['sport_categories'][$i] ?? '',
-                        'currency' => $_POST['sport_currency'][$i] ?? 'INR',
-                        'price_individual' => $_POST['sport_price_individual'][$i] ?? '',
-                        'price_pair' => $_POST['sport_price_pair'][$i] ?? '',
-                        'price_team' => $_POST['sport_price_team'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($sports_arr)) {
-                $sports_data = json_encode($sports_arr);
-            }
-        }
-
-        // Handle dynamic Sponsors Data
-        $sponsors_data = null;
-        if (isset($_POST['sponsor_name']) && is_array($_POST['sponsor_name'])) {
-            $sponsors_arr = [];
-            for ($i = 0; $i < count($_POST['sponsor_name']); $i++) {
-                if (!empty($_POST['sponsor_name'][$i]) || !empty($_POST['sponsor_img'][$i])) {
-                    $sponsors_arr[] = [
-                        'name' => $_POST['sponsor_name'][$i] ?? '',
-                        'website' => $_POST['sponsor_website'][$i] ?? '',
-                        'type' => $_POST['sponsor_type'][$i] ?? '',
-                        'img' => $_POST['sponsor_img'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($sponsors_arr)) {
-                $sponsors_data = json_encode($sponsors_arr);
-            }
-        }
-
-        // Handle dynamic Exhibitor Data
-        $exhibitor_data = null;
-        if (isset($_POST['exhibitor_title']) && is_array($_POST['exhibitor_title'])) {
-            $exhibitor_arr = [];
-            for ($i = 0; $i < count($_POST['exhibitor_title']); $i++) {
-                if (!empty($_POST['exhibitor_title'][$i])) {
-                    $exhibitor_arr[] = [
-                        'title' => $_POST['exhibitor_title'][$i] ?? '',
-                        'icon' => $_POST['exhibitor_icon'][$i] ?? 'fa-store',
-                        'size' => $_POST['exhibitor_size'][$i] ?? '',
-                        'desc' => $_POST['exhibitor_desc'][$i] ?? '',
-                        'currency' => $_POST['exhibitor_currency'][$i] ?? 'INR',
-                        'price' => $_POST['exhibitor_price'][$i] ?? '',
-                        'badge' => $_POST['exhibitor_badge'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($exhibitor_arr)) {
-                $exhibitor_data = json_encode($exhibitor_arr);
-            }
-        }
-
-        // Handle dynamic Locations Data
-        $locations_data = null;
-        if (isset($_POST['loc_name']) && is_array($_POST['loc_name'])) {
-            $locations_arr = [];
-            for ($i = 0; $i < count($_POST['loc_name']); $i++) {
-                if (!empty($_POST['loc_name'][$i])) {
-                    $locBg = $_POST['loc_bg_existing'][$i] ?? '';
-                    if (isset($_FILES['loc_bg_file']['name'][$i]) && $_FILES['loc_bg_file']['error'][$i] === UPLOAD_ERR_OK) {
-                        $uploadDir = 'assets/images/';
-                        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                        $fileName = time() . '_loc_' . basename($_FILES['loc_bg_file']['name'][$i]);
-                        $uploadFile = $uploadDir . $fileName;
-                        if (move_uploaded_file($_FILES['loc_bg_file']['tmp_name'][$i], $uploadFile)) {
-                            $locBg = $uploadFile;
-                        }
-                    }
-                    $locations_arr[] = [
-                        'name' => $_POST['loc_name'][$i] ?? '',
-                        'subtitle' => $_POST['loc_subtitle'][$i] ?? '',
-                        'bg' => $locBg,
-                        'items' => $_POST['loc_items'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($locations_arr)) {
-                $locations_data = json_encode($locations_arr);
-            }
-        }
-
-        // Handle dynamic Gala Passes
-        $gala_passes_data = null;
-        if (isset($_POST['gala_pass_title']) && is_array($_POST['gala_pass_title'])) {
-            $passes_arr = [];
-            for ($i = 0; $i < count($_POST['gala_pass_title']); $i++) {
-                if (!empty($_POST['gala_pass_title'][$i])) {
-                    $passes_arr[] = [
-                        'title' => $_POST['gala_pass_title'][$i] ?? '',
-                        'currency' => $_POST['gala_pass_currency'][$i] ?? 'INR',
-                        'price' => $_POST['gala_pass_price'][$i] ?? '0',
-                        'features' => $_POST['gala_pass_features'][$i] ?? ''
-                    ];
-                }
-            }
-            if (!empty($passes_arr)) {
-                $gala_passes_data = json_encode($passes_arr);
-            }
-        }
-
-        if ($eventId) {
-            $update = $pdo->prepare("UPDATE home_carousel_events SET title=?, slug=?, status=?, location=?, description=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, start_date=?, end_date=?, timer_start_date=?, banner=?, thumbnail=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, gala_passes_data=? WHERE id=?");
-            $update->execute([$title, $slug, $status, $location, $description, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $banner, $thumbnail, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data, $eventId]);
-            
-            $msg_type = 'updated';
-        } else {
-            $insert = $pdo->prepare("INSERT INTO home_carousel_events (title, slug, status, location, description, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, start_date, end_date, timer_start_date, banner, thumbnail, gala_title, gala_venue, gala_date, gala_time, gala_description, gala_passes_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $insert->execute([$title, $slug, $status, $location, $description, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $start_date, $end_date, $timer_start_date, $banner, $thumbnail, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $gala_passes_data]);
-            $msg_type = 'created';
-        }
-        
-        $home_event_card_id = !empty($_POST['home_event_card_id']) ? (int)$_POST['home_event_card_id'] : null;
-        if ($home_event_card_id) {
-            $link = "home-event.php?slug=" . $slug;
-            $updateCard = $pdo->prepare("UPDATE home_event_cards SET link = ? WHERE id = ?");
-            $updateCard->execute([$link, $home_event_card_id]);
-        }
-
-        echo "<script>window.location.href='admin-events.php?type=home_carousel?msg=" . $msg_type . "';</script>";
-        exit();
+    $title = $_POST['title'] ?? '';
+    $subtitle = $_POST['subtitle'] ?? '';
+    $short_desc = $_POST['short_desc'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $category = $_POST['category'] ?? '';
+    $country = $_POST['country'] ?? '';
+    $state = $_POST['state'] ?? '';
+    $btn_text = $_POST['btn_text'] ?? 'Explore';
+    $btn_url = $_POST['btn_url'] ?? '';
+    $event_date = !empty($_POST['event_date']) ? $_POST['event_date'] : null;
+    $display_order = (int)($_POST['display_order'] ?? 0);
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+    $status = $_POST['status'] ?? 'draft';
+    
+    $seo_title = $_POST['seo_title'] ?? '';
+    $seo_desc = $_POST['seo_desc'] ?? '';
+    $seo_keywords = $_POST['seo_keywords'] ?? '';
+    
+    $slug = $_POST['slug'] ?? '';
+    if (empty($slug)) {
+        $slug = generateSlug($title);
     }
+    
+    // Check slug uniqueness
+    $slugCheck = $pdo->prepare("SELECT id FROM home_carousel_events WHERE slug = ? AND id != ?");
+    $slugCheck->execute([$slug, $id]);
+    if ($slugCheck->rowCount() > 0) {
+        $slug = $slug . '-' . time(); // append timestamp to make it unique
+    }
+
+    // Handle File Uploads (simple implementation for now)
+    $uploadDir = 'assets/images/uploads/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    
+    $hero_banner = $event ? $event['hero_banner'] : '';
+    if (!empty($_POST['hero_banner_url'])) {
+        $hero_banner = $_POST['hero_banner_url'];
+    }
+    if (isset($_FILES['hero_banner']) && $_FILES['hero_banner']['error'] == 0) {
+        $uploaded = MediaUtils::processAndUploadImage($_FILES['hero_banner'], $uploadDir);
+        if ($uploaded) $hero_banner = $uploaded;
+    }
+    
+    $carousel_img = $event ? $event['carousel_img'] : '';
+    if (!empty($_POST['carousel_img_url'])) {
+        $carousel_img = $_POST['carousel_img_url'];
+    }
+    if (isset($_FILES['carousel_img']) && $_FILES['carousel_img']['error'] == 0) {
+        $uploaded = MediaUtils::processAndUploadImage($_FILES['carousel_img'], $uploadDir);
+        if ($uploaded) $carousel_img = $uploaded;
+    }
+
+    $home_banner_img = $event ? $event['home_banner_img'] : '';
+    if (!empty($_POST['home_banner_img_url'])) {
+        $home_banner_img = $_POST['home_banner_img_url'];
+    }
+    if (isset($_FILES['home_banner_img']) && $_FILES['home_banner_img']['error'] == 0) {
+        $uploaded = MediaUtils::processAndUploadImage($_FILES['home_banner_img'], $uploadDir);
+        if ($uploaded) $home_banner_img = $uploaded;
+    }
+
+        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+    $timer_start_date = !empty($_POST['timer_start_date']) ? $_POST['timer_start_date'] : null;
+    $gala_title = $_POST['gala_title'] ?? '';
+    $gala_venue = $_POST['gala_venue'] ?? '';
+    $gala_date = $_POST['gala_date'] ?? '';
+    $gala_time = $_POST['gala_time'] ?? '';
+    $gala_description = $_POST['gala_description'] ?? '';
+    $custom_html = $_POST['custom_html'] ?? null;
+    $delegate_fee = !empty($_POST['delegate_fee']) ? $_POST['delegate_fee'] : null;
+    $delegate_currency = !empty($_POST['delegate_currency']) ? $_POST['delegate_currency'] : null;
+
+    // Handle dynamic Schedule Data
+    $schedule_data = null;
+    if (isset($_POST['schedule_day']) && is_array($_POST['schedule_day'])) {
+        $schedule_arr = [];
+        for ($i = 0; $i < count($_POST['schedule_day']); $i++) {
+            if (!empty($_POST['schedule_day'][$i]) || !empty($_POST['schedule_title'][$i])) {
+                $schedule_arr[] = [
+                    'day' => $_POST['schedule_day'][$i] ?? '',
+                    'title' => $_POST['schedule_title'][$i] ?? '',
+                    'time' => $_POST['schedule_time'][$i] ?? '',
+                    'description' => $_POST['schedule_desc'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($schedule_arr)) {
+            $schedule_data = json_encode($schedule_arr);
+        }
+    }
+
+    // Handle dynamic Sports Data
+    $sports_data = null;
+    if (isset($_POST['sport_title']) && is_array($_POST['sport_title'])) {
+        $sports_arr = [];
+        for ($i = 0; $i < count($_POST['sport_title']); $i++) {
+            if (!empty($_POST['sport_title'][$i])) {
+                $sportImg = $_POST['sport_image_existing'][$i] ?? '';
+                if (isset($_FILES['sport_image_file']['name'][$i]) && $_FILES['sport_image_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    
+                    $fileArr = [
+                        'name' => $_FILES['sport_image_file']['name'][$i],
+                        'type' => $_FILES['sport_image_file']['type'][$i],
+                        'tmp_name' => $_FILES['sport_image_file']['tmp_name'][$i],
+                        'error' => $_FILES['sport_image_file']['error'][$i],
+                        'size' => $_FILES['sport_image_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $sportImg = $uploaded;
+                    }
+                }
+                $sports_arr[] = [
+                    'title' => $_POST['sport_title'][$i] ?? '',
+                    'icon' => $_POST['sport_icon'][$i] ?? 'fa-table-tennis',
+                    'image' => $sportImg,
+                    'prize' => $_POST['sport_prize'][$i] ?? '',
+                    'prize_currency' => $_POST['sport_prize_currency'][$i] ?? 'INR',
+                    'badge' => $_POST['sport_badge'][$i] ?? 'Popular',
+                    'categories' => $_POST['sport_categories'][$i] ?? '',
+                    'currency' => $_POST['sport_currency'][$i] ?? 'INR',
+                    'price_individual' => $_POST['sport_price_individual'][$i] ?? '',
+                    'price_pair' => $_POST['sport_price_pair'][$i] ?? '',
+                    'price_team' => $_POST['sport_price_team'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sports_arr)) {
+            $sports_data = json_encode($sports_arr);
+        }
+    }
+
+    // Handle dynamic Sponsors Data
+    $sponsors_data = null;
+    if (isset($_POST['sponsor_name']) && is_array($_POST['sponsor_name'])) {
+        $sponsors_arr = [];
+        for ($i = 0; $i < count($_POST['sponsor_name']); $i++) {
+            if (!empty($_POST['sponsor_name'][$i]) || !empty($_POST['sponsor_img'][$i])) {
+                $sponsors_arr[] = [
+                    'name' => $_POST['sponsor_name'][$i] ?? '',
+                    'website' => $_POST['sponsor_website'][$i] ?? '',
+                    'type' => $_POST['sponsor_type'][$i] ?? '',
+                    'img' => $_POST['sponsor_img'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sponsors_arr)) {
+            $sponsors_data = json_encode($sponsors_arr);
+        }
+    }
+
+    // Handle dynamic Exhibitor Data
+    $exhibitor_data = null;
+    if (isset($_POST['exhibitor_title']) && is_array($_POST['exhibitor_title'])) {
+        $exhibitor_arr = [];
+        for ($i = 0; $i < count($_POST['exhibitor_title']); $i++) {
+            if (!empty($_POST['exhibitor_title'][$i])) {
+                $exhibitor_arr[] = [
+                    'title' => $_POST['exhibitor_title'][$i] ?? '',
+                    'icon' => $_POST['exhibitor_icon'][$i] ?? 'fa-store',
+                    'size' => $_POST['exhibitor_size'][$i] ?? '',
+                    'desc' => $_POST['exhibitor_desc'][$i] ?? '',
+                    'currency' => $_POST['exhibitor_currency'][$i] ?? 'INR',
+                    'price' => $_POST['exhibitor_price'][$i] ?? '',
+                    'badge' => $_POST['exhibitor_badge'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($exhibitor_arr)) {
+            $exhibitor_data = json_encode($exhibitor_arr);
+        }
+    }
+
+    // Handle dynamic Locations Data
+    $locations_data = null;
+    if (isset($_POST['loc_name']) && is_array($_POST['loc_name'])) {
+        $locations_arr = [];
+        for ($i = 0; $i < count($_POST['loc_name']); $i++) {
+            if (!empty($_POST['loc_name'][$i])) {
+                $locBg = $_POST['loc_bg_existing'][$i] ?? '';
+                if (isset($_FILES['loc_bg_file']['name'][$i]) && $_FILES['loc_bg_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    $fileArr = [
+                        'name' => $_FILES['loc_bg_file']['name'][$i],
+                        'type' => $_FILES['loc_bg_file']['type'][$i],
+                        'tmp_name' => $_FILES['loc_bg_file']['tmp_name'][$i],
+                        'error' => $_FILES['loc_bg_file']['error'][$i],
+                        'size' => $_FILES['loc_bg_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $locBg = $uploaded;
+                    }
+                }
+                $locations_arr[] = [
+                    'name' => $_POST['loc_name'][$i] ?? '',
+                    'subtitle' => $_POST['loc_subtitle'][$i] ?? '',
+                    'bg' => $locBg,
+                    'items' => $_POST['loc_items'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($locations_arr)) {
+            $locations_data = json_encode($locations_arr);
+        }
+    }
+
+    // Handle dynamic Gala Passes
+    $gala_passes_data = null;
+    if (isset($_POST['gala_pass_title']) && is_array($_POST['gala_pass_title'])) {
+        $passes_arr = [];
+        for ($i = 0; $i < count($_POST['gala_pass_title']); $i++) {
+            if (!empty($_POST['gala_pass_title'][$i])) {
+                $passes_arr[] = [
+                    'title' => $_POST['gala_pass_title'][$i] ?? '',
+                    'currency' => $_POST['gala_pass_currency'][$i] ?? 'INR',
+                    'price' => $_POST['gala_pass_price'][$i] ?? '0',
+                    'features' => $_POST['gala_pass_features'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($passes_arr)) {
+            $gala_passes_data = json_encode($passes_arr);
+        }
+    }
+        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+    $timer_start_date = !empty($_POST['timer_start_date']) ? $_POST['timer_start_date'] : null;
+    $gala_title = $_POST['gala_title'] ?? '';
+    $gala_venue = $_POST['gala_venue'] ?? '';
+    $gala_date = $_POST['gala_date'] ?? '';
+    $gala_time = $_POST['gala_time'] ?? '';
+    $gala_description = $_POST['gala_description'] ?? '';
+    $custom_html = $_POST['custom_html'] ?? null;
+    $delegate_fee = !empty($_POST['delegate_fee']) ? $_POST['delegate_fee'] : null;
+    $delegate_currency = !empty($_POST['delegate_currency']) ? $_POST['delegate_currency'] : null;
+
+    // Handle dynamic Schedule Data
+    $schedule_data = null;
+    if (isset($_POST['schedule_day']) && is_array($_POST['schedule_day'])) {
+        $schedule_arr = [];
+        for ($i = 0; $i < count($_POST['schedule_day']); $i++) {
+            if (!empty($_POST['schedule_day'][$i]) || !empty($_POST['schedule_title'][$i])) {
+                $schedule_arr[] = [
+                    'day' => $_POST['schedule_day'][$i] ?? '',
+                    'title' => $_POST['schedule_title'][$i] ?? '',
+                    'time' => $_POST['schedule_time'][$i] ?? '',
+                    'description' => $_POST['schedule_desc'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($schedule_arr)) {
+            $schedule_data = json_encode($schedule_arr);
+        }
+    }
+
+    // Handle dynamic Sports Data
+    $sports_data = null;
+    if (isset($_POST['sport_title']) && is_array($_POST['sport_title'])) {
+        $sports_arr = [];
+        for ($i = 0; $i < count($_POST['sport_title']); $i++) {
+            if (!empty($_POST['sport_title'][$i])) {
+                $sportImg = $_POST['sport_image_existing'][$i] ?? '';
+                if (isset($_FILES['sport_image_file']['name'][$i]) && $_FILES['sport_image_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    
+                    $fileArr = [
+                        'name' => $_FILES['sport_image_file']['name'][$i],
+                        'type' => $_FILES['sport_image_file']['type'][$i],
+                        'tmp_name' => $_FILES['sport_image_file']['tmp_name'][$i],
+                        'error' => $_FILES['sport_image_file']['error'][$i],
+                        'size' => $_FILES['sport_image_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $sportImg = $uploaded;
+                    }
+                }
+                $sports_arr[] = [
+                    'title' => $_POST['sport_title'][$i] ?? '',
+                    'icon' => $_POST['sport_icon'][$i] ?? 'fa-table-tennis',
+                    'image' => $sportImg,
+                    'prize' => $_POST['sport_prize'][$i] ?? '',
+                    'prize_currency' => $_POST['sport_prize_currency'][$i] ?? 'INR',
+                    'badge' => $_POST['sport_badge'][$i] ?? 'Popular',
+                    'categories' => $_POST['sport_categories'][$i] ?? '',
+                    'currency' => $_POST['sport_currency'][$i] ?? 'INR',
+                    'price_individual' => $_POST['sport_price_individual'][$i] ?? '',
+                    'price_pair' => $_POST['sport_price_pair'][$i] ?? '',
+                    'price_team' => $_POST['sport_price_team'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sports_arr)) {
+            $sports_data = json_encode($sports_arr);
+        }
+    }
+
+    // Handle dynamic Sponsors Data
+    $sponsors_data = null;
+    if (isset($_POST['sponsor_name']) && is_array($_POST['sponsor_name'])) {
+        $sponsors_arr = [];
+        for ($i = 0; $i < count($_POST['sponsor_name']); $i++) {
+            if (!empty($_POST['sponsor_name'][$i]) || !empty($_POST['sponsor_img'][$i])) {
+                $sponsors_arr[] = [
+                    'name' => $_POST['sponsor_name'][$i] ?? '',
+                    'website' => $_POST['sponsor_website'][$i] ?? '',
+                    'type' => $_POST['sponsor_type'][$i] ?? '',
+                    'img' => $_POST['sponsor_img'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($sponsors_arr)) {
+            $sponsors_data = json_encode($sponsors_arr);
+        }
+    }
+
+    // Handle dynamic Exhibitor Data
+    $exhibitor_data = null;
+    if (isset($_POST['exhibitor_title']) && is_array($_POST['exhibitor_title'])) {
+        $exhibitor_arr = [];
+        for ($i = 0; $i < count($_POST['exhibitor_title']); $i++) {
+            if (!empty($_POST['exhibitor_title'][$i])) {
+                $exhibitor_arr[] = [
+                    'title' => $_POST['exhibitor_title'][$i] ?? '',
+                    'icon' => $_POST['exhibitor_icon'][$i] ?? 'fa-store',
+                    'size' => $_POST['exhibitor_size'][$i] ?? '',
+                    'desc' => $_POST['exhibitor_desc'][$i] ?? '',
+                    'currency' => $_POST['exhibitor_currency'][$i] ?? 'INR',
+                    'price' => $_POST['exhibitor_price'][$i] ?? '',
+                    'badge' => $_POST['exhibitor_badge'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($exhibitor_arr)) {
+            $exhibitor_data = json_encode($exhibitor_arr);
+        }
+    }
+
+    // Handle dynamic Locations Data
+    $locations_data = null;
+    if (isset($_POST['loc_name']) && is_array($_POST['loc_name'])) {
+        $locations_arr = [];
+        for ($i = 0; $i < count($_POST['loc_name']); $i++) {
+            if (!empty($_POST['loc_name'][$i])) {
+                $locBg = $_POST['loc_bg_existing'][$i] ?? '';
+                if (isset($_FILES['loc_bg_file']['name'][$i]) && $_FILES['loc_bg_file']['error'][$i] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'assets/images/uploads/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                    $fileArr = [
+                        'name' => $_FILES['loc_bg_file']['name'][$i],
+                        'type' => $_FILES['loc_bg_file']['type'][$i],
+                        'tmp_name' => $_FILES['loc_bg_file']['tmp_name'][$i],
+                        'error' => $_FILES['loc_bg_file']['error'][$i],
+                        'size' => $_FILES['loc_bg_file']['size'][$i]
+                    ];
+                    $uploaded = MediaUtils::processAndUploadImage($fileArr, $uploadDir);
+                    if ($uploaded) {
+                        $locBg = $uploaded;
+                    }
+                }
+                $locations_arr[] = [
+                    'name' => $_POST['loc_name'][$i] ?? '',
+                    'subtitle' => $_POST['loc_subtitle'][$i] ?? '',
+                    'bg' => $locBg,
+                    'items' => $_POST['loc_items'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($locations_arr)) {
+            $locations_data = json_encode($locations_arr);
+        }
+    }
+
+    // Handle dynamic Gala Passes
+    $gala_passes_data = null;
+    if (isset($_POST['gala_pass_title']) && is_array($_POST['gala_pass_title'])) {
+        $passes_arr = [];
+        for ($i = 0; $i < count($_POST['gala_pass_title']); $i++) {
+            if (!empty($_POST['gala_pass_title'][$i])) {
+                $passes_arr[] = [
+                    'title' => $_POST['gala_pass_title'][$i] ?? '',
+                    'currency' => $_POST['gala_pass_currency'][$i] ?? 'INR',
+                    'price' => $_POST['gala_pass_price'][$i] ?? '0',
+                    'features' => $_POST['gala_pass_features'][$i] ?? ''
+                ];
+            }
+        }
+        if (!empty($passes_arr)) {
+            $gala_passes_data = json_encode($passes_arr);
+        }
+    }
+    // Determine display flags based on category
+    $show_on_home = 0;
+    $show_on_gsa = 0;
+    
+    if ($category === 'Nexus' || $category === 'Maytriya' || $category === 'Nexus & Maytriya') {
+        $show_on_home = 1;
+    } elseif ($category === 'GSA') {
+        $show_on_gsa = 1;
+    } elseif ($category === 'All') {
+        $show_on_home = 1;
+        $show_on_gsa = 1;
+    }
+
+    $show_home_banner = isset($_POST['show_home_banner']) ? 1 : 0;
+    $show_in_overseas = isset($_POST['show_in_overseas']) ? 1 : 0;
+
+    if ($id > 0) {
+        $stmt = $pdo->prepare("UPDATE home_carousel_events SET 
+            title=?, subtitle=?, short_desc=?, description=?, category=?, country=?, state=?,
+            hero_banner=?, carousel_img=?, home_banner_img=?, btn_text=?, btn_url=?,
+            event_date=?, display_order=?, is_featured=?, status=?,
+            seo_title=?, seo_desc=?, seo_keywords=?, slug=?,
+            end_date=?, timer_start_date=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, custom_html=?, delegate_fee=?, delegate_currency=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, gala_passes_data=?,
+            show_on_home=?, show_on_gsa=?, show_home_banner=?, show_in_overseas=?
+            WHERE id=?");
+        $stmt->execute([
+            $title, $subtitle, $short_desc, $description, $category, $country, $state,
+            $hero_banner, $carousel_img, $home_banner_img, $btn_text, $btn_url,
+            $event_date, $display_order, $is_featured, $status,
+            $seo_title, $seo_desc, $seo_keywords, $slug, 
+            $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
+            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas, $id
+        ]);
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO home_carousel_events (
+            title, subtitle, short_desc, description, category, country, state,
+            hero_banner, carousel_img, home_banner_img, btn_text, btn_url,
+            event_date, display_order, is_featured, status,
+            seo_title, seo_desc, seo_keywords, slug,
+            end_date, timer_start_date, gala_title, gala_venue, gala_date, gala_time, gala_description, custom_html, delegate_fee, delegate_currency, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, gala_passes_data,
+            show_on_home, show_on_gsa, show_home_banner, show_in_overseas
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([
+            $title, $subtitle, $short_desc, $description, $category, $country, $state,
+            $hero_banner, $carousel_img, $home_banner_img, $btn_text, $btn_url,
+            $event_date, $display_order, $is_featured, $status,
+            $seo_title, $seo_desc, $seo_keywords, $slug, 
+            $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
+            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas
+        ]);
+        $id = $pdo->lastInsertId();
+    }
+    
+    echo "<script>window.location.href='admin-home-carousel.php?msg=saved';</script>";
+    exit();
 }
 ?>
 
 <link rel="stylesheet" href="assets/css/AdminDashboard.css?v=7">
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 <style>
-    .editor-form { background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 8px; border: 1px solid rgba(197,168,92,0.3); }
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; color: #c5a85c; font-weight: bold; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid rgba(197,168,92,0.5); background: rgba(0,0,0,0.5); color: #fff; }
-    .btn-gold { background: linear-gradient(135deg, #c5a85c, #f5d87a); color: #000; padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
-    .dynamic-block { border: 1px solid rgba(197,168,92,0.4); padding: 15px; margin-bottom: 15px; border-radius: 8px; background: rgba(255,255,255,0.03); }
-    body.light-theme .editor-form { background: rgba(0,0,0,0.02); }
-    body.light-theme .dynamic-block { background: rgba(0,0,0,0.03); border: 1px solid rgba(197,168,92,0.4); }
-    body.light-theme .form-group input, body.light-theme .form-group textarea, body.light-theme .form-group select { background: #fff; color: #000; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; color: #c5a85c; font-weight: bold; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid rgba(197, 168, 92, 0.3); background: rgba(0,0,0,0.2); color: #fff; border-radius: 4px; box-sizing: border-box; }
+    .form-control:focus { outline: none; border-color: #c5a85c; }
+    .form-row { display: flex; gap: 20px; }
+    .form-row .form-group { flex: 1; }
+    .btn-gold { background: linear-gradient(135deg, #c5a85c, #f5d87a); color: #000; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; display: inline-block; font-size: 1rem; }
+    .card { background: rgba(197, 168, 92, 0.05); border: 1px solid rgba(197, 168, 92, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .card-title { font-size: 1.2rem; color: #fff; border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 10px; margin-bottom: 20px; }
+    
+    #editor-container { height: 300px; background: rgba(0,0,0,0.2); border-color: rgba(197,168,92,0.3); color: #fff; }
+    .ql-toolbar { background: #1a1a2e; border-color: rgba(197,168,92,0.3) !important; }
+    .ql-stroke { stroke: #c5a85c !important; }
+    .ql-fill { fill: #c5a85c !important; }
+    .ql-picker { color: #c5a85c !important; }
+    
+    body.light-theme .form-control, body.light-theme #editor-container { background: #fff; color: #000; }
+    body.light-theme .card-title { color: #000; }
 </style>
 
-<div class="admin-dashboard px-4 sm:px-8 pt-24 pb-10" style="background: #0b0c10; color: #f5f6fa; min-height: 100vh;">
+<div class="admin-dashboard px-4 sm:px-8 py-10" style="background: #0b0c10; color: #f5f6fa; min-height: 100vh;">
   <?php require_once __DIR__ . '/includes/admin_navbar.php'; ?>
   
   <div class="admin-header" style="border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 20px; margin-bottom: 20px;">
-    <h1><?= $eventId ? 'Edit Home Carousel Event: ' . htmlspecialchars($event['title']) : 'Create Home Carousel Event' ?></h1>
-    <a href="admin-events.php?type=home_carousel" style="color: #c5a85c;">&larr; Back to Events</a>
+    <h1><?= $id ? 'Edit' : 'Add' ?> Home Carousel Event</h1>
+    <a href="admin-home-carousel.php" style="color: #c5a85c; text-decoration: none;">&larr; Back to List</a>
   </div>
 
-  <?php if ($msg): ?>
-      <div style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-          <?= htmlspecialchars($msg) ?>
-      </div>
-  <?php endif; ?>
+  <form method="POST" enctype="multipart/form-data" id="eventForm">
+    <div class="card">
+        <div class="card-title">Basic Information</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Event Title *</label>
+                <input type="text" name="title" class="form-control" required value="<?= htmlspecialchars($event['title'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Subtitle</label>
+                <input type="text" name="subtitle" class="form-control" value="<?= htmlspecialchars($event['subtitle'] ?? '') ?>">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" class="form-control" required>
+                    <option value="">Select Category...</option>
+                    <option value="Nexus" <?= ($event['category'] ?? '') === 'Nexus' ? 'selected' : '' ?>>Nexus (Business & Elite)</option>
+                    <option value="Maytriya" <?= ($event['category'] ?? '') === 'Maytriya' ? 'selected' : '' ?>>Maytriya (Cultural & Tech)</option>
+                    <option value="Nexus & Maytriya" <?= ($event['category'] ?? '') === 'Nexus & Maytriya' ? 'selected' : '' ?>>Nexus & Maytriya (Combined)</option>
+                    <option value="GSA" <?= ($event['category'] ?? '') === 'GSA' ? 'selected' : '' ?>>GSA (Sports & Global)</option>
+                    <option value="All" <?= ($event['category'] ?? '') === 'All' ? 'selected' : '' ?>>All Categories (Combined Festival)</option>
+                </select>
+                <small style="color: #9aa0b4; margin-top: 5px; display: block;">This category fully determines the visual theme on the frontend details page.</small>
+            </div>
+            <div class="form-group">
+                <label>Event Date</label>
+                <input type="date" name="event_date" class="form-control" value="<?= htmlspecialchars($event['event_date'] ?? '') ?>">
+            </div>
+        </div>
 
-  <form class="editor-form" method="POST" enctype="multipart/form-data">
-      <div class="form-group">
-          <label>Event Title</label>
-          <select name="title" required id="eventTitleSelect" onchange="updateSlug()">
-              <option value="">-- Select Location --</option>
-              <optgroup label="International">
-                  <option value="India" <?= ($event && $event['title'] === 'India') ? 'selected' : '' ?>>India</option>
-                  <option value="Singapore" <?= ($event && $event['title'] === 'Singapore') ? 'selected' : '' ?>>Singapore</option>
-                  <option value="Switzerland" <?= ($event && $event['title'] === 'Switzerland') ? 'selected' : '' ?>>Switzerland</option>
-                  <option value="UAE" <?= ($event && $event['title'] === 'UAE') ? 'selected' : '' ?>>UAE</option>
-                  <option value="Thailand" <?= ($event && $event['title'] === 'Thailand') ? 'selected' : '' ?>>Thailand</option>
-                  <option value="USA - Las Vegas" <?= ($event && $event['title'] === 'USA - Las Vegas') ? 'selected' : '' ?>>USA - Las Vegas</option>
-                  <option value="USA - New York" <?= ($event && $event['title'] === 'USA - New York') ? 'selected' : '' ?>>USA - New York</option>
-                  <option value="Malaysia" <?= ($event && ($event['title'] === 'Malaysia' || stripos($event['title'], 'Malaysia') !== false)) ? 'selected' : '' ?>>Malaysia</option>
-                  <option value="Indonesia" <?= ($event && $event['title'] === 'Indonesia') ? 'selected' : '' ?>>Indonesia</option>
-                  <option value="Vietnam" <?= ($event && $event['title'] === 'Vietnam') ? 'selected' : '' ?>>Vietnam</option>
-                  <option value="Australia" <?= ($event && $event['title'] === 'Australia') ? 'selected' : '' ?>>Australia</option>
-                  <option value="Germany" <?= ($event && $event['title'] === 'Germany') ? 'selected' : '' ?>>Germany</option>
-                  <option value="United Kingdom" <?= ($event && $event['title'] === 'United Kingdom') ? 'selected' : '' ?>>United Kingdom</option>
-                  <option value="Canada" <?= ($event && $event['title'] === 'Canada') ? 'selected' : '' ?>>Canada</option>
-              </optgroup>
-              <optgroup label="National (India)">
-                  <option value="Tamil Nadu" <?= ($event && $event['title'] === 'Tamil Nadu') ? 'selected' : '' ?>>Tamil Nadu</option>
-                  <option value="Pune" <?= ($event && ($event['title'] === 'Pune' || stripos($event['title'], 'Pune') !== false)) ? 'selected' : '' ?>>Pune</option>
-                  <option value="Maharashtra" <?= ($event && $event['title'] === 'Maharashtra') ? 'selected' : '' ?>>Maharashtra</option>
-                  <option value="Karnataka" <?= ($event && $event['title'] === 'Karnataka') ? 'selected' : '' ?>>Karnataka</option>
-                  <option value="Delhi" <?= ($event && $event['title'] === 'Delhi') ? 'selected' : '' ?>>Delhi</option>
-                  <option value="Goa" <?= ($event && $event['title'] === 'Goa') ? 'selected' : '' ?>>Goa</option>
-                  <option value="Kerala" <?= ($event && $event['title'] === 'Kerala') ? 'selected' : '' ?>>Kerala</option>
-                  <option value="Rajasthan" <?= ($event && $event['title'] === 'Rajasthan') ? 'selected' : '' ?>>Rajasthan</option>
-                  <option value="Gujarat" <?= ($event && $event['title'] === 'Gujarat') ? 'selected' : '' ?>>Gujarat</option>
-              </optgroup>
-          </select>
-          <?php if($event && stripos($event['title'], 'Malaysia') === false && stripos($event['title'], 'Pune') === false && !in_array($event['title'], ['India','Singapore','Switzerland','UAE','Thailand','USA - Las Vegas','USA - New York','Indonesia','Vietnam','Australia','Germany','United Kingdom','Canada','Tamil Nadu','Maharashtra','Karnataka','Delhi','Goa','Kerala','Rajasthan','Gujarat'])): ?>
-            <script>
-                document.getElementById('eventTitleSelect').insertAdjacentHTML('beforeend', '<option value="<?= htmlspecialchars($event['title']) ?>" selected><?= htmlspecialchars($event['title']) ?></option>');
-            </script>
-          <?php endif; ?>
-      </div>
-      
-      <script>
-        function updateSlug() {
-            const title = document.getElementById('eventTitleSelect').value;
-            if(title) {
-                let locationSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                // Special edge cases from the carousel like USA - Las Vegas should ideally become usa-las-vegas
-                document.querySelector('input[name="slug"]').value = 'gsa-' + locationSlug + '-2026';
-            }
-        }
-      </script>
-      
-      <div class="form-group">
-          <label>URL Slug (e.g. gsa-pune-2026)</label>
-          <input type="text" name="slug" required value="<?= $event ? htmlspecialchars($event['slug'] ?? '') : '' ?>">
-      </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" name="country" list="country_options" class="form-control" value="<?= htmlspecialchars($event['country'] ?? '') ?>" placeholder="Type or select a country/state...">
+                <datalist id="country_options">
+                    <!-- International -->
+                    <option value="Dubai">
+                    <option value="Singapore">
+                    <option value="London">
+                    <option value="New York">
+                    <option value="USA - Las Vegas">
+                    <option value="Malaysia">
+                    <option value="Thailand">
+                    <!-- Indian States/Cities -->
+                    <option value="Mumbai">
+                    <option value="Delhi">
+                    <option value="Bangalore">
+                    <option value="Goa">
+                    <option value="Pune">
+                    <option value="Kerala">
+                    <option value="Rajasthan">
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label>State / Region</label>
+                <input type="text" name="state" class="form-control" value="<?= htmlspecialchars($event['state'] ?? '') ?>">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Short Description</label>
+            <textarea name="short_desc" class="form-control" rows="3"><?= htmlspecialchars($event['short_desc'] ?? '') ?></textarea>
+        </div>
+        
 
-      <div class="form-group">
-          <label>Status</label>
-          <select name="status">
-              <option value="draft" <?= ($event && $event['status'] === 'draft') ? 'selected' : '' ?>>Draft</option>
-              <option value="active" <?= ($event && $event['status'] === 'active') ? 'selected' : '' ?>>Active</option>
-              <option value="completed" <?= ($event && $event['status'] === 'completed') ? 'selected' : '' ?>>Completed</option>
-          </select>
-      </div>
+    </div>
 
-      <div class="form-group">
-          <label>Connect to Home Event Card</label>
-          <select name="home_event_card_id">
-              <option value="">-- Do not connect / None --</option>
-              <?php foreach ($homeCards as $card): ?>
-                  <option value="<?= $card['id'] ?>"><?= htmlspecialchars($card['event_title']) ?></option>
-              <?php endforeach; ?>
-          </select>
-          <small class="text-muted" style="display:block; margin-top:5px;">Selecting a card here will automatically update its link on the home page to point to this event.</small>
-      </div>
-      
-      <div class="form-group">
-          <label>Hero Banner (Upload Image)</label>
-          <input type="hidden" name="banner" value="<?= $event ? htmlspecialchars($event['banner'] ?? '') : '' ?>">
-          <input type="file" name="hero_banner_file" accept="image/*" style="margin-top: 10px;">
-      </div>
-      
-      <input type="hidden" name="thumbnail" value="<?= $event ? htmlspecialchars($event['thumbnail'] ?? '') : '' ?>">
+    <div class="card">
+        <div class="card-title">Media & Buttons</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Hero Banner (Detail Page Header)</label>
+                <input type="file" name="hero_banner" class="form-control" accept="image/*" style="margin-bottom: 5px;">
+                <input type="url" name="hero_banner_url" class="form-control" placeholder="OR enter image URL...">
+                <?php if (!empty($event['hero_banner'])): ?>
+                    <img src="<?= $event['hero_banner'] ?>" style="height: 60px; margin-top: 10px; border-radius: 4px;">
+                <?php endif; ?>
+            </div>
+            <div class="form-group">
+                <label>Carousel Image (Home Page Thumbnail)</label>
+                <input type="file" name="carousel_img" class="form-control" accept="image/*" style="margin-bottom: 5px;">
+                <input type="url" name="carousel_img_url" class="form-control" placeholder="OR enter image URL...">
+                <?php if (!empty($event['carousel_img'])): ?>
+                    <img src="<?= $event['carousel_img'] ?>" style="height: 60px; margin-top: 10px; border-radius: 4px;">
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label>Full-Width Home Banner (2nd Image)</label>
+                <input type="file" name="home_banner_img" class="form-control" accept="image/*" style="margin-bottom: 5px;">
+                <input type="url" name="home_banner_img_url" class="form-control" placeholder="OR enter image URL...">
+                <?php if (!empty($event['home_banner_img'])): ?>
+                    <img src="<?= $event['home_banner_img'] ?>" style="height: 60px; margin-top: 10px; border-radius: 4px;">
+                <?php endif; ?>
+                <p style="font-size: 0.8rem; color: #9aa0b4; margin-top: 5px;">This is the large 2nd image rendered at the bottom of the home page (formerly Events Cards).</p>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Button Text</label>
+                <input type="text" name="btn_text" class="form-control" value="<?= htmlspecialchars($event['btn_text'] ?? 'Explore') ?>">
+            </div>
+            <div class="form-group">
+                <label>Button URL (Leave blank to auto-generate details page)</label>
+                <input type="text" name="btn_url" class="form-control" placeholder="https://..." value="<?= htmlspecialchars($event['btn_url'] ?? '') ?>">
+            </div>
+        </div>
+    </div>
 
-      <div class="form-group">
-          <label>Start Date</label>
-          <input type="date" name="start_date" required value="<?= $event ? htmlspecialchars($event['start_date'] ?? '') : '' ?>">
-      </div>
+    <div class="card">
+        <div class="card-title">SEO & Display</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>SEO Meta Title</label>
+                <input type="text" name="seo_title" class="form-control" value="<?= htmlspecialchars($event['seo_title'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Custom Slug (Auto-generated if blank)</label>
+                <input type="text" name="slug" class="form-control" value="<?= htmlspecialchars($event['slug'] ?? '') ?>">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>SEO Description</label>
+            <textarea name="seo_desc" class="form-control" rows="2"><?= htmlspecialchars($event['seo_desc'] ?? '') ?></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>SEO Keywords (Comma separated)</label>
+            <input type="text" name="seo_keywords" class="form-control" value="<?= htmlspecialchars($event['seo_keywords'] ?? '') ?>">
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Display Order (Lower = First)</label>
+                <input type="number" name="display_order" class="form-control" value="<?= (int)($event['display_order'] ?? 0) ?>">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status" class="form-control">
+                    <option value="draft" <?= ($event['status'] ?? '') === 'draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="published" <?= ($event['status'] ?? '') === 'published' ? 'selected' : '' ?>>Published</option>
+                </select>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 30px;">
+                <input type="checkbox" name="is_featured" value="1" <?= (!empty($event['is_featured'])) ? 'checked' : '' ?> style="width: 20px; height: 20px;">
+                <label style="margin-bottom: 0;">Featured Event</label>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 30px;">
+                <input type="checkbox" name="show_home_banner" value="1" <?= (!empty($event['show_home_banner'])) ? 'checked' : '' ?> style="width: 20px; height: 20px;">
+                <label style="margin-bottom: 0;">Display 2nd Banner on Home Page</label>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 30px;">
+                <input type="checkbox" name="show_in_overseas" value="1" <?= (!empty($event['show_in_overseas'])) ? 'checked' : '' ?> style="width: 20px; height: 20px;">
+                <label style="margin-bottom: 0;">Display in Overseas & Indian States Carousel</label>
+            </div>
+        </div>
+    </div>
 
-      <div class="form-group">
-          <label>Timer Start Date / Today's Date</label>
-          <p style="font-size: 12px; color: #666; margin-top: -5px; margin-bottom: 5px;">If set, the countdown timer will count down exactly as if today is this date.</p>
-          <input type="date" name="timer_start_date" value="<?= $event ? htmlspecialchars($event['timer_start_date'] ?? '') : '' ?>">
-      </div>
-
-      <div class="form-group">
-          <label>Location (e.g. Shree Shiv Chhatrapati Sports Complex, Pune)</label>
-          <input type="text" name="location" value="<?= $event ? htmlspecialchars($event['location'] ?? '') : '' ?>">
-      </div>
-      
-      <div class="form-group">
+          <div class="form-group">
           <label>End Date</label>
           <input type="date" name="end_date" required value="<?= $event ? htmlspecialchars($event['end_date'] ?? '') : '' ?>">
       </div>
@@ -407,6 +1019,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="form-group">
           <label>Description</label>
           <textarea name="description" rows="5"><?= $event ? htmlspecialchars($event['description'] ?? '') : '' ?></textarea>
+      </div>
+
+      <div class="form-group">
+          <label>Custom HTML / Rich Text Section (Optional)</label>
+          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 8px;">Use this field to paste completely custom layouts, such as the Thailand Festival Concept. This will be rendered directly on the Event Details page below the overview.</p>
+          <textarea name="custom_html" rows="10" style="font-family: monospace;"><?= $event ? htmlspecialchars($event['custom_html'] ?? '') : '' ?></textarea>
+      </div>
+
+      <div class="dynamic-block">
+          <h3>Event-Specific Delegate Pricing (Optional)</h3>
+          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 15px;">Leave blank to use the global delegate fee set in Delegate Settings.</p>
+          <div class="form-group" style="display: flex; gap: 15px;">
+              <div style="flex: 1;">
+                  <label>Delegate Registration Fee</label>
+                  <input type="number" step="0.01" name="delegate_fee" value="<?= $event ? htmlspecialchars($event['delegate_fee'] ?? '') : '' ?>" placeholder="e.g. 200.00">
+              </div>
+              <div style="flex: 1;">
+                  <label>Currency</label>
+                  <select name="delegate_currency">
+                      <option value="">Select Currency...</option>
+                      <option value="USD" <?= ($event && ($event['delegate_currency'] ?? '') == 'USD') ? 'selected' : '' ?>>USD ($)</option>
+                      <option value="EUR" <?= ($event && ($event['delegate_currency'] ?? '') == 'EUR') ? 'selected' : '' ?>>EUR (€)</option>
+                      <option value="GBP" <?= ($event && ($event['delegate_currency'] ?? '') == 'GBP') ? 'selected' : '' ?>>GBP (£)</option>
+                      <option value="AED" <?= ($event && ($event['delegate_currency'] ?? '') == 'AED') ? 'selected' : '' ?>>AED</option>
+                      <option value="INR" <?= ($event && ($event['delegate_currency'] ?? '') == 'INR') ? 'selected' : '' ?>>INR (₹)</option>
+                  </select>
+              </div>
+          </div>
       </div>
       <!-- Event Schedule Section -->
       <hr>
@@ -422,6 +1062,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           ?>
       </div>
       <button type="button" class="btn-gold" style="font-size: 14px; padding: 6px 15px; margin-bottom: 20px;" onclick="addScheduleItem()">+ Add Schedule Item</button>
+
+      <!-- Sports Categories Section -->
+      <hr>
+      <h3>Sports Categories (Dynamic)</h3>
+      <p style="color:#666; margin-bottom: 15px;">Add sports categories for this event (Badminton, Football, etc.).</p>
+      
+      <div id="sports-container">
+          <?php 
+          $sports = [];
+          if ($event && !empty($event['sports_data'])) {
+              $sports = json_decode($event['sports_data'], true) ?? [];
+          }
+          ?>
+      </div>
+      <button type="button" class="btn-gold" style="font-size: 14px; padding: 6px 15px; margin-bottom: 20px;" onclick="addSportItem()">+ Add Sport Category</button>
 
       <!-- Sponsorship Opportunities Section -->
       <hr>
@@ -511,39 +1166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <button type="button" class="btn-gold" style="font-size: 14px; padding: 6px 15px; margin-bottom: 20px;" onclick="addGalaPass()">+ Add Gala Pass</button>
 
-
-      <div class="form-group">
-          <button type="submit" class="btn-gold">Save Event Data</button>
-      </div>
-  </form>
-  
-  <?php if ($eventId): ?>
-  <div class="danger-zone" style="margin-top: 40px; padding: 25px; border: 1px solid #dc3545; border-radius: 8px; background: rgba(220, 53, 69, 0.05);">
-      <h3 style="color: #dc3545; margin-bottom: 10px; font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
-      <p style="color: #f8d7da; margin-bottom: 20px; font-size: 14px;">Once you delete an event, there is no going back. Please be certain.</p>
-      <button type="button" class="btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'" onclick="confirmDelete(<?= $eventId ?>)">
-          <i class="fas fa-trash-alt"></i> Delete Event
-      </button>
-  </div>
-
-  <script>
-  function confirmDelete(eventId) {
-      let pwd = prompt("Security Check: Please enter the admin password to delete this event.");
-      const requiredPwd = <?= json_encode($deleteEventPassword) ?>;
-      if (pwd === requiredPwd) {
-          window.location.href = "?delete=" + eventId;
-      } else if (pwd !== null && pwd !== "") {
-          alert("Incorrect password! Event deletion cancelled.");
-      }
-  }
-  </script>
-  <?php endif; ?>
-
-</div>
-
 <script>
     // Initial exhibitor data loaded from DB
-    const existingExhibitors = <?= json_encode($exhibitors) ?>;
+    const existingExhibitors = <?= json_encode($exhibitors ?? []) ?>;
     const exhibitorsContainer = document.getElementById('exhibitors-container');
 
     function createExhibitorBlock(title = '', icon = 'fa-store', size = '', desc = '', price = '', badge = '', currency = 'INR') {
@@ -767,6 +1392,131 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     }
 
+    // Initial sports data loaded from DB
+    const existingSports = <?= json_encode($sports) ?>;
+    const sportsContainer = document.getElementById('sports-container');
+
+    function createSportBlock(title = '', icon = 'fa-table-tennis', image = '', prize = '', badge = 'Popular', cats = '', pInd = '', pPair = '', pTeam = '', currency = 'INR', prize_currency = 'INR') {
+        title = String(title ?? ''); icon = String(icon ?? 'fa-table-tennis'); image = String(image ?? ''); prize = String(prize ?? ''); badge = String(badge ?? 'Popular'); cats = String(cats ?? ''); pInd = String(pInd ?? ''); pPair = String(pPair ?? ''); pTeam = String(pTeam ?? ''); currency = String(currency ?? 'INR'); prize_currency = String(prize_currency ?? 'INR');
+        const standardIcons = ['fa-table-tennis', 'fa-futbol', 'fa-basketball-ball', 'fa-volleyball-ball', 'fa-baseball-ball', 'fa-running', 'fa-swimmer', 'fa-dumbbell', 'fa-biking', 'fa-medal', 'fa-trophy'];
+        const isStandard = standardIcons.includes(icon) || icon === '';
+
+        const div = document.createElement('div');
+        div.className = 'dynamic-block';
+        
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <strong style="color:#c5a85c; font-size: 16px;">Sport Category</strong>
+                <button type="button" style="background: transparent; border: 1px solid #dc3545; color: #dc3545; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#dc3545'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='#dc3545';" onclick="this.parentElement.parentElement.remove()">X Remove</button>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label>Sport Title</label>
+                    <input type="text" name="sport_title[]" value="${title.replace(/"/g, '&quot;')}" placeholder="e.g. Badminton Championship">
+                </div>
+                <div style="flex:1;">
+                    <label>Sport Icon</label>
+                    <select style="margin-bottom: 5px; width: 100%; padding: 5px;" onchange="
+                        if(this.value === 'custom') {
+                            this.nextElementSibling.style.display = 'block';
+                            this.nextElementSibling.value = '';
+                            this.nextElementSibling.focus();
+                        } else {
+                            this.nextElementSibling.style.display = 'none';
+                            this.nextElementSibling.value = this.value;
+                        }
+                    ">
+                        <option value="fa-table-tennis" ${icon === 'fa-table-tennis' ? 'selected' : ''}>Table Tennis</option>
+                        <option value="fa-futbol" ${icon === 'fa-futbol' ? 'selected' : ''}>Football / Soccer</option>
+                        <option value="fa-basketball-ball" ${icon === 'fa-basketball-ball' ? 'selected' : ''}>Basketball</option>
+                        <option value="fa-volleyball-ball" ${icon === 'fa-volleyball-ball' ? 'selected' : ''}>Volleyball</option>
+                        <option value="fa-baseball-ball" ${icon === 'fa-baseball-ball' ? 'selected' : ''}>Baseball / Cricket</option>
+                        <option value="fa-running" ${icon === 'fa-running' ? 'selected' : ''}>Athletics / Running</option>
+                        <option value="fa-swimmer" ${icon === 'fa-swimmer' ? 'selected' : ''}>Swimming</option>
+                        <option value="fa-dumbbell" ${icon === 'fa-dumbbell' ? 'selected' : ''}>Gym / Fitness</option>
+                        <option value="fa-biking" ${icon === 'fa-biking' ? 'selected' : ''}>Cycling</option>
+                        <option value="fa-medal" ${icon === 'fa-medal' ? 'selected' : ''}>General Match / Medal</option>
+                        <option value="fa-trophy" ${icon === 'fa-trophy' ? 'selected' : ''}>Tournament / Trophy</option>
+                        <option value="custom" ${!isStandard ? 'selected' : ''}>Other (Custom Icon Class)</option>
+                    </select>
+                    <input type="text" name="sport_icon[]" value="${icon.replace(/"/g, '&quot;')}" style="display: ${isStandard ? 'none' : 'block'}; width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;" placeholder="e.g. fa-golf-ball">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+                <label>Sport Image (URL or File Upload) - Replaces icon if provided</label>
+                <input type="text" name="sport_image_existing[]" value="${image.replace(/"/g, '&quot;')}" placeholder="Existing URL or leave blank to upload new" style="margin-bottom: 5px;">
+                <input type="file" name="sport_image_file[]" accept="image/*">
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1; display:flex; gap:10px;">
+                    <div style="flex:1;">
+                        <label>Currency</label>
+                        <select name="sport_prize_currency[]" style="width: 100%;">
+                            <option value="INR" ${prize_currency === 'INR' ? 'selected' : ''}>INR (?)</option>
+                            <option value="USD" ${prize_currency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                        </select>
+                    </div>
+                    <div style="flex:2;">
+                        <label>Prize Pool</label>
+                        <input type="text" name="sport_prize[]" value="${prize.replace(/"/g, '&quot;')}" placeholder="e.g. 2,50,000">
+                    </div>
+                </div>
+                <div style="flex:1;">
+                    <label>Top Badge</label>
+                    <select name="sport_badge[]">
+                        <option value="Popular" ${badge === 'Popular' ? 'selected' : ''}>Popular</option>
+                        <option value="Trending" ${badge === 'Trending' ? 'selected' : ''}>Trending</option>
+                        <option value="Premium" ${badge === 'Premium' ? 'selected' : ''}>Premium</option>
+                        <option value="Featured" ${badge === 'Featured' ? 'selected' : ''}>Featured</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+                <label>Categories</label>
+                <select multiple style="width:100%; height:150px; padding:5px; border:1px solid #ccc; border-radius:4px;" onchange="
+                    const vals = Array.from(this.selectedOptions).map(opt => opt.value);
+                    this.nextElementSibling.value = vals.join(', ');
+                ">
+                    ${ ['U14', 'U16', 'U18', 'Open', 'Doubles', 'Corporate'].map(opt => `
+                        <option value="${opt}" ${cats.split(',').map(s=>s.trim()).includes(opt) ? 'selected' : ''}>${opt}</option>
+                    `).join('') }
+                </select>
+                <input type="hidden" name="sport_categories[]" value="${cats.replace(/"/g, '&quot;')}">
+                <small style="color:#666;">Hold Ctrl (Windows) or Cmd (Mac) to select multiple options.</small>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label>Currency</label>
+                    <select name="sport_currency[]" style="width: 100%;">
+                        <option value="INR" ${currency === 'INR' ? 'selected' : ''}>INR (?)</option>
+                        <option value="USD" ${currency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label>Individual Price (,1)</label>
+                    <input type="text" name="sport_price_individual[]" value="${pInd.replace(/"/g, '&quot;')}" placeholder="Leave blank if N/A">
+                </div>
+                <div style="flex:1;">
+                    <label>Pair Price (,1)</label>
+                    <input type="text" name="sport_price_pair[]" value="${pPair.replace(/"/g, '&quot;')}" placeholder="Leave blank if N/A">
+                </div>
+                <div style="flex:1;">
+                    <label>Team Price (,1)</label>
+                    <input type="text" name="sport_price_team[]" value="${pTeam.replace(/"/g, '&quot;')}" placeholder="Leave blank if N/A">
+                </div>
+            </div>
+        `;
+        return div;
+    }
+
+    function addSportItem() {
+        sportsContainer.appendChild(createSportBlock());
+    }
+
+    existingSports.forEach(s => {
+        sportsContainer.appendChild(createSportBlock(s.title, s.icon, s.image || '', s.prize, s.badge, s.categories, s.price_individual, s.price_pair, s.price_team, s.currency, s.prize_currency));
+    });
+
     // Initial schedule data loaded from DB
     const existingSchedules = <?= json_encode($schedules) ?>;
     const container = document.getElementById('schedule-container');
@@ -812,6 +1562,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 
+<div style="margin-bottom: 100px;">
+        <button type="submit" class="btn-gold">Save Event</button>
+    </div>
+  </form>
 </div>
+
+
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

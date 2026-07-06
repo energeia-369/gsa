@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /Mithraa_E_Project/project/
+
+# Home Carousel Dynamic Pages
+RewriteRule ^home/events/([a-zA-Z0-9-]+)/?$ home-event-details.php?slug=$1 [QSA,L]
+
+# GSA Carousel Dynamic Pages (Phase 5/6)
+RewriteRule ^gsa/events/([a-zA-Z0-9-]+)/?$ gsa-event-details.php?slug=$1 [QSA,L]

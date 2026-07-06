@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/navbar.php';
 
 <link rel="stylesheet" href="assets/css/PaymentSuccess.css?v=2">
 
-<div class="success-page overflow-x-hidden" style="background: #0b0c10; font-family: Outfit, sans-serif">
+<div class="success-page overflow-x-hidden" style="background: #0b0c10; font-family: Inter, sans-serif">
   <div class="bg-animation">
     <div class="circle circle-1" style="background: rgba(197, 168, 92, 0.05)"></div>
     <div class="circle circle-2" style="background: rgba(197, 168, 92, 0.03)"></div>

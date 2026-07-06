@@ -20,31 +20,66 @@ $dynamicBlogs = [];
 try {
     $dbConn = Database::getConnection();
     
-    // Fetch dynamic event cards from the new isolated table
-    $cardsStmt = $dbConn->query("SELECT * FROM home_carousel_events WHERE status = 'active' ORDER BY id ASC");
+    // Fetch NEW dynamic home carousel events (Exclude those marked for Overseas/Indian States carousel)
+    $newCarouselStmt = $dbConn->query("SELECT * FROM home_carousel_events WHERE status = 'published' AND show_on_home = 1 AND show_in_overseas = 0 ORDER BY display_order ASC");
+    $dynamicHomeCarousel = $newCarouselStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Legacy fallback queries
+    $cardsStmt = $dbConn->query("SELECT * FROM home_event_cards WHERE status = 'active' ORDER BY id ASC");
     $dbCarouselCards = $cardsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch custom full-width image banners from home_event_cards
-    $stmtEventCards = $dbConn->query("SELECT * FROM home_event_cards WHERE status = 'active' ORDER BY id DESC");
+    // Fetch custom full-width image banners from home_carousel_events
+    $stmtEventCards = $dbConn->query("SELECT * FROM home_carousel_events WHERE status = 'published' AND show_home_banner = 1 ORDER BY display_order ASC, id DESC");
     $homeEventCards = $stmtEventCards->fetchAll(PDO::FETCH_ASSOC);
 
     
     $dynamicCards = [];
     foreach ($dbCarouselCards as $c) {
-        $link = ($c['dynamic_page_enabled'] == 1) ? 'home-event.php?slug=' . $c['slug'] : $c['button_link'];
+        $isDynamic = $c['dynamic_page_enabled'] ?? 0;
+        $btnLink = $c['link'] ?? $c['button_link'] ?? '#';
+        $slug = $c['slug'] ?? '';
+        $link = ($isDynamic == 1 && $slug !== '') ? 'home-event.php?slug=' . $slug : $btnLink;
         
-        $type = (strtolower(trim($c['country'])) === 'india' || in_array(strtolower(trim($c['country'])), ['maharashtra', 'karnataka', 'tamil nadu', 'delhi', 'goa', 'kerala', 'rajasthan', 'gujarat', 'pune'])) ? 'national' : 'international';
+        $countryStr = $c['country'] ?? '';
+        if(isset($c['country_or_state'])) $countryStr = $c['country_or_state'];
+        $type = (strtolower(trim($countryStr)) === 'india' || in_array(strtolower(trim($countryStr)), ['maharashtra', 'karnataka', 'tamil nadu', 'delhi', 'goa', 'kerala', 'rajasthan', 'gujarat', 'pune', 'mumbai', 'bangalore'])) ? 'national' : 'international';
 
         $dynamicCards[] = [
             'id' => (int)$c['id'],
-            'event_title' => $c['title'], // For the custom banners
-            'image' => $c['thumbnail'],
-            'country' => strtoupper($c['country']),
-            'city' => $c['location'],
-            'date' => $c['event_date'],
+            'event_title' => $c['title'] ?? '', // For the custom banners
+            'image' => $c['thumbnail'] ?? '',
+            'country' => strtoupper($countryStr),
+            'city' => $c['location'] ?? '',
+            'date' => $c['event_date'] ?? '',
             'link' => $link,
             'type' => $type,
-            'country_or_state' => $c['country'] // Legacy JS compatibility
+            'country_or_state' => $countryStr // Legacy JS compatibility
+        ];
+    }
+    
+    // Fetch NEW overseas events from home_carousel_events
+    $overseasStmt = $dbConn->query("SELECT * FROM home_carousel_events WHERE status = 'published' AND show_in_overseas = 1 ORDER BY display_order ASC");
+    $newOverseasCards = $overseasStmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($newOverseasCards as $c) {
+        $slug = $c['slug'] ?? '';
+        $btnLink = $c['btn_url'] ?? '';
+        $link = (!empty($btnLink)) ? $btnLink : 'home/events/' . $slug;
+        
+        $countryStr = $c['country'] ?? '';
+        if (empty($countryStr)) $countryStr = $c['state'] ?? '';
+        
+        $type = (strtolower(trim($countryStr)) === 'india' || in_array(strtolower(trim($countryStr)), ['maharashtra', 'karnataka', 'tamil nadu', 'delhi', 'goa', 'kerala', 'rajasthan', 'gujarat', 'pune'])) ? 'national' : 'international';
+
+        $dynamicCards[] = [
+            'id' => (int)$c['id'] + 1000, // offset id to avoid conflicts
+            'event_title' => $c['title'] ?? '', 
+            'image' => $c['carousel_img'] ?: $c['hero_banner'] ?: '',
+            'country' => strtoupper($countryStr),
+            'city' => $c['state'] ?? '',
+            'date' => $c['event_date'] ?? '',
+            'link' => $link,
+            'type' => $type,
+            'country_or_state' => $countryStr // Legacy JS compatibility
         ];
     }
 
@@ -61,6 +96,10 @@ try {
             $dbPartners = $pStmt->fetchAll(PDO::FETCH_ASSOC);
         }
     } catch (Exception $e) { /* table may not exist yet */ }
+
+    // Fetch dynamic GSA Tournaments
+    $gsaStmt = $dbConn->query("SELECT * FROM home_carousel_events WHERE status = 'published' AND show_on_gsa = 1 ORDER BY display_order ASC LIMIT 6");
+    $dbTournaments = $gsaStmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (Exception $e) {
     error_log("Failed to load data: " . $e->getMessage());
@@ -149,7 +188,68 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
     </div>
   </section>
 
-  <!-- 2. OUR FLAGSHIP EVENTS -->
+  <!-- DYNAMIC HOME CAROUSEL -->
+  <?php if (!empty($dynamicHomeCarousel)): ?>
+  <section class="dynamic-carousel-section" style="padding: 40px 0; background-color: var(--bg-primary);">
+    <div class="section-premium-title">
+      <h2>FEATURED EVENTS</h2>
+    </div>
+    
+    <div class="destinations-slider-container">
+      <button class="slider-control-btn prev" onclick="scrollDynamicCarousel('left')">
+        <span class="chevron-icon">◀</span>
+      </button>
+      
+      <div class="destinations-slider" id="dynamic-carousel-slider" style="display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 20px;">
+        <?php foreach ($dynamicHomeCarousel as $evt): ?>
+            <?php 
+                $catLower = strtolower($evt['category'] ?? '');
+                $themeClass = '';
+                if ($catLower === 'nexus') $themeClass = 'theme-card-nexus';
+                elseif ($catLower === 'maytriya') $themeClass = 'theme-card-maytriya';
+                elseif ($catLower === 'gsa') $themeClass = 'theme-card-gsa';
+                else $themeClass = 'theme-card-default';
+            ?>
+            <div class="creative-card <?= $themeClass ?>" style="min-width: 300px; max-width: 350px; background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('<?= htmlspecialchars($evt['carousel_img'] ?: $evt['hero_banner']) ?>'); background-size: cover; background-position: center; border-radius: 15px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <?php if ($evt['category']): ?>
+                        <span style="background: rgba(197, 168, 92, 0.9); color: #000; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;"><?= htmlspecialchars(strtoupper($evt['category'])) ?></span>
+                    <?php endif; ?>
+                    <h3 style="margin-top: 15px; font-size: 1.5rem; text-transform: uppercase;"><?= htmlspecialchars($evt['title']) ?></h3>
+                    <?php if ($evt['country'] || $evt['state']): ?>
+                        <p style="color: #c5a85c; font-size: 0.9rem; margin-bottom: 10px;">📍 <?= htmlspecialchars(implode(', ', array_filter([$evt['state'], $evt['country']]))) ?></p>
+                    <?php endif; ?>
+                    <p style="font-size: 0.9rem; opacity: 0.9; line-height: 1.4;"><?= htmlspecialchars($evt['short_desc']) ?></p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="<?= htmlspecialchars($evt['btn_url'] ?: 'home/events/' . $evt['slug']) ?>" class="btn-premium-gold" style="display: inline-block; padding: 8px 15px; font-size: 0.9rem; border-radius: 5px; text-decoration: none;">
+                        <?= htmlspecialchars($evt['btn_text'] ?: 'Explore') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+      </div>
+
+      <button class="slider-control-btn next" onclick="scrollDynamicCarousel('right')">
+        <span class="chevron-icon">▶</span>
+      </button>
+    </div>
+  </section>
+
+  <script>
+    function scrollDynamicCarousel(direction) {
+        const slider = document.getElementById('dynamic-carousel-slider');
+        const scrollAmount = 320;
+        if (direction === 'left') {
+            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }
+  </script>
+
+  <?php else: ?>
+  <!-- 2. OUR FLAGSHIP EVENTS (STATIC FALLBACK) -->
   <section class="flagship-events-section" id="flagship-events">
     <div class="section-premium-title flagship-title">
       <h2>OUR FLAGSHIP EVENTS</h2>
@@ -254,10 +354,10 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
   <!-- Dynamic Home Event Cards (Admin Managed) -->
   <?php foreach ($homeEventCards as $card): ?>
   <section class="custom-image-banner-section" style="padding: 0 5% 60px; background-color: var(--bg-primary); text-align: center;">
-    <a href="<?php echo htmlspecialchars(!empty($card['link']) ? $card['link'] : '#'); ?>" style="display: block; max-width: 800px; margin: 0 auto; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.015)';" onmouseout="this.style.transform='scale(1)';">
-      <img src="<?php echo htmlspecialchars($card['image']); ?>" alt="<?php echo htmlspecialchars($card['event_title']); ?>" class="theme-card-dark" style="width: 100%; height: auto; display: block; border-radius: 30px;" />
+    <a href="<?php echo htmlspecialchars(!empty($card['btn_url']) ? $card['btn_url'] : 'home/events/' . $card['slug']); ?>" style="display: block; max-width: 800px; margin: 0 auto; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.015)';" onmouseout="this.style.transform='scale(1)';">
+      <img src="<?php echo htmlspecialchars($card['home_banner_img'] ?: $card['carousel_img'] ?: $card['hero_banner']); ?>" alt="<?php echo htmlspecialchars($card['title']); ?>" class="theme-card-dark" style="width: 100%; height: auto; display: block; border-radius: 30px;" />
       <!-- Assuming we use the same image for light mode for user uploads unless specified otherwise -->
-      <img src="<?php echo htmlspecialchars($card['image']); ?>" alt="<?php echo htmlspecialchars($card['event_title']); ?>" class="theme-card-light" style="width: 100%; height: auto; display: none; border-radius: 30px;" />
+      <img src="<?php echo htmlspecialchars($card['home_banner_img'] ?: $card['carousel_img'] ?: $card['hero_banner']); ?>" alt="<?php echo htmlspecialchars($card['title']); ?>" class="theme-card-light" style="width: 100%; height: auto; display: none; border-radius: 30px;" />
     </a>
   </section>
   <?php endforeach; ?>
@@ -290,7 +390,9 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
         <span class="chevron-icon">▶</span>
       </button>
     </div>
+    </div>
   </section>
+  <?php endif; // End of Dynamic/Static Switch ?>
 
   <!-- 4. NXL CREDITS & WALLET WORKFLOW -->
   <section class="nxl-wallet-section">
@@ -605,16 +707,18 @@ foreach ($tierMetadata as $tierKey => $meta) {
         <?php
           // Handle DB column names vs default array keys
           $tId = $tournament['id'];
-          $tName = $tournament['name'] ?? $tournament['tournament_name'] ?? 'Tournament';
-          $tSport = $tournament['sport'] ?? $tournament['sport_name'] ?? 'Sports';
-          $tVenue = $tournament['venue'] ?? $tournament['location'] ?? 'Arena';
+          $tName = $tournament['name'] ?? $tournament['title'] ?? $tournament['tournament_name'] ?? 'Tournament';
+          $tSport = $tournament['sport'] ?? $tournament['category'] ?? $tournament['sport_category'] ?? 'Sports';
+          $tVenue = $tournament['venue'] ?? $tournament['gala_venue'] ?? 'Arena';
           $tDate = $tournament['date'] ?? $tournament['event_date'] ?? 'Scheduled';
-          $tFee = $tournament['registration_fee'] ?? $tournament['entry_fee'] ?? 0;
-          $tBadge = $tournament['badge'] ?? 'Live Pool';
+          $tFee = $tournament['registration_fee'] ?? $tournament['prize_pool'] ?? 0;
+          $tBadge = $tournament['badge'] ?? ($tournament['status'] === 'published' ? 'Live Pool' : ($tournament['reg_status'] ?? 'Live Pool'));
+          $slug = $tournament['slug'] ?? '';
+          $targetUrl = !empty($slug) ? "home/events/" . urlencode($slug) : "register.php";
         ?>
-        <div class="event-card" onclick="window.location.href='event-registration.php'" style="background: rgba(22, 24, 38, 0.95); cursor: pointer;">
+        <div class="event-card" onclick="window.location.href='<?= htmlspecialchars($targetUrl) ?>'" style="background: rgba(22, 24, 38, 0.95); cursor: pointer;">
           <div class="event-image">🏆</div>
-          <div class="event-badge"><?php echo htmlspecialchars($tBadge); ?></div>
+          <div class="event-badge" style="text-transform: uppercase;"><?php echo htmlspecialchars($tBadge); ?></div>
           <h3><?php echo htmlspecialchars($tName); ?></h3>
           
           <div class="event-details">
@@ -628,12 +732,12 @@ foreach ($tierMetadata as $tierKey => $meta) {
             </p>
             <p class="event-price" style="color: #c5a85c; font-weight: bold;">
               <span class="event-icon">💰</span>
-              Fee: ₹<?php echo htmlspecialchars($tFee); ?>
+              Pool: <?php echo htmlspecialchars($tFee); ?>
             </p>
           </div>
 
           <button class="book-btn">
-            Book Tournament Now <span>→</span>
+            View Details <span>→</span>
           </button>
         </div>
       <?php endforeach; ?>
@@ -642,53 +746,62 @@ foreach ($tierMetadata as $tierKey => $meta) {
 </div>
 
 <script>
-// Destinations array
-const defaultDestinations = [
-    { id: 1, country: "INDIA", image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=500&auto=format&fit=crop&q=60", date: "24-26 July 2026", city: "Pune / Mumbai", region: "India", link: "gsa-pune-2026.php" },
-    { id: 2, country: "SINGAPORE", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=500&auto=format&fit=crop&q=60", date: "18-20 Sept 2026", city: "Singapore", region: "Singapore", link: "#" },
-    { id: 3, country: "SWITZERLAND", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60", date: "May - Sep", city: "Zurich", region: "Switzerland", link: "#" },
-    { id: 4, country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=60", date: "23-25 Oct 2026", city: "Dubai / Abu Dhabi", region: "UAE", link: "#" },
-    { id: 5, country: "THAILAND", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=500&auto=format&fit=crop&q=60", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
-    { id: 6, country: "USA - LAS VEGAS", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "Las Vegas", region: "USA", link: "#" },
-    { id: 7, country: "USA - NEW YORK", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
-    { id: 8, country: "MALAYSIA", image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Kuala Lumpur", region: "Malaysia", link: "#" },
-    { id: 9, country: "INDONESIA", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&auto=format&fit=crop&q=60", date: "22-24 Jan 2026", city: "Bali / Jakarta", region: "Indonesia", link: "#" },
-    { id: 10, country: "VIETNAM", image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=500&auto=format&fit=crop&q=60", date: "19-21 Feb 2026", city: "Ho Chi Minh", region: "Vietnam", link: "#" },
-    { id: 11, country: "AUSTRALIA", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=500&auto=format&fit=crop&q=60", date: "19-21 March 2026", city: "Sydney", region: "Australia", link: "#" },
-    { id: 12, country: "GERMANY", image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=500&auto=format&fit=crop&q=60", date: "23-25 April 2026", city: "Berlin", region: "Germany", link: "#" },
-    { id: 13, country: "UNITED KINGDOM", image: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=500&auto=format&fit=crop&q=60", date: "21-23 May 2026", city: "London", region: "UK", link: "#" },
-    { id: 14, country: "CANADA", image: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=500&auto=format&fit=crop&q=60", date: "18-20 June 2026", city: "Toronto", region: "Canada", link: "#" }
-];
+  // Destinations array
+  const defaultDestinations = [
+    { id: 2, country: 'SINGAPORE', city: 'Marina Bay', region: 'Central Core', image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80', link: '#', date: 'Oct 2026', type: 'international' },
+    { id: 4, country: 'DUBAI', city: 'Downtown', region: 'UAE', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80', link: '#', date: 'Nov 2026', type: 'international' },
+    { id: 13, country: 'LONDON', city: 'Wembley', region: 'UK', image: 'https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=800&q=80', link: '#', date: 'Dec 2026', type: 'international' },
+    { id: 7, country: 'NEW YORK', city: 'Manhattan', region: 'USA', image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80', link: '#', date: 'Jan 2027', type: 'international' }
+  ];
+  
+  const dynamicCardsFromDB = <?php echo json_encode($dynamicCards); ?>;
+  
+  // Update links for existing default destinations AND push new ones from DB
+  const defaultNationalDestinations = [
+    { id: 101, country: 'MUMBAI', city: 'Bandra', region: 'Maharashtra', image: 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=800&q=80', link: '#', date: 'Oct 2026', type: 'national' },
+    { id: 103, country: 'DELHI', city: 'CP', region: 'Delhi', image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=80', link: '#', date: 'Nov 2026', type: 'national' },
+    { id: 102, country: 'BANGALORE', city: 'Whitefield', region: 'Karnataka', image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&q=80', link: '#', date: 'Dec 2026', type: 'national' },
+    { id: 104, country: 'GOA', city: 'Panaji', region: 'Goa', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80', link: '#', date: 'Jan 2027', type: 'national' }
+  ];
 
-const dynamicCardsFromDB = <?php echo json_encode($dynamicCards); ?>;
-
-// Update the links in defaultDestinations if an admin set a custom link
-defaultDestinations.forEach(dest => {
-    const match = dynamicCardsFromDB.find(card => card.country_or_state.toUpperCase() === dest.country);
-    if (match && match.link) {
-        dest.link = match.link;
-    }
-});
-
-const defaultNationalDestinations = [
-    { id: 108, country: "TAMIL NADU", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=500&auto=format&fit=crop&q=60", date: "July - Aug 2026", city: "Coimbatore", region: "Tamil Nadu", type: "national", link: "#" },
-    { id: 109, country: "PUNE", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&auto=format&fit=crop&q=60", date: "Oct 2026", city: "Pune", region: "Pune", type: "national", link: "gsa-pune-2026.php" },
-    { id: 101, country: "MAHARASHTRA", image: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=500&auto=format&fit=crop&q=60", date: "10-12 Aug 2026", city: "Mumbai / Pune", region: "India", type: "national", link: "gsa-pune-2026.php" },
-    { id: 102, country: "KARNATAKA", image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=500&auto=format&fit=crop&q=60", date: "15-17 Sept 2026", city: "Bangalore", region: "India", type: "national", link: "#" },
-    { id: 103, country: "DELHI", image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=500&auto=format&fit=crop&q=60", date: "05-07 Oct 2026", city: "New Delhi", region: "India", type: "national", link: "#" },
-    { id: 104, country: "GOA", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Panaji", region: "India", type: "national", link: "#" },
-    { id: 105, country: "KERALA", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=500&auto=format&fit=crop&q=60", date: "12-14 Dec 2026", city: "Kochi", region: "India", type: "national", link: "#" },
-    { id: 106, country: "RAJASTHAN", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=500&auto=format&fit=crop&q=60", date: "15-17 Jan 2026", city: "Jaipur", region: "India", type: "national", link: "#" },
-    { id: 107, country: "GUJARAT", image: "https://images.unsplash.com/photo-1605130284535-11dd9eedc58a?w=500&auto=format&fit=crop&q=60", date: "10-12 Feb 2026", city: "Ahmedabad", region: "India", type: "national", link: "#" }
-];
-
-// Update the links in defaultNationalDestinations if an admin set a custom link
-defaultNationalDestinations.forEach(dest => {
-    const match = dynamicCardsFromDB.find(card => card.country_or_state.toUpperCase() === dest.country);
-    if (match && match.link) {
-        dest.link = match.link;
-    }
-});
+  dynamicCardsFromDB.forEach(card => {
+      if (!card.country_or_state) return;
+      const targetCountry = card.country_or_state.toUpperCase();
+      
+      if (card.type === 'international') {
+          const match = defaultDestinations.find(dest => dest.country === targetCountry || dest.region.toUpperCase() === targetCountry);
+          if (match) {
+              if (card.link) match.link = card.link;
+          } else {
+              defaultDestinations.push({
+                  id: 'dyn_intl_' + card.id,
+                  country: targetCountry,
+                  city: card.city || targetCountry,
+                  region: targetCountry,
+                  image: card.image || '',
+                  link: card.link || '#',
+                  date: card.date || '',
+                  type: 'international'
+              });
+          }
+      } else {
+          const match = defaultNationalDestinations.find(dest => dest.country === targetCountry || dest.region.toUpperCase() === targetCountry);
+          if (match) {
+              if (card.link) match.link = card.link;
+          } else {
+              defaultNationalDestinations.push({
+                  id: 'dyn_nat_' + card.id,
+                  country: targetCountry,
+                  city: card.city || targetCountry,
+                  region: targetCountry,
+                  image: card.image || '',
+                  link: card.link || '#',
+                  date: card.date || '',
+                  type: 'national'
+              });
+          }
+      }
+  });
 
 // Partners array — always driven by DB (seeded with defaults on first visit)
 <?php
@@ -746,26 +859,30 @@ function renderDestinations() {
     const slider = document.getElementById("destinations-slider");
     if (!slider) return;
 
-    // Start with default hardcoded cards
-    let customDest = dynamicCardsFromDB || [];
-    const allDefaults = [...defaultDestinations, ...defaultNationalDestinations];
+    let finalDest = [...defaultDestinations, ...defaultNationalDestinations];
     
-    // Only update the LINK if a custom card matches the country, keep the visual data static!
-    let finalDest = allDefaults.map(d => {
-        const customOverride = customDest.find(c => c.country.toUpperCase() === d.country.toUpperCase());
-        if (customOverride && customOverride.link && customOverride.link !== '#') {
-            d.link = customOverride.link;
-        }
-        return d;
-    });
-    
-    // Append any completely new countries that admin added
-    const purelyNew = customDest.filter(c => !allDefaults.some(d => d.country.toUpperCase() === c.country.toUpperCase()));
-    finalDest = [...finalDest, ...purelyNew];
+    // Also include destinations from API (custom_destinations table)
+    if (window.apiDestinations && window.apiDestinations.length > 0) {
+        window.apiDestinations.forEach(apiDest => {
+            if (!apiDest.deleted) {
+                // Ensure no duplicates by ID
+                if (!finalDest.some(d => d.id == apiDest.id)) {
+                    finalDest.push(apiDest);
+                }
+            }
+        });
+    }
 
     // Filter by 'national' or 'international' depending on current tab
     finalDest = finalDest.filter(d => {
-        const type = d.type || (d.country.toUpperCase() === 'INDIA' ? 'national' : 'international');
+        let type = d.type || (d.country.toUpperCase() === 'INDIA' ? 'national' : 'international');
+        type = type.toLowerCase();
+        
+        // Normalize legacy types
+        if (type === 'sports') type = 'international';
+        if (type === 'overseas' || type === 'international event' || type === 'overseas event') type = 'international';
+        if (type === 'state' || type === 'indian state event') type = 'national';
+        
         return type === homeDestFilter;
     });
     

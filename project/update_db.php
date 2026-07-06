@@ -1,11 +1,9 @@
 <?php
-require 'config/Database.php';
-$pdo = Database::getConnection();
-
+require_once 'config/Database.php';
+$db = Database::getConnection();
 try {
-    $pdo->exec("ALTER TABLE events ADD COLUMN timer_start_date DATE NULL DEFAULT NULL AFTER start_date");
-    echo "Column timer_start_date added successfully.";
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    $db->exec("ALTER TABLE home_event_cards ADD COLUMN module_type VARCHAR(50) DEFAULT 'home_carousel'");
+    echo "Column added";
+} catch (Exception $e) {
+    echo "Error or column exists: " . $e->getMessage();
 }
-?>

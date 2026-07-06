@@ -2,7 +2,7 @@
   background-color: #0b0c10;
   color: #f8fafc;
   min-height: 100vh;
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Inter', 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .gsa-creative-title {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 4rem;
   font-weight: 900;
   text-transform: uppercase;

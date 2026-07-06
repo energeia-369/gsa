@@ -2,7 +2,7 @@
    PLAYARENA PREMIUM CSS SYSTEM (Inspired by Energeia Mockup Layout)
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   --bg-primary: #0b0c10;
@@ -25,7 +25,7 @@
 }
 
 .home-page {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -1726,7 +1726,7 @@ body.light-theme .dest-filter-btn.active {
    CREATIVE HERO OVERRIDES
    ========================================================================== */
 .premium-hero h1 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 4.8rem !important;
   font-weight: 900;
   text-transform: uppercase;

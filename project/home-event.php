@@ -7,6 +7,28 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once __DIR__ . '/config/Database.php';
 $db = (new Database())->getConnection();
 
+// Build a map of Country -> Slug/Link for dynamic destination pages
+$dynamicLinksMap = [];
+$stmtEv = $db->query("SELECT slug, title FROM events");
+while($row = $stmtEv->fetch(PDO::FETCH_ASSOC)){
+    $eventCountry = str_replace(['GSA ', ' 2026', ' Edition'], '', $row['title']);
+    $dynamicLinksMap[strtoupper(trim($eventCountry))] = 'event-details.php?slug=' . $row['slug'];
+}
+
+$stmtCarousel = $db->query("SELECT country, state, slug, btn_url FROM home_carousel_events WHERE status='published' AND show_in_overseas=1");
+while($row = $stmtCarousel->fetch(PDO::FETCH_ASSOC)){
+    $loc = !empty($row['country']) ? strtoupper(trim($row['country'])) : strtoupper(trim($row['state']));
+    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event.php?slug=' . $row['slug'];
+    $dynamicLinksMap[$loc] = $link;
+}
+
+$stmtGsa = $db->query("SELECT country, slug FROM gsa_carousel_events WHERE status='published'");
+while($row = $stmtGsa->fetch(PDO::FETCH_ASSOC)){
+    if(!empty($row['country'])) {
+        $dynamicLinksMap[strtoupper(trim($row['country']))] = 'event-details.php?slug=' . $row['slug'];
+    }
+}
+
 // Fetch Event Details
 $slug = $_GET['slug'] ?? '';
 if (empty($slug)) {
@@ -24,9 +46,15 @@ if (!$event) {
 }
 
 $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
-if ($event['status'] === 'draft' && !$isAdmin) {
-    echo "<script>alert('This event is not yet live.'); window.location.href='index.php';</script>";
-    exit();
+$isDraft = ($event['status'] === 'draft');
+
+if ($isDraft) {
+    echo "<script>
+        if (localStorage.getItem('userRole') !== 'ADMIN') {
+            alert('This event is not yet live.');
+            window.location.href = 'index.php';
+        }
+    </script>";
 }
 $isCompleted = ($event['status'] === 'completed');
 
@@ -103,7 +131,7 @@ include 'includes/navbar.php';
                     <div class="gsa-detail-icon"><i class="far fa-calendar-alt"></i></div>
                     <div class="gsa-detail-text">
                         <p>Event Date</p>
-                        <h4><?= htmlspecialchars($event['start_date'] ?? 'Upcoming') ?></h4>
+                        <h4><?= htmlspecialchars($event['event_date'] ?? 'Upcoming') ?></h4>
                     </div>
                 </div>
                 <div class="gsa-detail-item">
@@ -719,7 +747,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
 <!-- Countdown Timer Script -->
 <script>
     // Pass the event's start date from the database to the countdown script
-    window.targetEventDate = "<?= htmlspecialchars($event['start_date'] ?? '') ?>";
+    window.targetEventDate = "<?= htmlspecialchars($event['event_date'] ?? '') ?>";
     window.timerStartDate = "<?= htmlspecialchars($event['timer_start_date'] ?? '') ?>";
     window.pageLoadTime = new Date().getTime();
 </script>
@@ -840,24 +868,27 @@ function renderDestinations() {
         const customOverride = customDest.find(c => c.id === d.id);
         return customOverride ? customOverride : d;
     });
+    
     const purelyNew = customDest.filter(c => !allDefaults.some(d => d.id === c.id));
     
     let finalDest = [...mergedAll, ...purelyNew].filter(d => !d.deleted);
-
+    
     finalDest = finalDest.filter(d => {
         const type = d.type || (d.id > 100 ? 'national' : 'international');
         return type === homeDestFilter;
     });
     
-    const displayList = [...finalDest, ...finalDest, ...finalDest, ...finalDest];
+    const displayList = [...finalDest, ...finalDest, ...finalDest, ...finalDest]; // duplicate for infinite scroll effect
     
+    const dynamicLinks = <?php echo json_encode($dynamicLinksMap); ?>;
     slider.innerHTML = displayList.map((dest, idx) => {
-        let targetLink = dest.link && dest.link !== "#" ? dest.link : `destination-detail.php?id=${dest.id}`;
+        let locKey = (dest.country || '').toUpperCase();
+        if(!locKey && dest.region) locKey = dest.region.toUpperCase();
+        
+        let defaultLink = dynamicLinks[locKey] ? dynamicLinks[locKey] : `destination-detail.php?id=${dest.id}`;
+        let targetLink = dest.link && dest.link !== "#" ? dest.link : defaultLink;
         let targetAttr = '';
-        if (dest.country && dest.country.toUpperCase() === "THAILAND") {
-            targetLink = "https://energeia369.com/thailand-event/";
-            targetAttr = 'target="_blank"';
-        } else if (dest.country && dest.country.toUpperCase() === "PUNE") {
+        if (locKey === "PUNE") {
             targetLink = "gsa-pune-2026.php";
         }
         return `
@@ -866,15 +897,19 @@ function renderDestinations() {
               <img src="${dest.image}" alt="${dest.country}" class="destination-image" />
               <div class="destination-flag-overlay">${dest.country}</div>
             </div>
-            <div class="destination-body">
-              <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“…</span> ${dest.date}
-              </div>
-              <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“</span> ${dest.city}
-              </div>
-              <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“</span> ${dest.region}
+            <div class="destination-body" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; flex: 1; justify-content: space-between;">
+              <p style="color: #9aa0b4; font-size: 0.85rem; line-height: 1.4; margin: 0;">Where Sports, Tourism & Entertainment come together on a global stage.</p>
+              <button class="nexus-btn" style="pointer-events: none; padding: 0.6rem 1.2rem; font-size: 0.75rem;">KNOW MORE</button>
+              <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📅</span> ${dest.date}
+                </div>
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📍</span> ${dest.city}
+                </div>
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📍</span> ${dest.region}
+                </div>
               </div>
             </div>
           </a>
@@ -921,11 +956,29 @@ function startAutoScroll() {
     slider.addEventListener("touchend", () => isHovering = false);
 }
 
+window.apiDestinations = [];
 document.addEventListener("DOMContentLoaded", function() {
-    renderDestinations();
+    fetch('api/index.php/destinations')
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data)) {
+                window.apiDestinations = data;
+            }
+            renderDestinations();
+        })
+        .catch(err => {
+            console.error("Failed to load custom destinations", err);
+            renderDestinations();
+        });
+        
+    setHomeDestFilter('international');
     startAutoScroll();
 });
 </script>
 
 <?php include 'includes/footer.php'; ?>
+
+
+
+
 

@@ -4,6 +4,77 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/config/Database.php';
 
+$allDestinations = [
+    'international' => [],
+    'national' => []
+];
+
+try {
+    $db = Database::getConnection();
+    
+    $stmt1 = $db->query("SELECT city, country FROM home_carousel_destinations WHERE is_deleted = 0");
+    $dest1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt2 = $db->query("SELECT city, country FROM custom_destinations WHERE is_deleted = 0");
+    $dest2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt3 = $db->query("SELECT state AS city, country FROM home_carousel_events WHERE state IS NOT NULL AND country IS NOT NULL");
+    $dest3 = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt4 = $db->query("SELECT city, country_or_state AS country FROM home_event_cards");
+    $dest4 = $stmt4->fetchAll(PDO::FETCH_ASSOC);
+    
+    $hardcodedDests = [
+        ['city' => 'Multiple Cities', 'country' => 'INDIA'],
+        ['city' => 'Singapore', 'country' => 'SINGAPORE'],
+        ['city' => 'Multiple Cities', 'country' => 'SWITZERLAND'],
+        ['city' => 'Dubai', 'country' => 'UAE'],
+        ['city' => 'Phuket', 'country' => 'THAILAND'],
+        ['city' => 'Las Vegas', 'country' => 'USA - LAS VEGAS'],
+        ['city' => 'New York', 'country' => 'USA - NEW YORK'],
+        ['city' => 'Kuala Lumpur', 'country' => 'MALAYSIA'],
+        ['city' => 'Bali', 'country' => 'INDONESIA'],
+        ['city' => 'Ho Chi Minh', 'country' => 'VIETNAM'],
+        ['city' => 'Sydney', 'country' => 'AUSTRALIA'],
+        ['city' => 'Berlin', 'country' => 'GERMANY'],
+        ['city' => 'London', 'country' => 'UNITED KINGDOM'],
+        ['city' => 'Toronto', 'country' => 'CANADA'],
+        ['city' => 'Chennai', 'country' => 'TAMIL NADU'],
+        ['city' => 'Pune', 'country' => 'PUNE'],
+        ['city' => 'Mumbai', 'country' => 'MAHARASHTRA'],
+        ['city' => 'Bangalore', 'country' => 'KARNATAKA'],
+        ['city' => 'New Delhi', 'country' => 'DELHI'],
+        ['city' => 'Panaji', 'country' => 'GOA'],
+        ['city' => 'Kochi', 'country' => 'KERALA'],
+        ['city' => 'Jaipur', 'country' => 'RAJASTHAN'],
+        ['city' => 'Ahmedabad', 'country' => 'GUJARAT']
+    ];
+    
+    $combined = array_merge($dest1, $dest2, $dest3, $dest4, $hardcodedDests);
+    $uniqueDests = [];
+    
+    foreach ($combined as $d) {
+        $c = trim(strtoupper($d['country']));
+        $city = trim($d['city']);
+        $key = $city . '|' . $c;
+        if (!isset($uniqueDests[$key])) {
+            $uniqueDests[$key] = [
+                'city' => $city,
+                'country' => $c
+            ];
+            
+            $isNational = ($c === 'INDIA' || in_array($c, ['MAHARASHTRA', 'KARNATAKA', 'TAMIL NADU', 'DELHI', 'GOA', 'KERALA', 'RAJASTHAN', 'GUJARAT', 'PUNE']));
+            if ($isNational) {
+                $allDestinations['national'][] = $uniqueDests[$key];
+            } else {
+                $allDestinations['international'][] = $uniqueDests[$key];
+            }
+        }
+    }
+} catch (Exception $e) {
+    // Fail silently, fallback to empty arrays
+}
+
 $error = '';
 $success = '';
 $card = null;
@@ -61,11 +132,11 @@ try {
 
             if (!$error) {
                 if ($dbImagePath) {
-                            $stmt = $db->prepare("UPDATE home_event_cards SET event_title=?, event_type=?, image=?, event_date=?, city=?, country_or_state=?, link=?, status=? WHERE id=?");
-                            $stmt->execute([$title, $type, $dbImagePath, $date, $city, $countryState, $link, $status, $id]);
+                    $stmt = $db->prepare("UPDATE home_event_cards SET event_title=?, event_type=?, image=?, event_date=?, city=?, country_or_state=?, link=?, status=?, module_type=? WHERE id=?");
+                    $stmt->execute([$title, $type, $dbImagePath, $date, $city, $countryState, $link, $status, $_POST['module_type'] ?? 'home_carousel', $id]);
                 } else {
-                        $stmt = $db->prepare("UPDATE home_event_cards SET event_title=?, event_type=?, event_date=?, city=?, country_or_state=?, link=?, status=? WHERE id=?");
-                        $stmt->execute([$title, $type, $date, $city, $countryState, $link, $status, $id]);
+                    $stmt = $db->prepare("UPDATE home_event_cards SET event_title=?, event_type=?, event_date=?, city=?, country_or_state=?, link=?, status=?, module_type=? WHERE id=?");
+                    $stmt->execute([$title, $type, $date, $city, $countryState, $link, $status, $_POST['module_type'] ?? 'home_carousel', $id]);
                 }
                 $success = "Event card updated successfully!";
             }
@@ -90,8 +161,8 @@ try {
   <?php require_once __DIR__ . '/includes/admin_navbar.php'; ?>
   
   <div class="admin-header" style="border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 20px;">
-    <h1>?? Edit Home Event Card</h1>
-    <p>Modify existing card details for the home page carousel.</p>
+    <h1><i class="fas fa-edit"></i> Edit Events Card</h1>
+    <p>Update an existing dynamic card for the home page carousel.</p>
   </div>
 
   <div class="admin-content" style="max-width: 100%; margin-top: 30px;">
@@ -109,6 +180,20 @@ try {
     <?php if ($card): ?>
     <form method="POST" enctype="multipart/form-data" class="admin-card" style="border-radius: 20px; padding: 30px; display: grid; gap: 20px;">
       
+      <div style="background: rgba(197, 168, 92, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.2); margin-bottom: 10px;">
+        <h3 style="margin-top: 0; color: #c5a85c; margin-bottom: 15px; font-size: 1.1rem; font-weight: normal;">Event Management Type</h3>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="module_type" value="gsa_carousel" <?= (isset($card['module_type']) && $card['module_type'] === 'gsa_carousel') ? 'checked' : '' ?> required>
+                <span>GSA Page Carousel Events</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="module_type" value="home_carousel" <?= (!isset($card['module_type']) || $card['module_type'] === 'home_carousel') ? 'checked' : '' ?> required>
+                <span>Home Page Carousel Events</span>
+            </label>
+        </div>
+      </div>
+
       <div>
         <label style="display: block; font-size: 0.9rem; color: #9aa0b4; margin-bottom: 8px;">Event Title *</label>
         <input type="text" name="event_title" value="<?php echo htmlspecialchars($card['event_title']); ?>" required style="width: 100%; padding: 12px; border: 1px solid rgba(197,168,92,0.25); border-radius: 8px; background: #0b0c10; color: #fff; box-sizing: border-box;">
@@ -150,31 +235,28 @@ try {
             <?php $currDest = $card['city'] . '|' . $card['country_or_state']; ?>
             <option value="">Select Carousel Destination</option>
             <optgroup label="Overseas Events">
-                <option value="Pune / Mumbai|INDIA" <?php echo $currDest === 'Pune / Mumbai|INDIA' ? 'selected' : ''; ?>>INDIA</option>
-                <option value="Singapore|SINGAPORE" <?php echo $currDest === 'Singapore|SINGAPORE' ? 'selected' : ''; ?>>SINGAPORE</option>
-                <option value="Zurich|SWITZERLAND" <?php echo $currDest === 'Zurich|SWITZERLAND' ? 'selected' : ''; ?>>SWITZERLAND</option>
-                <option value="Dubai / Abu Dhabi|UAE" <?php echo $currDest === 'Dubai / Abu Dhabi|UAE' ? 'selected' : ''; ?>>UAE</option>
-                <option value="Phuket / Bangkok|THAILAND" <?php echo $currDest === 'Phuket / Bangkok|THAILAND' ? 'selected' : ''; ?>>THAILAND</option>
-                <option value="Las Vegas|USA - LAS VEGAS" <?php echo $currDest === 'Las Vegas|USA - LAS VEGAS' ? 'selected' : ''; ?>>USA - LAS VEGAS</option>
-                <option value="New York|USA - NEW YORK" <?php echo $currDest === 'New York|USA - NEW YORK' ? 'selected' : ''; ?>>USA - NEW YORK</option>
-                <option value="Kuala Lumpur|MALAYSIA" <?php echo $currDest === 'Kuala Lumpur|MALAYSIA' ? 'selected' : ''; ?>>MALAYSIA</option>
-                <option value="Bali / Jakarta|INDONESIA" <?php echo $currDest === 'Bali / Jakarta|INDONESIA' ? 'selected' : ''; ?>>INDONESIA</option>
-                <option value="Ho Chi Minh|VIETNAM" <?php echo $currDest === 'Ho Chi Minh|VIETNAM' ? 'selected' : ''; ?>>VIETNAM</option>
-                <option value="Sydney|AUSTRALIA" <?php echo $currDest === 'Sydney|AUSTRALIA' ? 'selected' : ''; ?>>AUSTRALIA</option>
-                <option value="Berlin|GERMANY" <?php echo $currDest === 'Berlin|GERMANY' ? 'selected' : ''; ?>>GERMANY</option>
-                <option value="London|UNITED KINGDOM" <?php echo $currDest === 'London|UNITED KINGDOM' ? 'selected' : ''; ?>>UNITED KINGDOM</option>
-                <option value="Toronto|CANADA" <?php echo $currDest === 'Toronto|CANADA' ? 'selected' : ''; ?>>CANADA</option>
+                <?php foreach ($allDestinations['international'] as $dest): ?>
+                    <?php $val = $dest['city'] . '|' . $dest['country']; ?>
+                    <option value="<?= htmlspecialchars($val) ?>" <?= ($currDest === $val) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($dest['country'] . ' - ' . $dest['city']) ?>
+                    </option>
+                <?php endforeach; ?>
+                
+                <?php if (empty($allDestinations['international'])): ?>
+                    <option value="Dubai|UAE" <?= ($currDest === 'Dubai|UAE') ? 'selected' : '' ?>>UAE - Dubai</option>
+                <?php endif; ?>
             </optgroup>
             <optgroup label="Indian State Events">
-                <option value="Mumbai / Pune|MAHARASHTRA" <?php echo $currDest === 'Mumbai / Pune|MAHARASHTRA' ? 'selected' : ''; ?>>MAHARASHTRA</option>
-                <option value="Bangalore|KARNATAKA" <?php echo $currDest === 'Bangalore|KARNATAKA' ? 'selected' : ''; ?>>KARNATAKA</option>
-                <option value="New Delhi|DELHI" <?php echo $currDest === 'New Delhi|DELHI' ? 'selected' : ''; ?>>DELHI</option>
-                <option value="Panaji|GOA" <?php echo $currDest === 'Panaji|GOA' ? 'selected' : ''; ?>>GOA</option>
-                <option value="Kochi|KERALA" <?php echo $currDest === 'Kochi|KERALA' ? 'selected' : ''; ?>>KERALA</option>
-                <option value="Jaipur|RAJASTHAN" <?php echo $currDest === 'Jaipur|RAJASTHAN' ? 'selected' : ''; ?>>RAJASTHAN</option>
-                <option value="Ahmedabad|GUJARAT" <?php echo $currDest === 'Ahmedabad|GUJARAT' ? 'selected' : ''; ?>>GUJARAT</option>
-                <option value="Coimbatore|TAMIL NADU" <?php echo $currDest === 'Coimbatore|TAMIL NADU' ? 'selected' : ''; ?>>TAMIL NADU</option>
-                <option value="Pune|PUNE" <?php echo $currDest === 'Pune|PUNE' ? 'selected' : ''; ?>>PUNE</option>
+                <?php foreach ($allDestinations['national'] as $dest): ?>
+                    <?php $val = $dest['city'] . '|' . $dest['country']; ?>
+                    <option value="<?= htmlspecialchars($val) ?>" <?= ($currDest === $val) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($dest['country'] . ' - ' . $dest['city']) ?>
+                    </option>
+                <?php endforeach; ?>
+                
+                <?php if (empty($allDestinations['national'])): ?>
+                    <option value="Mumbai|INDIA" <?= ($currDest === 'Mumbai|INDIA') ? 'selected' : '' ?>>INDIA - Mumbai</option>
+                <?php endif; ?>
             </optgroup>
         </select>
       </div>

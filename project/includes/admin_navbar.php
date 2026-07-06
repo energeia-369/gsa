@@ -200,9 +200,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <div class="admin-sidebar-section">
         <div class="admin-sidebar-title" onclick="toggleSidebarSection(this)">
-            Registrations <span>▼</span>
+            Registrations & Delegates <span>▼</span>
         </div>
         <div class="admin-sidebar-nav">
+            <a href="admin-delegates.php" class="admin-sidebar-item <?= $current_page == 'admin-delegates.php' ? 'active' : '' ?>" data-name="delegate management" style="color: #c5a85c;">
+                🏅 Delegate Management
+            </a>
+            <a href="admin-delegate-settings.php" class="admin-sidebar-item <?= $current_page == 'admin-delegate-settings.php' ? 'active' : '' ?>" data-name="delegate settings" style="color: #c5a85c; padding-left: 30px; font-size: 0.9em;">
+                ⚙️ Settings
+            </a>
             <a href="admin-team-registrations.php" class="admin-sidebar-item <?= $current_page == 'admin-team-registrations.php' ? 'active' : '' ?>" data-name="team registrations">
                 Team Registrations
             </a>
@@ -234,12 +240,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <div class="admin-sidebar-section">
         <div class="admin-sidebar-title" onclick="toggleSidebarSection(this)">
-            Management <span>▼</span>
+            Home Management <span>▼</span>
         </div>
         <div class="admin-sidebar-nav">
-            <a href="admin-events.php" class="admin-sidebar-item <?= $current_page == 'admin-events.php' ? 'active' : '' ?>" data-name="dynamic events management">
-                🌐 Manage Events
+            <a href="admin-home-carousel.php" class="admin-sidebar-item <?= $current_page == 'admin-home-carousel.php' ? 'active' : '' ?>" data-name="carousel events">
+                🏠 Carousel Events
             </a>
+        </div>
+    </div>
+
+    <div class="admin-sidebar-section">
+        <div class="admin-sidebar-title" onclick="toggleSidebarSection(this)">
+            Management (Legacy) <span>▼</span>
+        </div>
+        <div class="admin-sidebar-nav">
+
             <a href="admin-gift-cards.php" class="admin-sidebar-item <?= $current_page == 'admin-gift-cards.php' ? 'active' : '' ?>" data-name="gift card management">
                 🎁 Gift Card Management
             </a>
@@ -249,12 +264,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="admin-nxl.php" class="admin-sidebar-item <?= $current_page == 'admin-nxl.php' ? 'active' : '' ?>" data-name="nxl management">
                 NXL Management
             </a>
-            <a href="admin-home-event-cards.php" class="admin-sidebar-item <?= $current_page == 'admin-home-event-cards.php' ? 'active' : '' ?>" data-name="home event cards">
-                Home Event Cards
-            </a>
-            <a href="admin-events.php?type=home_carousel" class="admin-sidebar-item <?= (isset($_GET['type']) && $_GET['type'] == 'home_carousel') ? 'active' : '' ?>" data-name="carousel events form">
-                Carousel Events Form
-            </a>
+
             <a href="admin-blogs.php" class="admin-sidebar-item <?= $current_page == 'admin-blogs.php' ? 'active' : '' ?>" data-name="sports blog">
                 Sports Blog
             </a>

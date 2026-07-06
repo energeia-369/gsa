@@ -28,6 +28,7 @@ require_once __DIR__ . '/../controllers/ProductController.php';
 require_once __DIR__ . '/../controllers/TournamentController.php';
 require_once __DIR__ . '/../controllers/WalletController.php';
 require_once __DIR__ . '/../controllers/EventRegistrationController.php';
+require_once __DIR__ . '/../controllers/DelegateController.php';
 require_once __DIR__ . '/../controllers/OrderController.php';
 require_once __DIR__ . '/../controllers/ContactController.php';
 require_once __DIR__ . '/../controllers/NewsletterController.php';
@@ -1243,6 +1244,12 @@ elseif (strpos($route, '/giftcards') === 0) {
         "customers" => $customers,
         "merchants" => $merchants
     ];
+    $matched = true;
+}
+
+// Delegate Registration
+if ($method === 'POST' && $route === 'delegate/register') {
+    $response = DelegateController::registerDelegate($_POST, $_FILES);
     $matched = true;
 }
 

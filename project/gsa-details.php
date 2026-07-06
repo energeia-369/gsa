@@ -1,12 +1,30 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Arena Details";
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/config/Database.php';
 
 $db = (new Database())->getConnection();
-$stmtSlugs = $db->query("SELECT slug FROM events");
-$eventSlugs = $stmtSlugs->fetchAll(PDO::FETCH_COLUMN);
+$dynamicLinksMap = [];
+$stmtEv = $db->query("SELECT slug, title FROM events");
+while($row = $stmtEv->fetch(PDO::FETCH_ASSOC)){
+    $eventCountry = str_replace(['GSA ', ' 2026', ' Edition'], '', $row['title']);
+    $dynamicLinksMap[strtoupper(trim($eventCountry))] = 'event-details.php?slug=' . $row['slug'];
+}
+
+$stmtCarousel = $db->query("SELECT country, state, slug, btn_url FROM home_carousel_events WHERE status='published' AND show_in_overseas=1");
+while($row = $stmtCarousel->fetch(PDO::FETCH_ASSOC)){
+    $loc = !empty($row['country']) ? strtoupper(trim($row['country'])) : strtoupper(trim($row['state']));
+    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event.php?slug=' . $row['slug'];
+    $dynamicLinksMap[$loc] = $link;
+}
+
+$stmtGsa = $db->query("SELECT country, slug FROM gsa_carousel_events WHERE status='published'");
+while($row = $stmtGsa->fetch(PDO::FETCH_ASSOC)){
+    if(!empty($row['country'])) {
+        $dynamicLinksMap[strtoupper(trim($row['country']))] = 'event-details.php?slug=' . $row['slug'];
+    }
+}
 ?>
 
 <link rel="stylesheet" href="assets/css/GSADetails.css?v=<?php echo time(); ?>">
@@ -231,106 +249,96 @@ body.light-theme .destination-icon { color: #8c6010 !important; }
     </div>
   </section>
 
-  <!-- 4. Upcoming Events -->
-  <section class="gsa-events-section">
-    <div class="gsa-container">
-      <div class="section-header">
-        <span>UPCOMING SHOWDOWNS</span>
-        <h2>Active Events & Shows</h2>
-      </div>
-      <div class="events-grid">
-        <div class="event-card" style="background-image: linear-gradient(rgba(18, 19, 28, 0.4), #12131c), url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500');">
-          <div class="event-card-content">
-            <div class="event-datetime">
-              <span>Oct 26, <?php echo $futureYearOct; ?></span>
-              <span>•</span>
-              <span>7:00 PM IST</span>
-            </div>
-            <h3>IPL Screening - Final Match</h3>
-            <button class="event-card-btn" onclick="handleRegister('IPL Screening - Final Match')">
-              Register Now
-            </button>
-          </div>
-        </div>
-
-        <div class="event-card" style="background-image: linear-gradient(rgba(18, 19, 28, 0.4), #12131c), url('https://images.unsplash.com/photo-1546519638-68e109498ffc?w=500');">
-          <div class="event-card-content">
-            <div class="event-datetime">
-              <span>Nov 14, <?php echo $futureYearNov; ?></span>
-              <span>•</span>
-              <span>5:30 PM IST</span>
-            </div>
-            <h3>GSA Basketball Pro Championship</h3>
-            <button class="event-card-btn" onclick="handleRegister('GSA Basketball Pro Championship')">
-              Register Now
-            </button>
-          </div>
-        </div>
-
-        <div class="event-card" style="background-image: linear-gradient(rgba(18, 19, 28, 0.4), #12131c), url('https://images.unsplash.com/photo-1459865264687-595d652de67e?w=500');">
-          <div class="event-card-content">
-            <div class="event-datetime">
-              <span>Dec 5, <?php echo $futureYearDec; ?></span>
-              <span>•</span>
-              <span>4:00 PM IST</span>
-            </div>
-            <h3>National Club Football League</h3>
-            <button class="event-card-btn" onclick="handleRegister('National Club Football League')">
-              Register Now
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <link rel="stylesheet" href="assets/css/gallery.css?v=3">
+  
+  <!-- GALLERY HERO -->
+  <section class="gallery-hero w-full" style="padding-top: 4rem; padding-bottom: 2rem;">
+    <p class="tagline">⚡ CAPTURED MOMENTS</p>
+    <h1>Event <span>Gallery</span></h1>
+    <p class="hero-text">
+      Explore the best memories from our tournaments, sports events,
+      award ceremonies, and community moments.
+    </p>
   </section>
 
-  <!-- 5. Gallery Section -->
-  <section class="gsa-gallery-section">
-    <div class="gsa-container">
-      <div class="section-header">
-        <span>GALLERY EXHIBIT</span>
-        <h2>Visual Tour of GSA</h2>
-      </div>
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400" alt="Basketball Arena" />
-          <div class="gallery-hover-overlay">
-            <h4>Basketball Arena</h4>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1459865264687-595d652de67e?w=400" alt="Football Field" />
-          <div class="gallery-hover-overlay">
-            <h4>Football Field</h4>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" alt="Live Concert Hall" />
-          <div class="gallery-hover-overlay">
-            <h4>Live Concert Hall</h4>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=400" alt="Tennis Courts" />
-          <div class="gallery-hover-overlay">
-            <h4>Tennis Courts</h4>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400" alt="Track Running" />
-          <div class="gallery-hover-overlay">
-            <h4>Track Running</h4>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400" alt="Elite Gym Center" />
-          <div class="gallery-hover-overlay">
-            <h4>Elite Gym Center</h4>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- FILTER BUTTONS -->
+  <section class="filter-section max-w-7xl mx-auto px-4 py-6 flex flex-wrap gap-3 justify-center">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="cricket">Cricket</button>
+    <button class="filter-btn" data-filter="football">Football</button>
+    <button class="filter-btn" data-filter="basketball">Basketball</button>
+    <button class="filter-btn" data-filter="tennis">Tennis</button>
+    <button class="filter-btn" data-filter="badminton">Badminton</button>
+    <button class="filter-btn" data-filter="volleyball">Volleyball</button>
+    <button class="filter-btn" data-filter="athletics">Athletics</button>
+    <button class="filter-btn" data-filter="winners">Winners</button>
   </section>
+
+  <!-- GALLERY GRID -->
+  <section class="gallery-section grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 py-8" id="galleryGrid">
+    <p style="text-align: center; color: #c5a85c; grid-column: 1 / -1;">Loading gallery photos...</p>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const galleryGrid = document.getElementById('galleryGrid');
+      let allGalleryItems = [];
+
+      // Fetch dynamic gallery items from DB
+      try {
+        const res = await fetch("api/index.php/gallery/items");
+        const data = await res.json();
+        if (data.success) {
+          allGalleryItems = data.data;
+          renderGallery('all');
+        } else {
+          galleryGrid.innerHTML = `<p style="text-align: center; color: #ff4d4d; grid-column: 1 / -1;">Failed to load gallery.</p>`;
+        }
+      } catch (err) {
+        console.error(err);
+        galleryGrid.innerHTML = `<p style="text-align: center; color: #ff4d4d; grid-column: 1 / -1;">Error loading gallery.</p>`;
+      }
+
+      function renderGallery(filterCategory) {
+        if (allGalleryItems.length === 0) {
+          galleryGrid.innerHTML = `<p style="text-align: center; color: #9aa0b4; grid-column: 1 / -1;">No gallery photos available.</p>`;
+          return;
+        }
+
+        const filteredItems = filterCategory === 'all' 
+          ? allGalleryItems 
+          : allGalleryItems.filter(item => item.category === filterCategory);
+
+        if (filteredItems.length === 0) {
+          galleryGrid.innerHTML = `<p style="text-align: center; color: #9aa0b4; grid-column: 1 / -1;">No photos found for this category.</p>`;
+          return;
+        }
+
+        galleryGrid.innerHTML = filteredItems.map(item => `
+          <div class="gallery-card" data-category="${item.category}">
+            <img src="${item.image_url}" alt="${item.title}">
+            <div class="gallery-content">
+              <h3>${item.title}</h3>
+              <p>${item.subtitle}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove active class from all buttons
+          filterBtns.forEach(b => b.classList.remove('active'));
+          // Add active class to clicked button
+          this.classList.add('active');
+
+          const filterValue = this.getAttribute('data-filter');
+          renderGallery(filterValue);
+        });
+      });
+    });
+  </script>
 
   <!-- 6. Booking Section -->
   <section class="gsa-booking-section">
@@ -547,13 +555,15 @@ function renderDestinations() {
     
     const displayList = [...finalDest, ...finalDest, ...finalDest, ...finalDest]; // duplicate for infinite scroll effect
     
-    const availableEvents = <?php echo json_encode($eventSlugs); ?>;
+    const dynamicLinks = <?php echo json_encode($dynamicLinksMap); ?>;
     slider.innerHTML = displayList.map((dest, idx) => {
-        let generatedSlug = `gsa-${dest.country.toLowerCase().replace(/[\s_]+/g, '-')}-2026`;
-        let defaultLink = availableEvents.includes(generatedSlug) ? `event-details.php?slug=${generatedSlug}` : `destination-detail.php?id=${dest.id}`;
+        let locKey = (dest.country || '').toUpperCase();
+        if(!locKey && dest.region) locKey = dest.region.toUpperCase();
+        
+        let defaultLink = dynamicLinks[locKey] ? dynamicLinks[locKey] : `destination-detail.php?id=${dest.id}`;
         let targetLink = dest.link && dest.link !== "#" ? dest.link : defaultLink;
         let targetAttr = '';
-        if (dest.country && dest.country.toUpperCase() === "PUNE") {
+        if (locKey === "PUNE") {
             targetLink = "gsa-pune-2026.php";
         }
         return `

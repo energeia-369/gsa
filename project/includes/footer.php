@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 1.5rem;">
+  <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem; gap: 0.75rem;">
     <form class="newsletter-form flex flex-col sm:flex-row gap-2 items-center w-full max-w-md" id="newsletterForm" onsubmit="handleSubscribe(event)">
       <input
         type="email"

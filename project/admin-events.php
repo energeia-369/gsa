@@ -201,11 +201,7 @@ if ($moduleType === 'home_carousel') {
                                 </span>
                             </td>
                             <td>
-                                <?php if ($event['dynamic_page_enabled'] == 1): ?>
-                                    <span style="color: #10b981; font-weight: bold;">YES</span>
-                                <?php else: ?>
-                                    <span style="color: #6b7280; font-weight: bold;">NO</span>
-                                <?php endif; ?>
+                                <span style="color: #10b981; font-weight: bold;">YES</span>
                             </td>
                             <td>
                                 <a href="admin-home-carousel-edit.php?id=<?= $event['id'] ?>" class="btn-gold" style="padding: 6px 12px; font-size: 0.9rem;">Edit</a>
@@ -213,11 +209,7 @@ if ($moduleType === 'home_carousel') {
                                     <input type="hidden" name="delete_home_event_id" value="<?= $event['id'] ?>">
                                     <button type="submit" class="btn-danger"><i class="fas fa-trash"></i></button>
                                 </form>
-                                <?php if ($event['dynamic_page_enabled'] == 1): ?>
-                                    <a href="home-event.php?slug=<?= $event['slug'] ?>" class="btn-gold" style="background: #3b82f6; padding: 6px 12px; font-size: 0.9rem; color:#fff;" target="_blank">View</a>
-                                <?php else: ?>
-                                    <a href="<?= htmlspecialchars($event['button_link']) ?>" class="btn-gold" style="background: #6b7280; padding: 6px 12px; font-size: 0.9rem; color:#fff;" target="_blank">Static URL</a>
-                                <?php endif; ?>
+                                <a href="home-event.php?slug=<?= $event['slug'] ?>" class="btn-gold" style="background: #3b82f6; padding: 6px 12px; font-size: 0.9rem; color:#fff;" target="_blank">View</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

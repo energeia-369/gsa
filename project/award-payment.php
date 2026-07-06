@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . '/config/Database.php';
 require_once __DIR__ . '/config/Config.php';
@@ -73,8 +73,13 @@ if ($productPrice < 0) $productPrice = 0;
 
 $totalDiscount = $couponDiscount + $premiumDiscountAmount;
 
+$currency = $_POST['currency'] ?? 'INR';
+
 // 4. GST
-$gstAmount = $productPrice * 0.18;
+$gstAmount = 0;
+if ($currency !== 'USD') {
+    $gstAmount = $productPrice * 0.18;
+}
 $amountAfterGst = $productPrice + $gstAmount;
 
 // 5. NXL Credits Redemption
@@ -146,7 +151,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
     'amount' => $amountInPaise,
-    'currency' => 'INR',
+    'currency' => $currency,
     'receipt' => 'rcpt_' . time()
 ]));
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -164,10 +169,11 @@ $pageTitle = "Complete Payment | Award Ceremony";
 require_once __DIR__ . '/includes/header.php';
 ?>
 
+<?php $currencySymbol = ($currency === 'USD') ? '$' : '₹'; ?>
 <div class="flex items-center justify-center min-h-screen px-4" style="background: #0b0c10; color: #fff;">
     <div style="background: #12131c; padding: 40px; border-radius: 12px; border: 1px solid rgba(197,168,92,0.3); text-align: center; max-width: 500px; width: 100%; box-sizing: border-box;">
         <h2 style="color: #c5a85c; margin-bottom: 20px;">Complete Your Payment</h2>
-        <p style="color: #9aa0b4; margin-bottom: 30px;">You are about to pay <strong>₹<?php echo number_format($finalAmount, 2); ?></strong> for the <strong><?php echo htmlspecialchars($_POST['pass_type']); ?></strong>.</p>
+        <p style="color: #9aa0b4; margin-bottom: 30px;">You are about to pay <strong><?php echo $currencySymbol; ?><?php echo number_format($finalAmount, 2); ?></strong> for the <strong><?php echo htmlspecialchars($_POST['pass_type']); ?></strong>.</p>
         
         <form id="razorpayForm" action="verify-award-payment.php" method="POST">
             <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
@@ -176,7 +182,7 @@ require_once __DIR__ . '/includes/header.php';
         </form>
 
         <button id="rzp-button1" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%;">
-            Pay ₹<?php echo number_format($finalAmount, 2); ?>
+            Pay <?php echo $currencySymbol; ?><?php echo number_format($finalAmount, 2); ?>
         </button>
     </div>
 </div>
@@ -186,7 +192,7 @@ require_once __DIR__ . '/includes/header.php';
 var options = {
     "key": "<?php echo RAZORPAY_KEY_ID; ?>",
     "amount": "<?php echo $amountInPaise; ?>",
-    "currency": "INR",
+    "currency": "<?php echo $currency; ?>",
     "name": "GLOBAL SPORTS ARENA",
     "description": "Award Ceremony & Gala Dinner Registration",
     "image": "assets/images/logo.png",

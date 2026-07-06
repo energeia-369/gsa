@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -24,9 +24,15 @@ if (!$event) {
 }
 
 $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
-if ($event['status'] === 'draft' && !$isAdmin) {
-    echo "<script>alert('This event is not yet live.'); window.location.href='index.php';</script>";
-    exit();
+$isDraft = ($event['status'] === 'draft');
+
+if ($isDraft) {
+    echo "<script>
+        if (localStorage.getItem('userRole') !== 'ADMIN') {
+            alert('This event is not yet live.');
+            window.location.href = 'index.php';
+        }
+    </script>";
 }
 $isCompleted = ($event['status'] === 'completed');
 
@@ -134,25 +140,6 @@ include 'includes/navbar.php';
                 <?php endif; ?>
             </div>
 
-            <!-- Hero Countdown -->
-            <div class="mt-7 flex gap-2 sm:gap-3 hero-countdown" style="display: flex; gap: 8px; justify-content: space-between; margin-top: 2rem;">
-              <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
-                <div class="text-2xl sm:text-3xl font-black text-beige-900" id="days" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
-                <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Days</div>
-              </div>
-              <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
-                <div class="text-2xl sm:text-3xl font-black text-beige-900" id="hours" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
-                <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Hours</div>
-              </div>
-              <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
-                <div class="text-2xl sm:text-3xl font-black text-beige-900" id="minutes" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
-                <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Mins</div>
-              </div>
-              <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
-                <div class="text-2xl sm:text-3xl font-black text-beige-900" id="seconds" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
-                <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Secs</div>
-              </div>
-            </div>
         </div>
     </div>
 </section>
@@ -162,36 +149,210 @@ include 'includes/navbar.php';
 ================================= -->
 <section class="overview-section">
     <div class="container">
+        <!-- Event Countdown Timer -->
+        <div class="flex gap-2 sm:gap-3 hero-countdown" style="display: flex; gap: 8px; justify-content: center; margin-top: -5rem; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; z-index: 10;">
+            <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
+            <div class="text-2xl sm:text-3xl font-black text-beige-900" id="days" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
+            <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Days</div>
+            </div>
+            <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
+            <div class="text-2xl sm:text-3xl font-black text-beige-900" id="hours" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
+            <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Hours</div>
+            </div>
+            <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
+            <div class="text-2xl sm:text-3xl font-black text-beige-900" id="minutes" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
+            <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Mins</div>
+            </div>
+            <div class="rounded-2xl border border-beige-200/80 bg-white/75 px-2 py-4 text-center shadow-[0_10px_22px_rgba(139,90,43,0.06)]" style="flex: 1; min-width: 0; border: 1px solid rgba(229, 219, 184, 0.8); background: rgba(255,255,255,0.75); padding: 16px 8px; text-align: center; border-radius: 16px; box-shadow: 0 10px 22px rgba(139,90,43,0.06); backdrop-filter: blur(8px);">
+            <div class="text-2xl sm:text-3xl font-black text-beige-900" id="seconds" style="font-size: 1.8rem; font-weight: 900; color: #3A342B;">00</div>
+            <div class="mt-1 text-[0.6rem] sm:text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-beige-600" style="margin-top: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #8A7A5F;">Secs</div>
+            </div>
+        </div>
+
+<?php
+// Calculate dynamic stats
+$sports = [];
+if (!empty($event['sports_data'])) {
+    $sports = json_decode($event['sports_data'], true) ?? [];
+}
+
+$sportsCount = count($sports);
+if ($sportsCount === 0) $sportsCount = 4; // fallback
+
+$daysFestival = 0;
+if (!empty($event['start_date']) && !empty($event['end_date'])) {
+    try {
+        $st = new DateTime($event['start_date']);
+        $ed = new DateTime($event['end_date']);
+        $daysFestival = $st->diff($ed)->days + 1;
+    } catch (Exception $e) {}
+}
+if ($daysFestival <= 0) $daysFestival = 9; // fallback
+
+$totalPrize = 0;
+foreach ($sports as $s) {
+    if (!empty($s['prize'])) {
+        $val = str_replace([',', ' '], '', $s['prize']);
+        if (is_numeric($val)) {
+            $totalPrize += (float)$val;
+        }
+    }
+}
+
+$prizeText = '10L+';
+$prizeNumber = 10;
+$prizeSuffix = 'L+';
+if ($totalPrize > 0) {
+    if ($totalPrize >= 10000000) {
+        $prizeNumber = floor($totalPrize / 10000000);
+        $prizeSuffix = 'Cr+';
+    } elseif ($totalPrize >= 100000) {
+        $prizeNumber = floor($totalPrize / 100000);
+        $prizeSuffix = 'L+';
+    } elseif ($totalPrize >= 1000) {
+        $prizeNumber = floor($totalPrize / 1000);
+        $prizeSuffix = 'K+';
+    } else {
+        $prizeNumber = $totalPrize;
+        $prizeSuffix = '+';
+    }
+}
+
+$participantsCount = $sportsCount * 250;
+if ($participantsCount < 1000) $participantsCount = 1000;
+?>
         <div class="row g-4">
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-medal"></i></div>
-                    <div class="stat-number counter" data-target="4">0</div>
+                    <div class="stat-number counter" data-target="<?= $sportsCount ?>">0</div>
                     <div class="stat-label">Sports<br>Championships</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-                    <div class="stat-number counter" data-target="9">0</div>
+                    <div class="stat-number counter" data-target="<?= $daysFestival ?>">0</div>
                     <div class="stat-label">Days<br>Festival</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="10">0</span>L+</div>
+                    <div class="stat-number"><span class="counter" data-target="<?= $prizeNumber ?>">0</span><?= $prizeSuffix ?></div>
                     <div class="stat-label">Prize<br>Pool</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="1000">0</span>+</div>
+                    <div class="stat-number"><span class="counter" data-target="<?= $participantsCount ?>">0</span>+</div>
                     <div class="stat-label">Participants<br>Expected</div>
                 </div>
             </div>
         </div>
+
+        <?php if (!empty($event['custom_html'])): ?>
+            <div class="custom-html-section" style="margin-top: 4rem; width: 100%;">
+                <?= $event['custom_html'] ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (stripos($event['title'], 'Thailand') !== false || stripos($event['slug'], 'thailand') !== false): ?>
+        <!-- Custom Thailand Festival Concept Section -->
+        <div class="dest-section card-glass thailand-festival-concept" style="margin-top: 4rem; text-align: left; background: rgba(255, 255, 255, 0.6); padding: 30px; border-radius: 16px; border: 1px solid rgba(197, 168, 92, 0.4); box-shadow: 0 10px 30px rgba(139,90,43,0.05);">
+          <h2 style="color: #8c7237; margin-bottom: 15px; font-size: 2rem; text-align: center; font-weight: 800;">GSA Thailand – Official Festival Concept</h2>
+          <p style="margin-bottom: 25px; line-height: 1.6; color: #555; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; font-weight: 500;">This three-city concept positions GSA Thailand as a destination festival that combines sports, business, tourism, investment, culture, sustainability, and international networking, making it attractive to participants, sponsors, government agencies, and global media.</p>
+          
+          <div class="festival-phases" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 1: Bangkok <br><span style="color: #3A342B; font-size: 1rem;">"NEXUS ELITE"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Queen Sirikit National Convention Center / Bangkok Intl Trade & Exhibition Centre</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>Global Opening Ceremony</li>
+                  <li>Sports Business Summit</li>
+                  <li>Investor & Startup Pitch Sessions</li>
+                  <li>Sports Technology & AI Expo</li>
+                  <li>EV & Sustainable Mobility Pavilion</li>
+                  <li>Health & Wellness Expo</li>
+                  <li>Government & Embassy Networking</li>
+                  <li>B2B and B2G Meetings</li>
+                  <li>Franchise & Investment Expo</li>
+                  <li>Innovation Awards</li>
+              </ul>
+            </div>
+
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 2: Pattaya <br><span style="color: #3A342B; font-size: 1rem;">"OCEAN ADVENTURE & SPORTS FEST"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Locations:</strong> Jomtien Beach, Pattaya Beach</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>Jet Ski Championship</li>
+                  <li>Parasailing & Flyboard Competition</li>
+                  <li>Beach Volleyball, Football & Kabaddi</li>
+                  <li>Dragon Boat Demonstration</li>
+                  <li>Paddle Board Competition</li>
+                  <li>Sailing Showcase</li>
+                  <li>Beach Fitness Challenge</li>
+                  <li>Food Festival</li>
+                  <li>Night Cultural Performances</li>
+              </ul>
+            </div>
+
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 3: Phuket <br><span style="color: #3A342B; font-size: 1rem;">"GLOBAL EXCELLENCE & AWARDS"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Phuket Convention Exhibition Hall</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>International Leadership Summit</li>
+                  <li>Tourism & Hospitality Forum</li>
+                  <li>Sustainability Forum</li>
+                  <li>Luxury Yacht Showcase</li>
+                  <li>Global Business Networking</li>
+                  <li>International Cultural Festival</li>
+                  <li>GSA Excellence Awards</li>
+                  <li>Closing Ceremony & Gala Dinner</li>
+                  <li>Entertainment Show & Intl Artist Performances</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 style="color: #8c7237; margin-bottom: 15px; font-size: 1.5rem; text-align: center; font-weight: 700;">Proposed 6-Day Schedule</h3>
+          <div style="overflow-x: auto; max-width: 900px; margin: 0 auto 30px auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; background: rgba(255, 255, 255, 0.8); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <thead>
+                <tr style="background: rgba(197, 168, 92, 0.2); color: #8c7237;">
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Day</th>
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">City</th>
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Theme</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 1</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Opening Ceremony & Expo</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 2</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Conferences, Investors & B2B</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 3</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Water Sports Festival</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 4</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Beach Sports & Cultural Night</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 5</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">Leadership Summit & Networking</td></tr>
+                <tr style="color: #444;"><td style="padding: 15px; font-weight: 600;">Day 6</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">GSA Global Awards & Grand Closing</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: rgba(197, 168, 92, 0.15); padding: 25px; border-radius: 8px; border-left: 5px solid #8c7237; max-width: 900px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <h4 style="color: #8c7237; margin-bottom: 15px; font-size: 1.1rem; font-weight: 700;">Why this format works:</h4>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem; line-height: 1.6; color: #444;">
+              <li style="margin-bottom: 8px;"><strong>Bangkok</strong> serves as the business and innovation hub.</li>
+              <li style="margin-bottom: 8px;"><strong>Pattaya</strong> becomes the sports and adventure destination.</li>
+              <li><strong>Phuket</strong> provides a premium setting for leadership, tourism, networking, and the prestigious GSA Awards Ceremony.</li>
+            </ul>
+          </div>
+        </div>
+        <?php endif; ?>
+
     </div>
 </section>
 

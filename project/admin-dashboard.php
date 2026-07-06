@@ -61,6 +61,15 @@ require_once __DIR__ . '/includes/navbar.php';
         <span class="stat-change" style="font-size: 0.75rem; color: #9aa0b4;">Registered Partners</span>
       </div>
     </div>
+    
+    <div class="stat-card" style="background: #12131c; border: 1px solid rgba(197, 168, 92, 0.15); padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer;" onclick="window.location.href='admin-delegates.php'">
+      <div class="stat-icon" style="font-size: 2rem;">🏅</div>
+      <div class="stat-info">
+        <h3 style="font-size: 0.9rem; color: #9aa0b4; margin: 0 0 5px 0;">Delegate Registrations</h3>
+        <p class="stat-value" id="statDelegates" style="color: #c5a85c; font-size: 1.5rem; font-weight: bold; margin: 0;">0 Delegates</p>
+        <span class="stat-change" style="font-size: 0.75rem; color: #9aa0b4;">Manage Delegates →</span>
+      </div>
+    </div>
   </div>
 
   <div class="admin-content grid grid-cols-1 gap-8 mt-10">

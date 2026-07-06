@@ -39,7 +39,7 @@ if ($passNo) {
 }
 ?>
 <style>
-.verify-page { min-height: 100vh; background: #0b0c10; color: #f5f6fa; padding: 80px 20px; font-family: 'Outfit', sans-serif; }
+.verify-page { min-height: 100vh; background: #0b0c10; color: #f5f6fa; padding: 80px 20px; font-family: 'Inter', sans-serif; }
 body.light-theme .verify-page { background: #f4eee1; color: #1a1a1a; }
 
 .verify-card { max-width: 600px; margin: 0 auto; background: #12131c; border-radius: 16px; border: 1px solid rgba(197,168,92,0.3); padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
