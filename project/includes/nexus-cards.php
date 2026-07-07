@@ -35,14 +35,14 @@
       </div>
     </a>
 
-    <!-- Card 2: Maytriya Meet -->
+    <!-- Card 2: Maytriya Connect -->
     <a href="event-info.php?event=maytriya" style="text-decoration: none; color: inherit; display: contents;">
       <div class="nexus-card card-brown">
         <div class="nexus-card-header">
           <div class="nexus-logo-circle">M</div>
           <div class="nexus-header-text">
-            <h3>MAYTRIYA MEET</h3>
-            <span>LEADERSHIP & FRANCHISE SUMMIT</span>
+            <h3>MAYTRIYA CONNECT</h3>
+            <span>LEADERSHIP & FRANCHISE MEET</span>
           </div>
         </div>
         
@@ -59,8 +59,8 @@
         <div class="nexus-card-footer">
           <div class="footer-icon">🤝</div>
           <div class="footer-text">
-            <strong>Maytriya Meet</strong>
-            <span>Leadership & Franchise Summit</span>
+            <strong>Maytriya Connect</strong>
+            <span>Leadership & Franchise Meet</span>
           </div>
         </div>
       </div>

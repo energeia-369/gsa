@@ -27,7 +27,7 @@
       <h4>Events</h4>
       <ul>
         <li><a href="event-registration.php">Nexus Elite</a></li>
-        <li><a href="event-registration.php">Maytriya Meet</a></li>
+        <li><a href="event-registration.php">Maytriya Connect</a></li>
         <li><a href="gsa-details.php">GSA League</a></li>
         <li><a href="sports-categories.php">All Events</a></li>
       </ul>

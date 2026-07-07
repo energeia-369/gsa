@@ -12,11 +12,28 @@ while($row = $stmtEv->fetch(PDO::FETCH_ASSOC)){
     $dynamicLinksMap[strtoupper(trim($eventCountry))] = 'event-details.php?slug=' . $row['slug'];
 }
 
-$stmtCarousel = $db->query("SELECT country, state, slug, btn_url FROM home_carousel_events WHERE status='published' AND show_in_overseas=1");
+$stmtCarousel = $db->query("SELECT * FROM home_carousel_events WHERE status='published' AND show_in_overseas=1 ORDER BY display_order ASC");
+$dynamicCards = [];
 while($row = $stmtCarousel->fetch(PDO::FETCH_ASSOC)){
     $loc = !empty($row['country']) ? strtoupper(trim($row['country'])) : strtoupper(trim($row['state']));
     $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event.php?slug=' . $row['slug'];
     $dynamicLinksMap[$loc] = $link;
+    
+    $countryStr = $row['country'] ?? '';
+    if (empty($countryStr)) $countryStr = $row['state'] ?? '';
+    $type = (strtolower(trim($countryStr)) === 'india' || in_array(strtolower(trim($countryStr)), ['maharashtra', 'karnataka', 'tamil nadu', 'delhi', 'goa', 'kerala', 'rajasthan', 'gujarat', 'pune'])) ? 'national' : 'international';
+    
+    $dynamicCards[] = [
+        'id' => (int)$row['id'] + 1000,
+        'event_title' => $row['title'] ?? '', 
+        'image' => $row['carousel_img'] ?: $row['hero_banner'] ?: '',
+        'country' => strtoupper($countryStr),
+        'city' => $row['state'] ?? '',
+        'date' => $row['event_date'] ?? '',
+        'link' => $link,
+        'type' => $type,
+        'country_or_state' => $countryStr
+    ];
 }
 
 $stmtGsa = $db->query("SELECT country, slug FROM gsa_carousel_events WHERE status='published'");
@@ -537,6 +554,50 @@ function renderDestinations() {
     if (!slider) return;
 
     let customDest = window.apiDestinations || [];
+
+    const dynamicCardsFromDB = <?php echo json_encode($dynamicCards); ?>;
+    dynamicCardsFromDB.forEach(card => {
+        if (!card.country_or_state) return;
+        const targetCountry = card.country_or_state.toUpperCase();
+        
+        if (card.type === 'international') {
+            const match = defaultDestinations.find(dest => dest.country === targetCountry || (dest.region && dest.region.toUpperCase() === targetCountry));
+            if (match) {
+                if (card.link) match.link = card.link;
+                if (card.image) match.image = card.image;
+                if (card.event_title) match.city = card.event_title;
+            } else {
+                defaultDestinations.push({
+                    id: 'dyn_intl_' + card.id,
+                    country: targetCountry,
+                    city: card.city || targetCountry,
+                    region: targetCountry,
+                    image: card.image || '',
+                    link: card.link || '#',
+                    date: card.date || '',
+                    type: 'international'
+                });
+            }
+        } else {
+            const match = defaultNationalDestinations.find(dest => dest.country === targetCountry || (dest.region && dest.region.toUpperCase() === targetCountry));
+            if (match) {
+                if (card.link) match.link = card.link;
+                if (card.image) match.image = card.image;
+                if (card.event_title) match.city = card.event_title;
+            } else {
+                defaultNationalDestinations.push({
+                    id: 'dyn_nat_' + card.id,
+                    country: targetCountry,
+                    city: card.city || targetCountry,
+                    region: targetCountry,
+                    image: card.image || '',
+                    link: card.link || '#',
+                    date: card.date || '',
+                    type: 'national'
+                });
+            }
+        }
+    });
 
     const allDefaults = [...defaultDestinations, ...defaultNationalDestinations];
     let mergedAll = allDefaults.map(d => {

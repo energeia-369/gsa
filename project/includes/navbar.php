@@ -1,7 +1,7 @@
 <nav class="navbar" style="position: sticky; top: 0; z-index: 1000;">
 
   <!-- NEW BACKGROUND LOGO GIF -->
-  <img src="assets/images/logo_original_colors.gif?v=2" id="underNavLogo" alt="" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; transform: scale(1.45); mix-blend-mode: multiply;">
+  <img src="assets/images/logo_original_colors.gif?v=2" id="underNavLogo" alt="" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; transform: scale(1.45); mix-blend-mode: multiply; transform-origin: center center;">
 
   <!-- ✨ THE PILL ✨ -->
   <div class="nav-container" id="mainNavContainer" style="background: transparent !important; border: none !important; box-shadow: none !important;">
@@ -320,9 +320,27 @@ window.addEventListener('DOMContentLoaded', () => {
         maskBg.style.webkitMaskImage = `radial-gradient(circle ${holeRadius}px at ${centerX}px ${centerY}px, transparent ${holeRadius}px, black ${holeRadius + 1}px)`;
         maskBg.style.maskImage = `radial-gradient(circle ${holeRadius}px at ${centerX}px ${centerY}px, transparent ${holeRadius}px, black ${holeRadius + 1}px)`;
         
-        // Position the GIF exactly behind it
-        realLogo.style.left = rect.left + 'px';
-        realLogo.style.top = rect.top + 'px';
+        // Position the GIF exactly behind it, accounting for navbar padding
+        const navMain = document.querySelector('nav.navbar');
+        const navMainRect = navMain.getBoundingClientRect();
+        const navStyle = window.getComputedStyle(navMain);
+        const paddingTop = parseFloat(navStyle.paddingTop) || 0;
+
+        let pTop = 0;
+        if (window.innerWidth <= 768) {
+            dummyLogo.style.setProperty('height', '52px', 'important');
+            dummyLogo.style.setProperty('width', '52px', 'important');
+            realLogo.style.transform = 'scale(1.2)';
+            pTop = paddingTop; // Fixes vertical shift on mobile
+        } else {
+            dummyLogo.style.setProperty('height', '52px', 'important');
+            dummyLogo.style.setProperty('width', '52px', 'important');
+            realLogo.style.transform = 'scale(1.45)';
+            pTop = 0; // Original PC behavior
+        }
+
+        realLogo.style.left = (rect.left - navMainRect.left) + 'px';
+        realLogo.style.top = (rect.top - navMainRect.top - pTop) + 'px';
         realLogo.style.width = rect.width + 'px';
         realLogo.style.height = rect.height + 'px';
     }

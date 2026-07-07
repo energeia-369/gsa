@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Event Registration";
 require_once __DIR__ . '/config/Database.php';
 require_once __DIR__ . '/config/Settings.php';
@@ -445,17 +445,24 @@ function calculateFee(bypassRedeem) {
         if (offPriceEl) offPriceEl.style.display = 'none';
         if (gstNote) gstNote.style.display = 'none';
     } else {
-        gstAmount = Math.floor(priceAfterMembership * 0.18);
+        let optCurrency = (selectedTourney && selectedTourney.currency) ? selectedTourney.currency.toUpperCase() : 'INR';
+        let currencySymbol = (optCurrency === 'USD') ? '$' : '₹';
+        
+        gstAmount = (optCurrency === 'USD') ? 0 : Math.floor(priceAfterMembership * 0.18);
         amountAfterGST = priceAfterMembership + gstAmount;
         nxlCreditsEarned = Math.floor(priceAfterMembership * nxlCashbackPercentage);
 
         if (priceEl) {
-            priceEl.textContent = '₹' + priceAfterMembership.toLocaleString('en-IN');
+            priceEl.textContent = currencySymbol + priceAfterMembership.toLocaleString('en-IN');
             priceEl.style.fontSize = ''; // Reverts to CSS default
         }
         if (gstNote) {
-            gstNote.style.display = 'block';
-            if (gstEventAmount) gstEventAmount.textContent = gstAmount.toLocaleString('en-IN');
+            if (gstAmount > 0) {
+                gstNote.style.display = 'block';
+                if (gstEventAmount) gstEventAmount.textContent = currencySymbol + gstAmount.toLocaleString('en-IN');
+            } else {
+                gstNote.style.display = 'none';
+            }
         }
 
         if (membershipDiscountAmount > 0) {

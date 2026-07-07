@@ -296,13 +296,13 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
             <span>M</span>
           </div>
           <div class="flagship-header-text">
-            <h4>MAYTRIYA MEET</h4>
-            <p>LEADERSHIP & FRANCHISE SUMMIT</p>
+            <h4>MAYTRIYA CONNECT</h4>
+            <p>LEADERSHIP & FRANCHISE MEET</p>
           </div>
         </div>
         <div class="flagship-card-image-box">
-          <img src="assets/images/maytriya card dark.png" alt="Maytriya Meet" class="flagship-card-img theme-card-dark" />
-          <img src="assets/images/maytriya light card.png" alt="Maytriya Meet" class="flagship-card-img theme-card-light" style="display: none;" />
+          <img src="assets/images/maytriya card dark.png" alt="Maytriya Connect" class="flagship-card-img theme-card-dark" />
+          <img src="assets/images/maytriya light card.png" alt="Maytriya Connect" class="flagship-card-img theme-card-light" style="display: none;" />
         </div>
         <div class="flagship-card-body-box">
           <p class="flagship-card-desc">Curated meet for investors, franchise brands, entrepreneurs & business leaders.</p>
@@ -313,8 +313,8 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
             <span class="flagship-footer-icon">🤝</span>
           </div>
           <div class="flagship-footer-text">
-            <h5>Maytriya Meet</h5>
-            <p>Leadership & Franchise Summit</p>
+            <h5>Maytriya Connect</h5>
+            <p>Leadership & Franchise Meet</p>
           </div>
         </div>
       </a>
@@ -772,6 +772,8 @@ foreach ($tierMetadata as $tierKey => $meta) {
           const match = defaultDestinations.find(dest => dest.country === targetCountry || dest.region.toUpperCase() === targetCountry);
           if (match) {
               if (card.link) match.link = card.link;
+              if (card.image) match.image = card.image;
+              if (card.event_title) match.city = card.event_title;
           } else {
               defaultDestinations.push({
                   id: 'dyn_intl_' + card.id,
@@ -788,6 +790,8 @@ foreach ($tierMetadata as $tierKey => $meta) {
           const match = defaultNationalDestinations.find(dest => dest.country === targetCountry || dest.region.toUpperCase() === targetCountry);
           if (match) {
               if (card.link) match.link = card.link;
+              if (card.image) match.image = card.image;
+              if (card.event_title) match.city = card.event_title;
           } else {
               defaultNationalDestinations.push({
                   id: 'dyn_nat_' + card.id,

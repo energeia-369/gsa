@@ -14,12 +14,12 @@ $nexusData = [
     'desc' => 'Welcome to the Nexus Elite Business Summit!<br><br>A premium business summit designed for connecting global leaders, innovative startups, savvy investors, and visionaries. Explore new opportunities and build your network with the best in the industry.'
   ],
   'maytriya' => [
-    'title' => 'MAYTRIYA MEET',
-    'subtitle' => 'Leadership & Franchise Summit',
+    'title' => 'MAYTRIYA CONNECT',
+    'subtitle' => 'Leadership & Franchise Meet',
     'url' => 'https://energeia369.com/maytriya/',
-    'urlText' => 'Visit Maytriya Meet Website →',
+    'urlText' => 'Visit Maytriya Connect Website →',
     'image' => 'assets/images/maytriya card dark.png', // Assuming there's a dark version, or just maytriya card.png
-    'desc' => 'Welcome to the Maytriya Meet!<br><br>This is a carefully curated meet exclusively for investors, franchise brands, bold entrepreneurs, and top business leaders. Discover franchising potentials and leadership strategies that shape the future.'
+    'desc' => 'Welcome to the Maytriya Connect!<br><br>This is a carefully curated meet exclusively for investors, franchise brands, bold entrepreneurs, and top business leaders. Discover franchising potentials and leadership strategies that shape the future.'
   ],
   'gsa' => [
     'title' => 'GLOBAL SPORTS ARENA',

@@ -366,6 +366,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category = $_POST['category'] ?? '';
     $country = $_POST['country'] ?? '';
     $state = $_POST['state'] ?? '';
+    $location = $_POST['location'] ?? '';
+    $badge_text = $_POST['badge_text'] ?? '';
     $btn_text = $_POST['btn_text'] ?? 'Explore';
     $btn_url = $_POST['btn_url'] ?? '';
     $event_date = !empty($_POST['event_date']) ? $_POST['event_date'] : null;
@@ -420,6 +422,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['home_banner_img']) && $_FILES['home_banner_img']['error'] == 0) {
         $uploaded = MediaUtils::processAndUploadImage($_FILES['home_banner_img'], $uploadDir);
         if ($uploaded) $home_banner_img = $uploaded;
+    }
+
+    $registration_image = $event ? ($event['registration_image'] ?? '') : '';
+    if (!empty($_POST['registration_image_url'])) {
+        $registration_image = $_POST['registration_image_url'];
+    }
+    if (isset($_FILES['registration_image']) && $_FILES['registration_image']['error'] == 0) {
+        $uploaded = MediaUtils::processAndUploadImage($_FILES['registration_image'], $uploadDir);
+        if ($uploaded) $registration_image = $uploaded;
     }
 
         $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
@@ -772,41 +783,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $show_home_banner = isset($_POST['show_home_banner']) ? 1 : 0;
     $show_in_overseas = isset($_POST['show_in_overseas']) ? 1 : 0;
 
+    $stat1_val = $_POST['stat1_val'] ?? '';
+    $stat1_label = $_POST['stat1_label'] ?? '';
+    $stat2_val = $_POST['stat2_val'] ?? '';
+    $stat2_label = $_POST['stat2_label'] ?? '';
+    $stat3_val = $_POST['stat3_val'] ?? '';
+    $stat3_label = $_POST['stat3_label'] ?? '';
+    $stat4_val = $_POST['stat4_val'] ?? '';
+    $stat4_label = $_POST['stat4_label'] ?? '';
+
     if ($id > 0) {
         $stmt = $pdo->prepare("UPDATE home_carousel_events SET 
-            title=?, subtitle=?, short_desc=?, description=?, category=?, country=?, state=?,
-            hero_banner=?, carousel_img=?, home_banner_img=?, btn_text=?, btn_url=?,
+            title=?, subtitle=?, short_desc=?, description=?, category=?, country=?, state=?, location=?, badge_text=?,
+            hero_banner=?, carousel_img=?, home_banner_img=?, registration_image=?, btn_text=?, btn_url=?,
             event_date=?, display_order=?, is_featured=?, status=?,
             seo_title=?, seo_desc=?, seo_keywords=?, slug=?,
             end_date=?, timer_start_date=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, custom_html=?, delegate_fee=?, delegate_currency=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, gala_passes_data=?,
-            show_on_home=?, show_on_gsa=?, show_home_banner=?, show_in_overseas=?
+            show_on_home=?, show_on_gsa=?, show_home_banner=?, show_in_overseas=?,
+            stat1_val=?, stat1_label=?, stat2_val=?, stat2_label=?, stat3_val=?, stat3_label=?, stat4_val=?, stat4_label=?
             WHERE id=?");
         $stmt->execute([
-            $title, $subtitle, $short_desc, $description, $category, $country, $state,
-            $hero_banner, $carousel_img, $home_banner_img, $btn_text, $btn_url,
+            $title, $subtitle, $short_desc, $description, $category, $country, $state, $location, $badge_text,
+            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url,
             $event_date, $display_order, $is_featured, $status,
             $seo_title, $seo_desc, $seo_keywords, $slug, 
             $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
-            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas, $id
+            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas,
+            $stat1_val, $stat1_label, $stat2_val, $stat2_label, $stat3_val, $stat3_label, $stat4_val, $stat4_label,
+            $id
         ]);
     } else {
         $stmt = $pdo->prepare("INSERT INTO home_carousel_events (
-            title, subtitle, short_desc, description, category, country, state,
-            hero_banner, carousel_img, home_banner_img, btn_text, btn_url,
+            title, subtitle, short_desc, description, category, country, state, location, badge_text,
+            hero_banner, carousel_img, home_banner_img, registration_image, btn_text, btn_url,
             event_date, display_order, is_featured, status,
             seo_title, seo_desc, seo_keywords, slug,
             end_date, timer_start_date, gala_title, gala_venue, gala_date, gala_time, gala_description, custom_html, delegate_fee, delegate_currency, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, gala_passes_data,
-            show_on_home, show_on_gsa, show_home_banner, show_in_overseas
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            show_on_home, show_on_gsa, show_home_banner, show_in_overseas,
+            stat1_val, stat1_label, stat2_val, stat2_label, stat3_val, stat3_label, stat4_val, stat4_label
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->execute([
-            $title, $subtitle, $short_desc, $description, $category, $country, $state,
-            $hero_banner, $carousel_img, $home_banner_img, $btn_text, $btn_url,
+            $title, $subtitle, $short_desc, $description, $category, $country, $state, $location, $badge_text,
+            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url,
             $event_date, $display_order, $is_featured, $status,
             $seo_title, $seo_desc, $seo_keywords, $slug, 
             $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
-            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas
+            $show_on_home, $show_on_gsa, $show_home_banner, $show_in_overseas,
+            $stat1_val, $stat1_label, $stat2_val, $stat2_label, $stat3_val, $stat3_label, $stat4_val, $stat4_label
         ]);
         $id = $pdo->lastInsertId();
+    }
+    
+    // Auto-sync exhibitor_data to `events` table for GSA events
+    // This ensures that when the user updates the dynamic page, the form dropdown (which pulls from events table) gets updated too.
+    if (!empty($exhibitor_data)) {
+        $searchTitle = '%' . trim(str_ireplace('GSA', '', $title)) . '%';
+        $syncStmt = $pdo->prepare("UPDATE events SET exhibitor_data = ? WHERE title LIKE ? OR slug LIKE ?");
+        $syncStmt->execute([$exhibitor_data, $searchTitle, $searchTitle]);
     }
     
     echo "<script>window.location.href='admin-home-carousel.php?msg=saved';</script>";
@@ -880,9 +913,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-row">
-            <div class="form-group">
-                <label>Country</label>
-                <input type="text" name="country" list="country_options" class="form-control" value="<?= htmlspecialchars($event['country'] ?? '') ?>" placeholder="Type or select a country/state...">
+            <div class="form-group" style="flex: 2;">
+                <label>Country / State</label>
+                <input type="text" name="country" id="country_input" list="country_options" class="form-control" value="<?= htmlspecialchars($event['country'] ?? $event['state'] ?? '') ?>" placeholder="Type or select a country/state..." required>
                 <datalist id="country_options">
                     <!-- International -->
                     <option value="Dubai">
@@ -902,9 +935,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="Rajasthan">
                 </datalist>
             </div>
+            <!-- state input removed, backend uses $_POST['state'] ?? '' automatically -->
+        </div>
+        
+        <div class="form-row">
             <div class="form-group">
-                <label>State / Region</label>
-                <input type="text" name="state" class="form-control" value="<?= htmlspecialchars($event['state'] ?? '') ?>">
+                <label>Location (Full Address)</label>
+                <input type="text" name="location" class="form-control" value="<?= htmlspecialchars($event['location'] ?? '') ?>" placeholder="e.g. Shree Shiv Chhatrapati Sports Complex, Pune">
+            </div>
+            <div class="form-group">
+                <label>Top Badge Text</label>
+                <input type="text" name="badge_text" class="form-control" value="<?= htmlspecialchars($event['badge_text'] ?? '') ?>" placeholder="e.g. GSA Championship Series">
             </div>
         </div>
         
@@ -912,8 +953,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Short Description</label>
             <textarea name="short_desc" class="form-control" rows="3"><?= htmlspecialchars($event['short_desc'] ?? '') ?></textarea>
         </div>
-        
+    </div>
 
+    <!-- Custom Statistics -->
+    <div class="card">
+        <div class="card-title">Custom Statistics (4 Boxes) <small style="color:#aaa; font-size:0.9rem;">(Leave blank to auto-calculate)</small></div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Box 1 Value</label>
+                <input type="text" name="stat1_val" class="form-control" placeholder="e.g. 4" value="<?= htmlspecialchars($event['stat1_val'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Box 1 Label</label>
+                <input type="text" name="stat1_label" class="form-control" placeholder="e.g. SPORTS CHAMPIONSHIPS" value="<?= htmlspecialchars($event['stat1_label'] ?? '') ?>">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Box 2 Value</label>
+                <input type="text" name="stat2_val" class="form-control" placeholder="e.g. 8" value="<?= htmlspecialchars($event['stat2_val'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Box 2 Label</label>
+                <input type="text" name="stat2_label" class="form-control" placeholder="e.g. DAYS FESTIVAL" value="<?= htmlspecialchars($event['stat2_label'] ?? '') ?>">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Box 3 Value</label>
+                <input type="text" name="stat3_val" class="form-control" placeholder="e.g. 10L+" value="<?= htmlspecialchars($event['stat3_val'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Box 3 Label</label>
+                <input type="text" name="stat3_label" class="form-control" placeholder="e.g. PRIZE POOL" value="<?= htmlspecialchars($event['stat3_label'] ?? '') ?>">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Box 4 Value</label>
+                <input type="text" name="stat4_val" class="form-control" placeholder="e.g. 1000+" value="<?= htmlspecialchars($event['stat4_val'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Box 4 Label</label>
+                <input type="text" name="stat4_label" class="form-control" placeholder="e.g. PARTICIPANTS EXPECTED" value="<?= htmlspecialchars($event['stat4_label'] ?? '') ?>">
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -1540,8 +1624,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="schedule_title[]" value="${title.replace(/"/g, '&quot;')}">
             </div>
             <div class="form-group">
-                <label>Time (e.g. 6:00 PM - 9:00 PM)</label>
-                <input type="text" name="schedule_time[]" value="${time.replace(/"/g, '&quot;')}">
+                <label>Time (e.g. 6:00 PM - 9:00 PM)</lab                <input type="text" name="schedule_time[]" value="${time.replace(/"/g, '&quot;')}">
             </div>
             <div class="form-group">
                 <label>Description</label>
@@ -1560,7 +1643,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         container.appendChild(createScheduleBlock(s.day, s.title, s.time, s.description));
     });
 </script>
-
 
 <div style="margin-bottom: 100px;">
         <button type="submit" class="btn-gold">Save Event</button>

@@ -60,7 +60,7 @@ include 'includes/navbar.php';
             <div style="display: block; width: 100%;">
                 <div class="gsa-badge animate-badge">
                     <i class="fas fa-trophy"></i> 
-                    <span class="badge-text">GSA Championship Series</span>
+                    <span class="badge-text"><?= htmlspecialchars(!empty($event['badge_text']) ? $event['badge_text'] : 'GSA Championship Series') ?></span>
                     <span class="badge-pulse"></span>
                 </div>
             </div>
@@ -122,34 +122,82 @@ include 'includes/navbar.php';
 <!-- =================================
      SECTION 2 — EVENT OVERVIEW
 ================================= -->
+<?php
+// Calculate dynamic stats
+$sports = [];
+if (!empty($event['sports_data'])) {
+    $sports = json_decode($event['sports_data'], true) ?? [];
+}
+$sportsCount = count($sports);
+
+$daysFestival = 0;
+if (!empty($event['event_date']) && !empty($event['end_date'])) {
+    try {
+        $st = new DateTime($event['event_date']);
+        $ed = new DateTime($event['end_date']);
+        $daysFestival = $st->diff($ed)->days + 1;
+    } catch (Exception $e) {}
+}
+if ($daysFestival <= 0) $daysFestival = 9; // fallback
+
+$totalPrize = 0;
+foreach ($sports as $s) {
+    if (!empty($s['prize'])) {
+        $val = str_replace([',', ' '], '', $s['prize']);
+        if (is_numeric($val)) {
+            $totalPrize += (float)$val;
+        }
+    }
+}
+$prizeText = '10L+';
+$prizeNumber = 10;
+$prizeSuffix = 'L+';
+if ($totalPrize > 0) {
+    if ($totalPrize >= 10000000) {
+        $prizeNumber = floor($totalPrize / 10000000);
+        $prizeSuffix = 'Cr+';
+    } elseif ($totalPrize >= 100000) {
+        $prizeNumber = floor($totalPrize / 100000);
+        $prizeSuffix = 'L+';
+    } elseif ($totalPrize >= 1000) {
+        $prizeNumber = floor($totalPrize / 1000);
+        $prizeSuffix = 'K+';
+    } else {
+        $prizeNumber = $totalPrize;
+        $prizeSuffix = '+';
+    }
+}
+$participantsCount = $sportsCount * 250;
+if ($participantsCount < 1000) $participantsCount = 1000;
+?>
 <section class="overview-section">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-medal"></i></div>
-                    <div class="stat-number counter" data-target="4">0</div>
+                    <div class="stat-number counter" data-target="<?= $sportsCount ?>">0</div>
                     <div class="stat-label">Sports<br>Championships</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-                    <div class="stat-number counter" data-target="9">0</div>
+                    <div class="stat-number counter" data-target="<?= $daysFestival ?>">0</div>
                     <div class="stat-label">Days<br>Festival</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="10">0</span>L+</div>
+                    <div class="stat-number"><span class="counter" data-target="<?= $prizeNumber ?>">0</span><?= $prizeSuffix ?></div>
                     <div class="stat-label">Prize<br>Pool</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="1000">0</span>+</div>
+                    <div class="stat-number"><span class="counter" data-target="<?= $participantsCount ?>">0</span>+</div>
                     <div class="stat-label">Participants<br>Expected</div>
                 </div>
             </div>

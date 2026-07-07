@@ -185,10 +185,11 @@ try {
                 <div class="form-group">
                     <label>Booth Requirement</label>
                     <select class="form-control" name="booth" id="boothSelect" required onchange="toggleCustomBuild()">
-                        <option value="" data-price="0" disabled selected>-- Select Booth Size --</option>
+                        <option value="" data-price="0" data-currency="₹" disabled selected>-- Select Booth Size --</option>
                         <?php foreach ($boothOptionsList as $booth): ?>
-                            <option value="<?php echo htmlspecialchars($booth['name']); ?>" data-price="<?php echo htmlspecialchars($booth['price']); ?>">
-                                <?php $sym = (isset($booth['currency']) && strtoupper($booth['currency']) === 'USD') ? '$' : '₹'; echo htmlspecialchars($booth['name']); ?> <?php echo $booth['price'] > 0 ? '(+' . $sym . number_format($booth['price']) . ')' : ''; ?>
+                            <?php $sym = (isset($booth['currency']) && strtoupper($booth['currency']) === 'USD') ? '$' : '₹'; ?>
+                            <option value="<?php echo htmlspecialchars($booth['name']); ?>" data-price="<?php echo htmlspecialchars($booth['price']); ?>" data-currency="<?php echo $sym; ?>">
+                                <?php echo htmlspecialchars($booth['name']); ?> <?php echo $booth['price'] > 0 ? '(+' . $sym . number_format($booth['price']) . ')' : ''; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -200,22 +201,10 @@ try {
                 </div>
                 
                 <div class="form-group full-width">
-                    <label>Event Type</label>
-                    <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                            <input type="radio" name="event_type" value="gsa" checked onchange="updateEventDropdown()"> GSA Events
-                        </label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                            <input type="radio" name="event_type" value="nexus" onchange="updateEventDropdown()"> Nexus / Maytriya Events
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group full-width">
                     <label>Select Event</label>
                     <select class="form-control" name="event" id="eventSelect" required onchange="handleEventSelection()">
                         <option value="" disabled selected>-- Select an Event --</option>
-                        <!-- Options will be populated by JS based on Event Type -->
+                        <!-- Options will be populated by JS -->
                     </select>
                 </div>
             </div>
@@ -223,7 +212,7 @@ try {
             <div class="form-group full-width" style="<?php echo $exhibitorFee > 0 ? 'display:block;' : 'display:none;'; ?>" id="feeDisplayGroup">
                 <label>Registration Fee (Base + Booth Option)</label>
                 <input type="text" id="registrationFeeInput" class="form-control" value="₹<?php echo number_format($exhibitorFee); ?>" style="background: rgba(197, 168, 92, 0.1); color: #c5a85c; font-weight: bold; border-color: rgba(197, 168, 92, 0.3); margin-bottom: 5px;" disabled>
-                <div style="font-size: 0.9rem; color: #9aa0b4; text-align: right;">+ 18% GST: ₹<span id="gstAmountSpan"><?php echo number_format(floor($exhibitorFee * 0.18)); ?></span></div>
+                <div id="gstContainer" style="font-size: 0.9rem; color: #9aa0b4; text-align: right;">+ 18% GST: <span id="gstAmountSpan">₹<?php echo number_format(floor($exhibitorFee * 0.18)); ?></span></div>
             </div>
             
             <input type="hidden" name="auth_email" id="authEmailField" value="">
@@ -256,33 +245,50 @@ const tournamentsList = <?php echo json_encode($tournamentsList); ?>;
 const homeCarouselEvents = <?php echo json_encode($homeCarouselEvents); ?>;
 
 function updateEventDropdown() {
-    const eventType = document.querySelector('input[name="event_type"]:checked').value;
     const select = document.getElementById("eventSelect");
     
     let optionsHtml = '<option value="" disabled selected>-- Select an Event --</option>';
     
-    if (eventType === 'gsa') {
-        tournamentsList.forEach(t => {
+    // Create a Set to track added events and avoid duplicates
+    const addedEvents = new Set();
+    
+    // Add GSA Events
+    tournamentsList.forEach(t => {
+        if (!addedEvents.has(t.name)) {
             const label = t.name + (t.sport ? ' (' + t.sport + ')' : '');
-            optionsHtml += `<option value="${t.name}">${label}</option>`;
-        });
-    } else {
-        homeCarouselEvents.forEach(e => {
+            optionsHtml += `<option value="${t.name}" data-source="gsa">${label}</option>`;
+            addedEvents.add(t.name);
+        }
+    });
+
+    // Add Nexus/Maytriya Events
+    homeCarouselEvents.forEach(e => {
+        if (!addedEvents.has(e.title)) {
             const label = e.title + (e.country ? ' (' + e.country + ')' : '');
-            optionsHtml += `<option value="${e.title}">${label}</option>`;
-        });
-    }
+            optionsHtml += `<option value="${e.title}" data-source="nexus">${label}</option>`;
+            addedEvents.add(e.title);
+        }
+    });
+
     select.innerHTML = optionsHtml;
     handleEventSelection();
 }
 
 function handleEventSelection() {
-    const eventType = document.querySelector('input[name="event_type"]:checked').value;
-    const eventName = document.getElementById("eventSelect").value;
+    const eventSelect = document.getElementById("eventSelect");
+    const eventName = eventSelect.value;
+    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+    const eventType = selectedOption ? selectedOption.getAttribute('data-source') : null;
     const boothSelect = document.getElementById("boothSelect");
     
-    let optionsHtml = '<option value="" data-price="0" disabled selected>-- Select Booth Size --</option>';
+    let optionsHtml = '<option value="" data-price="0" data-currency="₹" disabled selected>-- Select Booth Size --</option>';
     let eventObj = null;
+
+    if (!eventName) {
+        boothSelect.innerHTML = optionsHtml;
+        toggleCustomBuild();
+        return;
+    }
 
     if (eventType === 'nexus') {
         eventObj = homeCarouselEvents.find(e => e.title === eventName);
@@ -300,7 +306,7 @@ function handleEventSelection() {
                     if (pkg.size) label += ` (${pkg.size})`;
                     const sym = (pkg.currency && pkg.currency.toUpperCase() === 'USD') ? '$' : '₹';
                     if (price > 0) label += ` (+${sym}${price.toLocaleString('en-IN')})`;
-                    optionsHtml += `<option value="${pkg.title}" data-price="${price}">${label}</option>`;
+                    optionsHtml += `<option value="${pkg.title}" data-price="${price}" data-currency="${sym}">${label}</option>`;
                 });
                 boothSelect.innerHTML = optionsHtml;
                 toggleCustomBuild();
@@ -326,8 +332,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateBoothOptionsForLocation() {
-    const eventType = document.querySelector('input[name="event_type"]:checked').value;
-    const eventName = document.getElementById("eventSelect").value;
+    const eventSelect = document.getElementById("eventSelect");
+    const eventName = eventSelect.value;
+    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+    const eventType = selectedOption ? selectedOption.getAttribute('data-source') : null;
     
     let eventObj = null;
     if (eventType === 'nexus') {
@@ -377,14 +385,14 @@ function updateBoothOptionsForLocation() {
             const originalPriceDisplay = rawPrice.includes('+') ? numericPrice.toLocaleString('en-IN') + '+' : numericPrice.toLocaleString('en-IN');
             const sym = (d[t.key].currency && d[t.key].currency.toUpperCase() === 'USD') ? '$' : '₹';
             const label = t.name + (numericPrice > 0 ? ` (+${sym}` + originalPriceDisplay + ')' : '');
-            optionsHtml += `<option value="${t.name}" data-price="${numericPrice}">${label}</option>`;
+            optionsHtml += `<option value="${t.name}" data-price="${numericPrice}" data-currency="${sym}">${label}</option>`;
         });
     } else {
         defaultBoothOptions.forEach(b => {
             const price = parseFloat(b.price || 0);
             const sym = (b.currency && b.currency.toUpperCase() === 'USD') ? '$' : '₹';
             const label = b.name + (price > 0 ? ` (+${sym}` + price.toLocaleString('en-IN') + ')' : '');
-            optionsHtml += `<option value="${b.name}" data-price="${price}">${label}</option>`;
+            optionsHtml += `<option value="${b.name}" data-price="${price}" data-currency="${sym}">${label}</option>`;
         });
     }
     
@@ -424,21 +432,28 @@ function toggleCustomBuild() {
     // Update price dynamically
     var selectedOption = select.options[select.selectedIndex];
     var optionPrice = selectedOption ? parseFloat(selectedOption.getAttribute("data-price") || 0) : 0;
+    var optionCurrency = selectedOption ? (selectedOption.getAttribute("data-currency") || '₹') : '₹';
     currentBaseFee = baseFee + optionPrice;
-    var gstAmount = Math.floor(currentBaseFee * 0.18);
+    var gstAmount = (optionCurrency === '$' || optionCurrency === 'USD') ? 0 : Math.floor(currentBaseFee * 0.18);
     currentTotalFee = currentBaseFee + gstAmount;
     
     var feeInput = document.getElementById("registrationFeeInput");
     var gstSpan = document.getElementById("gstAmountSpan");
+    var gstContainer = document.getElementById("gstContainer");
     var submitBtn = document.getElementById("submitApplyBtn");
     var feeGroup = document.getElementById("feeDisplayGroup");
     
-    if (currentTotalFee > 0) {
+    if (currentTotalFee > 0 || currentBaseFee > 0) {
         if(feeInput) {
-            feeInput.value = "₹" + currentBaseFee.toLocaleString('en-IN');
+            feeInput.value = optionCurrency + currentBaseFee.toLocaleString('en-IN');
             if(feeGroup) feeGroup.style.display = "block";
         }
-        if(gstSpan) gstSpan.textContent = gstAmount.toLocaleString('en-IN');
+        if (gstAmount > 0) {
+            if(gstContainer) gstContainer.style.display = "block";
+            if(gstSpan) gstSpan.textContent = optionCurrency + gstAmount.toLocaleString('en-IN');
+        } else {
+            if(gstContainer) gstContainer.style.display = "none";
+        }
         if(submitBtn) {
             submitBtn.innerHTML = "SUBMIT APPLICATION";
         }

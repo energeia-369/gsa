@@ -92,7 +92,7 @@ include 'includes/navbar.php';
             <div style="display: block; width: 100%;">
                 <div class="gsa-badge animate-badge">
                     <i class="fas fa-trophy"></i> 
-                    <span class="badge-text">GSA Championship Series</span>
+                    <span class="badge-text"><?= htmlspecialchars(!empty($event['badge_text']) ? $event['badge_text'] : 'GSA Championship Series') ?></span>
                     <span class="badge-pulse"></span>
                 </div>
             </div>
@@ -177,7 +177,6 @@ if (!empty($event['sports_data'])) {
 }
 
 $sportsCount = count($sports);
-if ($sportsCount === 0) $sportsCount = 4; // fallback
 
 $daysFestival = 0;
 if (!empty($event['start_date']) && !empty($event['end_date'])) {
@@ -225,29 +224,45 @@ if ($participantsCount < 1000) $participantsCount = 1000;
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-medal"></i></div>
-                    <div class="stat-number counter" data-target="<?= $sportsCount ?>">0</div>
-                    <div class="stat-label">Sports<br>Championships</div>
+                    <?php if (!empty($event['stat1_val'])): ?>
+                        <div class="stat-number"><?= htmlspecialchars($event['stat1_val']) ?></div>
+                    <?php else: ?>
+                        <div class="stat-number counter" data-target="<?= $sportsCount ?>">0</div>
+                    <?php endif; ?>
+                    <div class="stat-label"><?= !empty($event['stat1_label']) ? $event['stat1_label'] : "Sports<br>Championships" ?></div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-                    <div class="stat-number counter" data-target="<?= $daysFestival ?>">0</div>
-                    <div class="stat-label">Days<br>Festival</div>
+                    <?php if (!empty($event['stat2_val'])): ?>
+                        <div class="stat-number"><?= htmlspecialchars($event['stat2_val']) ?></div>
+                    <?php else: ?>
+                        <div class="stat-number counter" data-target="<?= $daysFestival ?>">0</div>
+                    <?php endif; ?>
+                    <div class="stat-label"><?= !empty($event['stat2_label']) ? $event['stat2_label'] : "Days<br>Festival" ?></div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="<?= $prizeNumber ?>">0</span><?= $prizeSuffix ?></div>
-                    <div class="stat-label">Prize<br>Pool</div>
+                    <?php if (!empty($event['stat3_val'])): ?>
+                        <div class="stat-number"><?= htmlspecialchars($event['stat3_val']) ?></div>
+                    <?php else: ?>
+                        <div class="stat-number"><span class="counter" data-target="<?= $prizeNumber ?>">0</span><?= $prizeSuffix ?></div>
+                    <?php endif; ?>
+                    <div class="stat-label"><?= !empty($event['stat3_label']) ? $event['stat3_label'] : "Prize<br>Pool" ?></div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-card glass-card stat-animate">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    <div class="stat-number"><span class="counter" data-target="<?= $participantsCount ?>">0</span>+</div>
-                    <div class="stat-label">Participants<br>Expected</div>
+                    <?php if (!empty($event['stat4_val'])): ?>
+                        <div class="stat-number"><?= htmlspecialchars($event['stat4_val']) ?></div>
+                    <?php else: ?>
+                        <div class="stat-number"><span class="counter" data-target="<?= $participantsCount ?>">0</span>+</div>
+                    <?php endif; ?>
+                    <div class="stat-label"><?= !empty($event['stat4_label']) ? $event['stat4_label'] : "Participants<br>Expected" ?></div>
                 </div>
             </div>
         </div>
@@ -1029,13 +1044,13 @@ function renderDestinations() {
             </div>
             <div class="destination-body">
               <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“…</span> ${dest.date}
+                <span class="destination-icon">📅</span> ${dest.date}
               </div>
               <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“</span> ${dest.city}
+                <span class="destination-icon">📍</span> ${dest.city}
               </div>
               <div class="destination-detail-row">
-                <span class="destination-icon">ðŸ“</span> ${dest.region}
+                <span class="destination-icon">📍</span> ${dest.region}
               </div>
             </div>
           </a>
