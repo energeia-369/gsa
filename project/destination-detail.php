@@ -142,7 +142,7 @@ const defaultDestinations = [
   {
     id: 7,
     country: "USA - NEW YORK",
-    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfwahV5yF4az000LrH5UPZhBV23NNv9LTd7penHXR4ew&s=10",
     date: getRangeDate("May", "Sep"),
     city: "New York",
     region: "USA",
@@ -332,6 +332,244 @@ const defaultDestinations = [
     events: [
       { name: "Ahmedabad T20 Championship", prize: "₹8,00,000", entry: "₹4,000", date: getEventDateRange("Feb", 10, "Feb", 18) },
       { name: "Gujarat International Kite Cup", prize: "₹1,50,000", entry: "₹500", date: getEventDateRange("Mar", 12, "Mar", 14) }
+    ]
+  },
+  {
+    id: 15,
+    country: "GERMANY - BERLIN",
+    image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80",
+    date: getRangeDate("Aug", "Sep"),
+    city: "Berlin",
+    region: "Germany",
+    description: "Compete in the historic city of Berlin. Hosting athletic marathons and football cups.",
+    events: [
+      { name: "Berlin Marathon Challenge", prize: "€15,000", entry: "€100", date: getSingleEventDate("Sep", 24) },
+      { name: "Mitte Football Cup", prize: "€8,000", entry: "€200", date: getEventDateRange("Aug", 10, "Aug", 15) }
+    ]
+  },
+  {
+    id: 16,
+    country: "SOUTH AFRICA - CAPE TOWN",
+    image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+    date: getRangeDate("Sep", "Oct"),
+    city: "Cape Town",
+    region: "South Africa",
+    description: "Enjoy coastal views while competing in rugby sevens and trail running.",
+    events: [
+      { name: "Cape Town Rugby Sevens", prize: "ZAR 100,000", entry: "ZAR 1,000", date: getEventDateRange("Sep", 15, "Sep", 18) },
+      { name: "Table Mountain Trail Run", prize: "ZAR 50,000", entry: "ZAR 500", date: getSingleEventDate("Oct", 5) }
+    ]
+  },
+  {
+    id: 17,
+    country: "BRAZIL - RIO",
+    image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80",
+    date: getRangeDate("Oct", "Nov"),
+    id: 108,
+    country: "TAMIL NADU",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Mamallapuram_view.jpg/960px-Mamallapuram_view.jpg",
+    date: getRangeDate("May", "Jun"),
+    city: "Chennai",
+    region: "India",
+    description: "Join premier tennis and kabaddi leagues in the cultural capital of South India.",
+    events: [
+      { name: "Chennai Tennis Grand Prix", prize: "₹4,00,000", entry: "₹2,000", date: getEventDateRange("May", 5, "May", 10) },
+      { name: "Tamil Nadu Kabaddi League", prize: "₹2,50,000", entry: "₹1,000", date: getEventDateRange("Jun", 15, "Jun", 20) }
+    ]
+  },
+  {
+    id: 109,
+    country: "PUNJAB",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Golden_Temple_India.jpg/800px-Golden_Temple_India.jpg",
+    date: getRangeDate("Jun", "Jul"),
+    city: "Amritsar",
+    region: "India",
+    description: "Experience the passion of Punjab with national hockey and wrestling tournaments.",
+    events: [
+      { name: "Amritsar Hockey Invitational", prize: "₹5,00,000", entry: "₹3,000", date: getEventDateRange("Jun", 10, "Jun", 15) },
+      { name: "Punjab Wrestling Championship", prize: "₹3,00,000", entry: "₹1,500", date: getSingleEventDate("Jul", 5) }
+    ]
+  },
+  {
+    id: 110,
+    country: "WEST BENGAL",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Howrah_bridge_betwixt_Lights.jpg/960px-Howrah_bridge_betwixt_Lights.jpg",
+    date: getRangeDate("Jul", "Aug"),
+    city: "Kolkata",
+    region: "India",
+    description: "Play football in the City of Joy. Host to legacy tournaments and regional cups.",
+    events: [
+      { name: "Kolkata Football Legacy Cup", prize: "₹7,00,000", entry: "₹4,000", date: getEventDateRange("Jul", 20, "Jul", 25) },
+      { name: "Bengal Badminton Masters", prize: "₹2,50,000", entry: "₹1,000", date: getEventDateRange("Aug", 10, "Aug", 14) }
+    ]
+  },
+  {
+    id: 111,
+    country: "TELANGANA",
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/f7/A_typical_charminar_evening.jpg",
+    date: getRangeDate("Aug", "Sep"),
+    city: "Hyderabad",
+    region: "India",
+    description: "Modern sports infrastructure meets rich heritage in our Hyderabad events.",
+    events: [
+      { name: "Hyderabad IT Corporate T20", prize: "₹6,00,000", entry: "₹5,000", date: getEventDateRange("Aug", 15, "Aug", 22) },
+      { name: "Telangana Badminton Open", prize: "₹3,00,000", entry: "₹1,500", date: getEventDateRange("Sep", 5, "Sep", 9) }
+    ]
+  },
+  {
+    id: 112,
+    country: "MADHYA PRADESH",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/India-5749_-_Visvanatha_Temple_-_Flickr_-_archer10_%28Dennis%29.jpg/960px-India-5749_-_Visvanatha_Temple_-_Flickr_-_archer10_%28Dennis%29.jpg",
+    date: getRangeDate("Sep", "Oct"),
+    city: "Indore",
+    region: "India",
+    description: "The heart of India hosts central regional championships in basketball and athletics.",
+    events: [
+      { name: "Indore Basketball Invitational", prize: "₹2,00,000", entry: "₹1,000", date: getEventDateRange("Sep", 10, "Sep", 15) },
+      { name: "MP State Athletics Meet", prize: "₹1,50,000", entry: "₹500", date: getEventDateRange("Oct", 12, "Oct", 14) }
+    ]
+  },
+  {
+    id: 113,
+    country: "UTTARAKHAND",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Nanda_Devi_-_Hidden_Summit%2C_Uttarakhand_India_2013.jpg/960px-Nanda_Devi_-_Hidden_Summit%2C_Uttarakhand_India_2013.jpg",
+    date: getRangeDate("Oct", "Nov"),
+    city: "Dehradun",
+    region: "India",
+    description: "Mountain sports and serene marathon routes in the lap of the Himalayas.",
+    events: [
+      { name: "Himalayan Half Marathon", prize: "₹3,00,000", entry: "₹1,500", date: getSingleEventDate("Oct", 20) },
+      { name: "Dehradun Football Cup", prize: "₹2,50,000", entry: "₹1,000", date: getEventDateRange("Nov", 5, "Nov", 10) }
+    ]
+  },
+  {
+    id: 114,
+    country: "HIMACHAL PRADESH",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg/960px-Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg",
+    date: getRangeDate("Nov", "Dec"),
+    city: "Shimla",
+    region: "India",
+    description: "Experience extreme sports and winter games in the picturesque valleys of Himachal.",
+    events: [
+      { name: "Shimla Winter Games", prize: "₹4,00,000", entry: "₹2,000", date: getEventDateRange("Nov", 15, "Nov", 20) },
+      { name: "Himachal Cycling Challenge", prize: "₹1,50,000", entry: "₹800", date: getEventDateRange("Dec", 5, "Dec", 8) }
+    ]
+  },
+  {
+    id: 20,
+    country: "FRANCE - PARIS",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPMDDK1BX_jKbra9wFsdY-d_MVNa7qrdH0i4enN_7fUg&s=10",
+    date: getRangeDate("Feb", "Mar"),
+    city: "Paris",
+    region: "France",
+    description: "The city of lights brings global athletics and European cups to Stade de France.",
+    events: [
+      { name: "Paris Athletics Meet", prize: "€25,000", entry: "€300", date: getEventDateRange("Feb", 10, "Feb", 15) },
+      { name: "French Open Fencing", prize: "€10,000", entry: "€150", date: getEventDateRange("Mar", 1, "Mar", 4) }
+    ]
+  },
+  {
+    id: 21,
+    country: "JAPAN - TOKYO",
+    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80",
+    date: getRangeDate("Mar", "Apr"),
+    city: "Tokyo",
+    region: "Japan",
+    description: "Experience hyper-modern arenas for judo, gymnastics and track events.",
+    events: [
+      { name: "Tokyo Judo Masters", prize: "¥3,000,000", entry: "¥20,000", date: getEventDateRange("Mar", 15, "Mar", 20) },
+      { name: "Japan Track & Field Open", prize: "¥2,500,000", entry: "¥15,000", date: getSingleEventDate("Apr", 5) }
+    ]
+  },
+  {
+    id: 22,
+    country: "AUSTRALIA - SYDNEY",
+    image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
+    date: getRangeDate("Apr", "May"),
+    city: "Sydney",
+    region: "Australia",
+    description: "Swim, surf, and sail around the iconic Opera House.",
+    events: [
+      { name: "Sydney Surfing Pro", prize: "AUD 30,000", entry: "AUD 200", date: getEventDateRange("Apr", 10, "Apr", 14) },
+      { name: "Aussie Rules Invitational", prize: "AUD 50,000", entry: "AUD 500", date: getEventDateRange("May", 1, "May", 7) }
+    ]
+  },
+  {
+    id: 23,
+    country: "ITALY - ROME",
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80",
+    date: getRangeDate("May", "Jun"),
+    city: "Rome",
+    region: "Italy",
+    description: "Compete where gladiators once stood. Host to classic marathon runs and cycling tours.",
+    events: [
+      { name: "Roman Marathon", prize: "€15,000", entry: "€100", date: getSingleEventDate("May", 25) },
+      { name: "Italy Cycling Tour", prize: "€40,000", entry: "€500", date: getEventDateRange("Jun", 10, "Jun", 25) }
+    ]
+  },
+  {
+    id: 24,
+    country: "SPAIN - BARCELONA",
+    image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&q=80",
+    date: getRangeDate("Jun", "Jul"),
+    city: "Barcelona",
+    region: "Spain",
+    description: "Home of beautiful football and Mediterranean sailing championships.",
+    events: [
+      { name: "Catalonia Football Cup", prize: "€35,000", entry: "€400", date: getEventDateRange("Jun", 15, "Jun", 20) },
+      { name: "Barcelona Regatta", prize: "€20,000", entry: "€250", date: getEventDateRange("Jul", 5, "Jul", 10) }
+    ]
+  },
+  {
+    id: 25,
+    country: "NETHERLANDS - AMSTERDAM",
+    image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&q=80",
+    date: getRangeDate("Jul", "Aug"),
+    city: "Amsterdam",
+    region: "Netherlands",
+    description: "A hub for cycling races, hockey cups, and speed skating.",
+    events: [
+      { name: "Dutch Field Hockey Masters", prize: "€22,000", entry: "€200", date: getEventDateRange("Jul", 22, "Jul", 28) },
+      { name: "Amsterdam Canal Run", prize: "€10,000", entry: "€50", date: getSingleEventDate("Aug", 12) }
+    ]
+  },
+  {
+    id: 26,
+    country: "GERMANY - BERLIN",
+    image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80",
+    date: getRangeDate("Aug", "Sep"),
+    city: "Berlin",
+    region: "Germany",
+    description: "Compete in the historic city of Berlin. Hosting athletic marathons and football cups.",
+    events: [
+      { name: "Berlin Marathon Challenge", prize: "€15,000", entry: "€100", date: getSingleEventDate("Sep", 24) },
+      { name: "Mitte Football Cup", prize: "€8,000", entry: "€200", date: getEventDateRange("Aug", 10, "Aug", 15) }
+    ]
+  },
+  {
+    id: 27,
+    country: "SOUTH AFRICA - CAPE TOWN",
+    image: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+    date: getRangeDate("Sep", "Oct"),
+    city: "Cape Town",
+    region: "South Africa",
+    description: "Enjoy coastal views while competing in rugby sevens and trail running.",
+    events: [
+      { name: "Cape Town Rugby Sevens", prize: "ZAR 100,000", entry: "ZAR 1,000", date: getEventDateRange("Sep", 15, "Sep", 18) },
+      { name: "Table Mountain Trail Run", prize: "ZAR 50,000", entry: "ZAR 500", date: getSingleEventDate("Oct", 5) }
+    ]
+  },
+  {
+    id: 28,
+    country: "BRAZIL - RIO",
+    image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80",
+    date: getRangeDate("Oct", "Nov"),
+    city: "Rio de Janeiro",
+    region: "Brazil",
+    description: "Feel the carnival spirit at our beach volleyball and futsal tournaments in Rio.",
+    events: [
+      { name: "Copacabana Beach Volleyball", prize: "R$ 40,000", entry: "R$ 300", date: getEventDateRange("Oct", 10, "Oct", 14) },
+      { name: "Rio Futsal Open", prize: "R$ 30,000", entry: "R$ 250", date: getEventDateRange("Nov", 5, "Nov", 9) }
     ]
   }
 ];

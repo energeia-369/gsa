@@ -16,9 +16,9 @@ $nexusData = [
   'maytriya' => [
     'title' => 'MAYTRIYA CONNECT',
     'subtitle' => 'Leadership & Franchise Meet',
-    'url' => 'https://energeia369.com/maytriya/',
+    'url' => 'https://cybeorch.com/maytriyaone/',
     'urlText' => 'Visit Maytriya Connect Website →',
-    'image' => 'assets/images/maytriya card dark.png', // Assuming there's a dark version, or just maytriya card.png
+    'image' => 'assets/images/maytriya card dark.png', 
     'desc' => 'Welcome to the Maytriya Connect!<br><br>This is a carefully curated meet exclusively for investors, franchise brands, bold entrepreneurs, and top business leaders. Discover franchising potentials and leadership strategies that shape the future.'
   ],
   'gsa' => [

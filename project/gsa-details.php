@@ -513,7 +513,7 @@ const defaultDestinations = [
     { id: 4, country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=60", date: "23-25 Oct 2026", city: "Dubai / Abu Dhabi", region: "UAE", link: "#" },
     { id: 5, country: "THAILAND", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=500&auto=format&fit=crop&q=60", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
     { id: 6, country: "USA - LAS VEGAS", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "Las Vegas", region: "USA", link: "#" },
-    { id: 7, country: "USA - NEW YORK", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
+    { id: 7, country: "USA - NEW YORK", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfwahV5yF4az000LrH5UPZhBV23NNv9LTd7penHXR4ew&s=10", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
     { id: 8, country: "MALAYSIA", image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Kuala Lumpur", region: "Malaysia", link: "#" },
     { id: 9, country: "INDONESIA", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&auto=format&fit=crop&q=60", date: "22-24 Jan 2026", city: "Bali / Jakarta", region: "Indonesia", link: "#" },
     { id: 10, country: "VIETNAM", image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=500&auto=format&fit=crop&q=60", date: "19-21 Feb 2026", city: "Ho Chi Minh", region: "Vietnam", link: "#" },

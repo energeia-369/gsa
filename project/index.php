@@ -751,7 +751,16 @@ foreach ($tierMetadata as $tierKey => $meta) {
     { id: 2, country: 'SINGAPORE', city: 'Marina Bay', region: 'Central Core', image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80', link: '#', date: 'Oct 2026', type: 'international' },
     { id: 4, country: 'DUBAI', city: 'Downtown', region: 'UAE', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80', link: '#', date: 'Nov 2026', type: 'international' },
     { id: 13, country: 'LONDON', city: 'Wembley', region: 'UK', image: 'https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=800&q=80', link: '#', date: 'Dec 2026', type: 'international' },
-    { id: 7, country: 'NEW YORK', city: 'Manhattan', region: 'USA', image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80', link: '#', date: 'Jan 2027', type: 'international' }
+    { id: 7, country: 'NEW YORK', city: 'Manhattan', region: 'USA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfwahV5yF4az000LrH5UPZhBV23NNv9LTd7penHXR4ew&s=10', link: '#', date: 'Jan 2027', type: 'international' },
+    { id: 20, country: 'PARIS', city: 'Stade de France', region: 'France', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPMDDK1BX_jKbra9wFsdY-d_MVNa7qrdH0i4enN_7fUg&s=10', link: '#', date: 'Feb 2027', type: 'international' },
+    { id: 21, country: 'TOKYO', city: 'Shinjuku', region: 'Japan', image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80', link: '#', date: 'Mar 2027', type: 'international' },
+    { id: 22, country: 'SYDNEY', city: 'Opera House', region: 'Australia', image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80', link: '#', date: 'Apr 2027', type: 'international' },
+    { id: 23, country: 'ROME', city: 'Colosseum', region: 'Italy', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80', link: '#', date: 'May 2027', type: 'international' },
+    { id: 24, country: 'BARCELONA', city: 'Camp Nou', region: 'Spain', image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&q=80', link: '#', date: 'Jun 2027', type: 'international' },
+    { id: 25, country: 'AMSTERDAM', city: 'Dam Square', region: 'Netherlands', image: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&q=80', link: '#', date: 'Jul 2027', type: 'international' },
+    { id: 26, country: 'BERLIN', city: 'Mitte', region: 'Germany', image: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80', link: '#', date: 'Aug 2027', type: 'international' },
+    { id: 27, country: 'CAPE TOWN', city: 'Table Mountain', region: 'South Africa', image: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80', link: '#', date: 'Sep 2027', type: 'international' },
+    { id: 28, country: 'RIO DE JANEIRO', city: 'Copacabana', region: 'Brazil', image: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80', link: '#', date: 'Oct 2027', type: 'international' }
   ];
   
   const dynamicCardsFromDB = <?php echo json_encode($dynamicCards); ?>;
@@ -761,7 +770,17 @@ foreach ($tierMetadata as $tierKey => $meta) {
     { id: 101, country: 'MUMBAI', city: 'Bandra', region: 'Maharashtra', image: 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=800&q=80', link: '#', date: 'Oct 2026', type: 'national' },
     { id: 103, country: 'DELHI', city: 'CP', region: 'Delhi', image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=80', link: '#', date: 'Nov 2026', type: 'national' },
     { id: 102, country: 'BANGALORE', city: 'Whitefield', region: 'Karnataka', image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&q=80', link: '#', date: 'Dec 2026', type: 'national' },
-    { id: 104, country: 'GOA', city: 'Panaji', region: 'Goa', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80', link: '#', date: 'Jan 2027', type: 'national' }
+    { id: 104, country: 'GOA', city: 'Panaji', region: 'Goa', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80', link: '#', date: 'Jan 2027', type: 'national' },
+    { id: 105, country: 'KERALA', city: 'Kochi', region: 'Kerala', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800&q=80', link: '#', date: 'Feb 2027', type: 'national' },
+    { id: 106, country: 'RAJASTHAN', city: 'Jaipur', region: 'Rajasthan', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80', link: '#', date: 'Mar 2027', type: 'national' },
+    { id: 107, country: 'GUJARAT', city: 'Ahmedabad', region: 'Gujarat', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Rani_ki_vav_02.jpg/960px-Rani_ki_vav_02.jpg', link: '#', date: 'Apr 2027', type: 'national' },
+    { id: 108, country: 'TAMIL NADU', city: 'Chennai', region: 'Tamil Nadu', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Mamallapuram_view.jpg/960px-Mamallapuram_view.jpg', link: '#', date: 'May 2027', type: 'national' },
+    { id: 109, country: 'PUNJAB', city: 'Amritsar', region: 'Punjab', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Golden_Temple_India.jpg/800px-Golden_Temple_India.jpg', link: '#', date: 'Jun 2027', type: 'national' },
+    { id: 110, country: 'WEST BENGAL', city: 'Kolkata', region: 'West Bengal', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Howrah_bridge_betwixt_Lights.jpg/960px-Howrah_bridge_betwixt_Lights.jpg', link: '#', date: 'Jul 2027', type: 'national' },
+    { id: 111, country: 'TELANGANA', city: 'Hyderabad', region: 'Telangana', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/A_typical_charminar_evening.jpg', link: '#', date: 'Aug 2027', type: 'national' },
+    { id: 112, country: 'MADHYA PRADESH', city: 'Indore', region: 'Madhya Pradesh', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/India-5749_-_Visvanatha_Temple_-_Flickr_-_archer10_%28Dennis%29.jpg/960px-India-5749_-_Visvanatha_Temple_-_Flickr_-_archer10_%28Dennis%29.jpg', link: '#', date: 'Sep 2027', type: 'national' },
+    { id: 113, country: 'UTTARAKHAND', city: 'Dehradun', region: 'Uttarakhand', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Nanda_Devi_-_Hidden_Summit%2C_Uttarakhand_India_2013.jpg/960px-Nanda_Devi_-_Hidden_Summit%2C_Uttarakhand_India_2013.jpg', link: '#', date: 'Oct 2027', type: 'national' },
+    { id: 114, country: 'HIMACHAL PRADESH', city: 'Shimla', region: 'Himachal Pradesh', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg/960px-Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg', link: '#', date: 'Nov 2027', type: 'national' }
   ];
 
   dynamicCardsFromDB.forEach(card => {
