@@ -18,7 +18,7 @@ while($row = $stmtEv->fetch(PDO::FETCH_ASSOC)){
 $stmtCarousel = $db->query("SELECT country, state, slug, btn_url FROM home_carousel_events WHERE status='published' AND show_in_overseas=1");
 while($row = $stmtCarousel->fetch(PDO::FETCH_ASSOC)){
     $loc = !empty($row['country']) ? strtoupper(trim($row['country'])) : strtoupper(trim($row['state']));
-    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event.php?slug=' . $row['slug'];
+    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event-details.php?slug=' . $row['slug'];
     $dynamicLinksMap[$loc] = $link;
 }
 
@@ -79,7 +79,7 @@ include 'includes/navbar.php';
 ?>
 
 <!-- Custom CSS for this page - External file -->
-<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=3">
+<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=6">
 
 <script>
     document.body.classList.add('gsa-pune-page');
@@ -334,7 +334,7 @@ if (count($sports) > 0):
                     <div class="sport-img-wrap">
                         <?php if (!empty($s['prize'])): ?>
                         <div class="sport-prize-badge">
-                            <i class="fas fa-trophy"></i> <?= (isset($s['prize_currency']) && $s['prize_currency'] === 'USD') ? '$' : 'â‚¹' ?><?= htmlspecialchars($s['prize']) ?>
+                            <i class="fas fa-trophy"></i> <?= (isset($s['prize_currency']) && $s['prize_currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['prize']) ?>
                         </div>
                         <?php endif; ?>
                         <div class="sport-image-bg">
@@ -368,21 +368,21 @@ if (count($sports) > 0):
                         <?php if (!empty($s['price_individual'])): ?>
                         <div class="fee-item">
                             <span><i class="fas fa-user"></i> Individual</span>
-                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : 'â‚¹' ?><?= htmlspecialchars($s['price_individual']) ?></span>
+                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_individual']) ?></span>
                         </div>
                         <?php endif; ?>
                         
                         <?php if (!empty($s['price_pair'])): ?>
                         <div class="fee-item">
                             <span><i class="fas fa-users"></i> Pair</span>
-                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : 'â‚¹' ?><?= htmlspecialchars($s['price_pair']) ?></span>
+                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_pair']) ?></span>
                         </div>
                         <?php endif; ?>
                         
                         <?php if (!empty($s['price_team'])): ?>
                         <div class="fee-item">
                             <span><i class="fas fa-users"></i> Team</span>
-                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : 'â‚¹' ?><?= htmlspecialchars($s['price_team']) ?></span>
+                            <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_team']) ?></span>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -603,7 +603,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
                         <div class="stall-icon"><i class="fas <?= htmlspecialchars($exh['icon']) ?> <?= ($exh['badge']=='HOT' || stripos($exh['title'], 'Premium')!==false) ? 'text-gold' : '' ?>"></i></div>
                         <h4 class="<?= ($exh['badge']=='HOT' || stripos($exh['title'], 'Premium')!==false) ? 'text-gold' : '' ?>"><?= htmlspecialchars($exh['title']) ?></h4>
                         <p class="text-muted mt-3 mb-0"><?= htmlspecialchars($exh['size']) ?> <?= htmlspecialchars($exh['desc']) ?></p>
-                        <div class="stall-price <?= ($exh['badge']=='HOT' || stripos($exh['title'], 'Premium')!==false) ? 'text-gold' : '' ?>"><?= (isset($exh['currency']) && $exh['currency'] === 'USD') ? '$' : 'â‚¹' ?><?= is_numeric($exh['price']) ? number_format($exh['price']) : htmlspecialchars($exh['price']) ?></div>
+                        <div class="stall-price <?= ($exh['badge']=='HOT' || stripos($exh['title'], 'Premium')!==false) ? 'text-gold' : '' ?>"><?= (isset($exh['currency']) && $exh['currency'] === 'USD') ? '$' : '₹' ?><?= is_numeric($exh['price']) ? number_format($exh['price']) : htmlspecialchars($exh['price']) ?></div>
                         <a href="exhibitor.php" class="btn-<?= ($exh['badge']=='HOT' || stripos($exh['title'], 'Premium')!==false) ? 'gold' : 'outline-gold' ?> btn-sm mt-3">Book Now</a>
                     </div>
                 </div>
@@ -619,7 +619,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
                         <div class="stall-icon"><i class="fas fa-store"></i></div>
                         <h4>Standard Stall</h4>
                         <p class="text-muted mt-3 mb-0"><?= htmlspecialchars($punePricing['standard']['size'] ?? '3m x 3m') ?> Booth space in general area</p>
-                        <div class="stall-price">â‚¹<?= is_numeric($punePricing['standard']['price'] ?? '') ? number_format($punePricing['standard']['price']) : htmlspecialchars($punePricing['standard']['price'] ?? '30,000') ?></div>
+                        <div class="stall-price">₹<?= is_numeric($punePricing['standard']['price'] ?? '') ? number_format($punePricing['standard']['price']) : htmlspecialchars($punePricing['standard']['price'] ?? '30,000') ?></div>
                         <a href="exhibitor.php" class="btn-outline-gold btn-sm mt-3">Book Now</a>
                     </div>
                 </div>
@@ -629,7 +629,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
                         <div class="stall-icon"><i class="fas fa-store-alt text-gold"></i></div>
                         <h4 class="text-gold">Premium Stall</h4>
                         <p class="text-muted mt-3 mb-0"><?= htmlspecialchars($punePricing['premium']['size'] ?? '6m x 3m') ?> Booth space in high footfall area</p>
-                        <div class="stall-price text-gold">â‚¹<?= is_numeric($punePricing['premium']['price'] ?? '') ? number_format($punePricing['premium']['price']) : htmlspecialchars($punePricing['premium']['price'] ?? '60,000') ?></div>
+                        <div class="stall-price text-gold">₹<?= is_numeric($punePricing['premium']['price'] ?? '') ? number_format($punePricing['premium']['price']) : htmlspecialchars($punePricing['premium']['price'] ?? '60,000') ?></div>
                         <a href="exhibitor.php" class="btn-gold btn-sm mt-3">Book Now</a>
                     </div>
                 </div>
@@ -638,7 +638,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
                         <div class="stall-icon"><i class="fas fa-city"></i></div>
                         <h4>Corner Premium</h4>
                         <p class="text-muted mt-3 mb-0"><?= htmlspecialchars($punePricing['corner']['size'] ?? '6m x 6m') ?> Two-side open booth for better visibility</p>
-                        <div class="stall-price">â‚¹<?= is_numeric($punePricing['corner']['price'] ?? '') ? number_format($punePricing['corner']['price']) : htmlspecialchars($punePricing['corner']['price'] ?? '90,000') ?></div>
+                        <div class="stall-price">₹<?= is_numeric($punePricing['corner']['price'] ?? '') ? number_format($punePricing['corner']['price']) : htmlspecialchars($punePricing['corner']['price'] ?? '90,000') ?></div>
                         <a href="exhibitor.php" class="btn-outline-gold btn-sm mt-3">Book Now</a>
                     </div>
                 </div>
@@ -647,7 +647,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
                         <div class="stall-icon"><i class="fas fa-building"></i></div>
                         <h4>Pavilion Partner</h4>
                         <p class="text-muted mt-3 mb-0"><?= htmlspecialchars($punePricing['pavilion']['size'] ?? 'Custom') ?> Large space buildout</p>
-                        <div class="stall-price">â‚¹<?= is_numeric($punePricing['pavilion']['price'] ?? '') ? number_format($punePricing['pavilion']['price']) : htmlspecialchars($punePricing['pavilion']['price'] ?? '2,00,000+') ?></div>
+                        <div class="stall-price">₹<?= is_numeric($punePricing['pavilion']['price'] ?? '') ? number_format($punePricing['pavilion']['price']) : htmlspecialchars($punePricing['pavilion']['price'] ?? '2,00,000+') ?></div>
                         <a href="exhibitor.php" class="btn-outline-gold btn-sm mt-3">Book Now</a>
                     </div>
                 </div>
@@ -669,7 +669,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
     <div class="container">
         <div class="nxl-card">
             <div class="nxl-icon">
-                <i class="fab fa-bitcoin"></i>
+                <div class="nxl-circle-text">NXL</div>
                 <div class="nxl-pulse"></div>
             </div>
             <div class="nxl-content">
@@ -751,9 +751,12 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
         <div class="cta-content">
             <h2>Register Today & Be A <span>Champion</span></h2>
             <p class="cta-text">Join the biggest sports championship in Pune 2026</p>
-            <div class="cta-buttons">
+            <div class="cta-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <a href="event-registration.php?type=player" class="btn-gold cta-btn-primary">
                     <i class="fas fa-user"></i> Register as Player
+                </a>
+                <a href="<?= !empty($event['delegate_reg_url']) ? htmlspecialchars($event['delegate_reg_url']) : 'delegate-registration.php' ?>" class="btn-outline-gold cta-btn-primary" style="background: transparent; color: #c5a85c; border: 2px solid #c5a85c;">
+                    <i class="fas fa-user-tie"></i> Register as Delegate
                 </a>
             </div>
         </div>
@@ -776,7 +779,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
 
   <div class="destinations-slider-container">
     <button class="slider-control-btn prev" onclick="scrollDestinations('left')">
-      <span class="chevron-icon">â—€</span>
+      <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
     </button>
     
     <div 
@@ -787,7 +790,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
     </div>
 
     <button class="slider-control-btn next" onclick="scrollDestinations('right')">
-      <span class="chevron-icon">â–¶</span>
+      <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
     </button>
   </div>
 </section>
@@ -869,7 +872,7 @@ const defaultDestinations = [
     { id: 2, country: "SINGAPORE", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=500&auto=format&fit=crop&q=60", date: "18-20 Sept 2026", city: "Singapore", region: "Singapore", link: "#" },
     { id: 3, country: "SWITZERLAND", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60", date: "May - Sep", city: "Zurich", region: "Switzerland", link: "#" },
     { id: 4, country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=60", date: "23-25 Oct 2026", city: "Dubai / Abu Dhabi", region: "UAE", link: "#" },
-    { id: 5, country: "THAILAND", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=500&auto=format&fit=crop&q=60", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
+    { id: 5, country: "THAILAND", image: "assets/images/Thailand Card.png", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
     { id: 6, country: "USA - LAS VEGAS", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "Las Vegas", region: "USA", link: "#" },
     { id: 7, country: "USA - NEW YORK", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
     { id: 8, country: "MALAYSIA", image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Kuala Lumpur", region: "Malaysia", link: "#" },

@@ -187,13 +187,13 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
 var options = {
     "key": "<?php echo RAZORPAY_KEY_ID; ?>",
     "amount": "<?php echo $amountInPaise; ?>",
     "currency": "<?php echo $currency; ?>",
-    "name": "GLOBAL SPORTS ARENA",
+    "name": "ENERGEIA'S Global Ventures",
     "description": "Award Ceremony & Gala Dinner Registration",
     "image": "assets/images/logo.png",
     "order_id": "<?php echo $razorpayOrderId; ?>",

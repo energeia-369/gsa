@@ -16,7 +16,7 @@ $stmtCarousel = $db->query("SELECT * FROM home_carousel_events WHERE status='pub
 $dynamicCards = [];
 while($row = $stmtCarousel->fetch(PDO::FETCH_ASSOC)){
     $loc = !empty($row['country']) ? strtoupper(trim($row['country'])) : strtoupper(trim($row['state']));
-    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event.php?slug=' . $row['slug'];
+    $link = !empty($row['btn_url']) ? $row['btn_url'] : 'home-event-details.php?slug=' . $row['slug'];
     $dynamicLinksMap[$loc] = $link;
     
     $countryStr = $row['country'] ?? '';
@@ -97,19 +97,19 @@ if (intval(date("n")) > 1) {
   border-bottom: 1px solid rgba(197, 168, 92, 0.15);
 }
 .destinations-slider-container {
-  max-width: 100%; margin: 0 auto; position: relative;
+  max-width: 100%; margin: 0 auto; position: relative; padding: 0 45px;
 }
 .destinations-slider {
   display: flex; gap: 1.5rem; overflow-x: hidden; padding: 1.5rem 0.5rem; scroll-behavior: auto;
 }
 .destination-card {
-  flex: 0 0 260px; background: rgba(22, 24, 38, 0.7); border: 1px solid rgba(197, 168, 92, 0.25); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; text-decoration: none;
+  flex: 0 0 260px; min-height: 520px; height: auto; background: rgba(22, 24, 38, 0.7); border: 1px solid rgba(197, 168, 92, 0.25); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; text-decoration: none;
 }
 .destination-card:hover {
   transform: translateY(-6px); border-color: rgba(197, 168, 92, 0.55); box-shadow: 0 15px 30px rgba(197, 168, 92, 0.15);
 }
 .destination-image-box {
-  height: 240px; background-color: #12131c; position: relative; overflow: hidden;
+  flex: 0 0 260px; height: 260px; background-color: #12131c; position: relative; overflow: hidden;
 }
 .destination-image {
   width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;
@@ -118,7 +118,7 @@ if (intval(date("n")) > 1) {
 .destination-flag-overlay {
   position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 70%, transparent 100%); padding: 1.2rem 0.5rem 0.5rem; color: #ffffff; font-size: 0.9rem; font-weight: 800; text-align: center; letter-spacing: 1.5px; text-transform: uppercase;
 }
-.destination-body { padding: 1.2rem; background: transparent; }
+.destination-body { flex: 1; height: auto; padding: 1.5rem; background: transparent; display: flex; flex-direction: column; justify-content: space-between; }
 .destination-detail-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #9aa0b4; margin-bottom: 0.5rem; }
 .destination-detail-row:last-child { margin-bottom: 0; }
 .destination-icon { font-size: 0.9rem; color: #c5a85c; }
@@ -126,8 +126,10 @@ if (intval(date("n")) > 1) {
   position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; background: rgba(22, 24, 38, 0.95); border: 1px solid #c5a85c; border-radius: 50%; color: #c5a85c; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .slider-control-btn:hover { background: #c5a85c; color: #0b0c10; transform: translateY(-50%) scale(1.1); box-shadow: 0 6px 16px rgba(197, 168, 92, 0.3); }
-.slider-control-btn.prev { left: -19px; }
-.slider-control-btn.next { right: -19px; }
+.slider-control-btn.prev { left: 0; }
+.slider-control-btn.next { right: 0; }
+body.light-theme .slider-control-btn { background: #ffffff; border-color: #c5a85c; color: #8c6010; box-shadow: 0 4px 12px rgba(197, 168, 92, 0.2); }
+body.light-theme .slider-control-btn:hover { background: #c5a85c; color: #ffffff; }
 .section-premium-title { text-align: center; margin-bottom: 3.5rem; }
 .title-tagline { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #c5a85c; margin-bottom: 0.5rem; display: block; }
 .section-premium-title h2 { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.5px; color:#f5f6fa; }
@@ -175,7 +177,7 @@ body.light-theme .destination-icon { color: #8c6010 !important; }
 
     <div class="destinations-slider-container">
       <button class="slider-control-btn prev" onclick="scrollDestinations('left')">
-        <span class="chevron-icon">◀</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
       </button>
       
       <div 
@@ -186,7 +188,7 @@ body.light-theme .destination-icon { color: #8c6010 !important; }
       </div>
 
       <button class="slider-control-btn next" onclick="scrollDestinations('right')">
-        <span class="chevron-icon">▶</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
       </button>
     </div>
   </section>
@@ -511,7 +513,7 @@ const defaultDestinations = [
     { id: 2, country: "SINGAPORE", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=500&auto=format&fit=crop&q=60", date: "18-20 Sept 2026", city: "Singapore", region: "Singapore", link: "#" },
     { id: 3, country: "SWITZERLAND", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60", date: "May - Sep", city: "Zurich", region: "Switzerland", link: "#" },
     { id: 4, country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=60", date: "23-25 Oct 2026", city: "Dubai / Abu Dhabi", region: "UAE", link: "#" },
-    { id: 5, country: "THAILAND", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=500&auto=format&fit=crop&q=60", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
+    { id: 5, country: "THAILAND", image: "assets/images/Thailand Card.png", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
     { id: 6, country: "USA - LAS VEGAS", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "Las Vegas", region: "USA", link: "#" },
     { id: 7, country: "USA - NEW YORK", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfwahV5yF4az000LrH5UPZhBV23NNv9LTd7penHXR4ew&s=10", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
     { id: 8, country: "MALAYSIA", image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Kuala Lumpur", region: "Malaysia", link: "#" },

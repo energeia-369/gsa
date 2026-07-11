@@ -206,9 +206,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="admin-delegates.php" class="admin-sidebar-item <?= $current_page == 'admin-delegates.php' ? 'active' : '' ?>" data-name="delegate management" style="color: #c5a85c;">
                 🏅 Delegate Management
             </a>
-            <a href="admin-delegate-settings.php" class="admin-sidebar-item <?= $current_page == 'admin-delegate-settings.php' ? 'active' : '' ?>" data-name="delegate settings" style="color: #c5a85c; padding-left: 30px; font-size: 0.9em;">
-                ⚙️ Settings
-            </a>
+
             <a href="admin-team-registrations.php" class="admin-sidebar-item <?= $current_page == 'admin-team-registrations.php' ? 'active' : '' ?>" data-name="team registrations">
                 Team Registrations
             </a>

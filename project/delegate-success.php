@@ -22,6 +22,16 @@ if (!$delegate) {
     exit;
 }
 
+// Check registration status first
+if ($delegate['registration_status'] === 'Pending') {
+    echo "<script>window.location.href='delegate-pending.php?id=" . $delegate_id . "';</script>";
+    exit;
+}
+if ($delegate['registration_status'] === 'Rejected') {
+    echo "<script>alert('This registration was rejected.'); window.location.href='user-dashboard.php';</script>";
+    exit;
+}
+
 // Ensure they paid
 if ($delegate['payment_status'] !== 'Paid') {
     echo "<script>window.location.href='delegate-payment.php?id=" . $delegate_id . "';</script>";
@@ -31,9 +41,23 @@ if ($delegate['payment_status'] !== 'Paid') {
 // Generate verification URL for the QR code
 $verifyUrl = "http://" . $_SERVER['HTTP_HOST'] . "/Mithraa_E_Project/project/delegate-details.php?id=" . $delegate_id;
 $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($verifyUrl);
+
+// Calculate NXL Credits (5% of fee)
+$stmt = $db->query("SELECT setting_value FROM delegate_settings WHERE setting_key = 'registration_fee'");
+$fee = $stmt->fetchColumn() ?: '150.00';
+
+if (!empty($delegate['event_id'])) {
+    $evtStmt = $db->prepare("SELECT delegate_fee FROM home_carousel_events WHERE id = ?");
+    $evtStmt->execute([$delegate['event_id']]);
+    $evt = $evtStmt->fetch();
+    if ($evt && !empty($evt['delegate_fee']) && $evt['delegate_fee'] > 0) {
+        $fee = $evt['delegate_fee'];
+    }
+}
+$nxlCredits = round($fee * 0.05);
 ?>
 
-<link rel="stylesheet" href="assets/css/delegate.css?v=1">
+<link rel="stylesheet" href="assets/css/delegate.css?v=5">
 
 <section class="delegate-section" style="background-color: transparent; min-height: 70vh;">
     <div class="delegate-form-container mx-auto" style="max-width: 700px; text-align: center; padding: 4rem 2rem;">
@@ -57,6 +81,13 @@ $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urle
                     <p style="margin-bottom: 0.5rem; color: #333;"><strong>Status:</strong> <span style="color: #f59e0b; font-weight: bold;"><?php echo htmlspecialchars($delegate['registration_status']); ?></span> (Awaiting Approval)</p>
                 </div>
                 <div style="text-align: center; margin-top: 1rem;">
+                    <?php if ($nxlCredits > 0): ?>
+                    <div style="background: linear-gradient(135deg, rgba(197, 168, 92, 0.1) 0%, rgba(138, 96, 16, 0.1) 100%); border: 1px solid #c5a85c; padding: 10px; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="margin: 0; color: #8c6010; font-weight: bold; font-size: 0.95rem;">
+                            🎉 You earned <span style="font-size: 1.2rem; color: #c5a85c;"><?php echo $nxlCredits; ?></span> NXL Credits!
+                        </p>
+                    </div>
+                    <?php endif; ?>
                     <img src="<?php echo $qrUrl; ?>" alt="QR Code" style="border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 0.5rem;">
                     <p style="font-size: 0.8rem; color: #999;">Scan to Verify</p>
                 </div>
@@ -65,7 +96,7 @@ $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urle
 
         <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
             <button onclick="window.print()" class="delegate-btn"><i class="fa-solid fa-print"></i> Print Receipt</button>
-            <a href="index.php" class="delegate-btn delegate-btn-outline">Return to Home</a>
+            <a href="index.php" class="delegate-btn" style="margin-left: 1rem;">Return to Home</a>
         </div>
     </div>
 </section>

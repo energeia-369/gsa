@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "Membership Checkout | GSA";
 require_once __DIR__ . '/config/Config.php';
 require_once __DIR__ . '/config/Settings.php';
@@ -49,7 +49,7 @@ $selectedPlan = $plans[$plan] ?? $plans['standard'];
 <!-- Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <!-- Razorpay SDK -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 <div class="checkout-page flex items-center justify-center min-h-screen px-4 py-10">
   <div class="checkout-card">
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const orderRes = await fetch("api/index.php/public-payment/create-razorpay-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: amountInPaise })
+            body: JSON.stringify({ amount: totalAmount })
         });
 
         if (!orderRes.ok) {
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
             key: "<?php echo RAZORPAY_KEY_ID; ?>",
             amount: amountInPaise,
             currency: "INR",
-            name: "GLOBAL SPORTS ARENA",
+            name: "ENERGEIA'S Global Ventures",
             description: `Membership Purchase - ${planName}`,
             image: "assets/logo.png",
             order_id: orderData.id,

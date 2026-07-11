@@ -445,7 +445,7 @@ function selectCoinDiscount(coins, isSelected) {
     calculateSummary();
 }
 
-function proceedToCheckout() {
+async function proceedToCheckout() {
     if (!window.Cart) return;
     const items = window.Cart.getItems();
     const count = window.Cart.getCartCount();
@@ -461,6 +461,11 @@ function proceedToCheckout() {
         window.location.href = "login.php";
         return;
     }
+
+    const btn = document.querySelector('.checkout-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "Processing...";
+    btn.disabled = true;
 
     let productPrice = subtotal - discountAmount;
     if (productPrice < 0) productPrice = 0;
@@ -500,8 +505,106 @@ function proceedToCheckout() {
         deliveryFee: 0,
     };
 
-    localStorage.setItem("gsa_active_order", JSON.stringify(newOrder));
-    window.location.href = "checkout.php?type=product";
+    try {
+        const orderRes = await fetch("api/index.php/orders/create-razorpay-order", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ amount: finalAmount })
+        });
+        const orderData = await orderRes.json();
+        
+        if (orderData.error) {
+            alert("Payment Gateway Error: " + (orderData.error.description || orderData.error));
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
+        }
+
+        const options = {
+            key: "<?php echo defined('RAZORPAY_KEY_ID') ? RAZORPAY_KEY_ID : ''; ?>",
+            amount: Math.round(finalAmount * 100),
+            order_id: orderData.id,
+            currency: "INR",
+            name: "GLOBAL SPORTS ARENA",
+            description: "Shopping Cart Checkout",
+            prefill: {
+                name: localStorage.getItem("user_name") || "Guest User",
+                email: localStorage.getItem("user_email") || "guest@example.com",
+                contact: "9999999999"
+            },
+            handler: async function (response) {
+                const finalPayload = {
+                    ...newOrder,
+                    paymentStatus: "PAID",
+                    paymentId: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    paymentMethod: "RAZORPAY",
+                    user_email: localStorage.getItem("user_email"),
+                    shippingInfo: {
+                        fullName: localStorage.getItem("user_name") || "No Name",
+                        email: localStorage.getItem("user_email") || "",
+                        phone: "No Phone",
+                        address: "Direct Cart Checkout",
+                        city: "N/A",
+                        state: "N/A",
+                        zipCode: "N/A"
+                    }
+                };
+
+                try {
+                    const res = await fetch("api/index.php/orders/place", {
+                        method: "POST",
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        },
+                        body: JSON.stringify(finalPayload)
+                    });
+                    const data = await res.json();
+                    
+                    if (window.Cart) window.Cart.clearCart(true);
+                    
+                    let walletBalance = parseFloat(localStorage.getItem("nxlCoins") || 0);
+                    const newBalance = walletBalance - (newOrder.nxlCoinsUsed || 0) + (newOrder.nxlCoinsEarned || 0);
+                    localStorage.setItem("nxlCoins", newBalance);
+                    
+                    alert(`Payment successful! You earned ${newOrder.nxlCoinsEarned} NXL Credits.`);
+                    localStorage.setItem("gsa_last_order", JSON.stringify(data));
+                    window.location.href = "payment-success.php";
+                } catch (err) {
+                    console.error("Failed to sync paid order", err);
+                    alert("Payment received, but database sync failed.");
+                }
+            },
+            theme: { color: "#c5a85c" }
+        };
+        
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response){
+            let errorDetails = "Razorpay Rejected the Payment!\n\n";
+            errorDetails += "Reason: " + response.error.reason + "\n";
+            errorDetails += "Description: " + response.error.description + "\n";
+            errorDetails += "Code: " + response.error.code + "\n";
+            errorDetails += "Source: " + response.error.source + "\n\n";
+            errorDetails += "If you are using AdBlock Plus, it blocks Razorpay's Test Bank Simulator. Please disable it.";
+            alert(errorDetails);
+            
+            console.error("Razorpay Error Details:", response.error);
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+        rzp.open();
+    } catch (err) {
+        console.error("Failed to generate Razorpay order", err);
+        alert("Failed to initialize payment gateway.");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {

@@ -114,10 +114,10 @@ if (!empty($eventSlug)) {
             ⚡ Limited Seats Available
           </div>
 
-          <h1>GLOBAL SPORTS ARENA National Tournament</h1>
+          <h1><?= isset($eventTitle) ? htmlspecialchars($eventTitle) : 'GLOBAL SPORTS ARENA National Tournament' ?></h1>
 
           <p>
-            India's biggest multi-sports tournament platform for cricket, football, basketball, badminton, and tennis.
+            <?= isset($eventTitle) ? 'Register for the ' . htmlspecialchars($eventTitle) . ' tournament and secure your spot today.' : 'India\'s biggest multi-sports tournament platform for cricket, football, basketball, badminton, and tennis.' ?>
           </p>
 
           <div class="live-status">
@@ -610,7 +610,7 @@ async function handleEventRegistration(e) {
             const orderRes = await fetch("api/index.php/public-payment/create-razorpay-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount: totalAmount * 100 }) // amount in paise
+                body: JSON.stringify({ amount: totalAmount }) // amount in INR
             });
             const orderData = await orderRes.json();
             
@@ -623,7 +623,7 @@ async function handleEventRegistration(e) {
                 key: "<?php echo RAZORPAY_KEY_ID; ?>",
                 amount: totalAmount * 100,
                 currency: "INR",
-                name: "GLOBAL SPORTS ARENA",
+                name: "ENERGEIA'S Global Ventures",
                 description: `Tournament Registration: ${sport}`,
                 order_id: orderData.id,
                 handler: async function (response) {

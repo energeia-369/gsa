@@ -11,7 +11,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <!-- Left Side -->
     <div class="login-left hidden lg:flex flex-1 items-center justify-center p-12">
       <div class="brand-box max-w-md">
-        <h2 class="text-2xl font-extrabold text-[#c5a85c] mb-4">🏆 GLOBAL SPORTS ARENA</h2>
+        <h2 class="text-2xl font-extrabold text-[#c5a85c] mb-4" style="line-height: 1.2;">ENERGEIA'S<br><span style="font-family: serif; font-weight: normal; font-size: 1.8rem; text-transform: none;">Global Ventures</span></h2>
         <h1 class="text-4xl xl:text-5xl font-black text-white mb-6">Welcome Back!</h1>
         <p class="text-gray-300 text-lg mb-10">
           Login to register for tournaments, shop sports gear, and manage your NXL credits.

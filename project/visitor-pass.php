@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Visitor Pass Registration";
 require_once __DIR__ . '/config/Database.php';
 require_once __DIR__ . '/includes/header.php';
@@ -149,7 +149,7 @@ try {
     </div>
 </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
 const visitorFee = <?php echo $visitorFee; ?>;
 
@@ -169,7 +169,7 @@ document.getElementById("visitorForm").addEventListener("submit", async function
             const orderRes = await fetch("api/index.php/public-payment/create-razorpay-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount: amountInPaise })
+                body: JSON.stringify({ amount: visitorFee })
             });
 
             if (!orderRes.ok) {
@@ -183,7 +183,7 @@ document.getElementById("visitorForm").addEventListener("submit", async function
                 key: "<?php echo defined('RAZORPAY_KEY_ID') ? RAZORPAY_KEY_ID : 'rzp_test_YourKeyIdHere'; ?>", // Fallback if RAZORPAY_KEY_ID isn't defined here
                 amount: amountInPaise,
                 currency: "INR",
-                name: "GLOBAL SPORTS ARENA",
+                name: "ENERGEIA'S Global Ventures",
                 description: "Visitor Pass Registration",
                 order_id: orderData.id,
                 handler: function (response) {

@@ -12,12 +12,12 @@ class DelegateController {
                 return ["success" => false, "message" => "Missing required fields."];
             }
 
-            // Check duplicate email
-            $stmt = $db->prepare("SELECT id FROM delegates WHERE email = ?");
-            $stmt->execute([$data['email']]);
-            if ($stmt->fetch()) {
-                return ["success" => false, "message" => "Email is already registered."];
-            }
+            // Check duplicate email (Removed to allow multiple registrations per email)
+            // $stmt = $db->prepare("SELECT id FROM delegates WHERE email = ?");
+            // $stmt->execute([$data['email']]);
+            // if ($stmt->fetch()) {
+            //     return ["success" => false, "message" => "Email is already registered."];
+            // }
 
             // Check duplicate passport
             $stmt = $db->prepare("SELECT id FROM delegates WHERE passport_number = ?");
@@ -69,7 +69,7 @@ class DelegateController {
                 $data['phone'],
                 $data['organization'],
                 $data['designation'],
-                $data['delegate_type'],
+                ($data['delegate_type'] === 'Other' && !empty($data['delegate_type_other'])) ? 'Other: ' . trim($data['delegate_type_other']) : $data['delegate_type'],
                 $data['address'],
                 $data['city'],
                 $data['state'],

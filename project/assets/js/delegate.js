@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.style.display = 'none';
 
                 if (data.success) {
-                    // Redirect to payment page
-                    window.location.href = `delegate-payment.php?id=${data.delegate_id}`;
+                    // Redirect to pending approval page
+                    window.location.href = `delegate-pending.php?id=${data.delegate_id}`;
                 } else {
                     alert(data.message || "An error occurred during registration. Please try again.");
                 }
@@ -55,4 +55,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Toggle "Other" delegate type field
+    const delegateTypeSelect = document.getElementById('delegate_type');
+    const delegateTypeOtherGroup = document.getElementById('delegate_type_other_group');
+    const delegateTypeOtherInput = document.getElementById('delegate_type_other');
+    
+    if (delegateTypeSelect && delegateTypeOtherGroup && delegateTypeOtherInput) {
+        delegateTypeSelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                delegateTypeOtherGroup.style.display = 'block';
+                delegateTypeOtherInput.required = true;
+            } else {
+                delegateTypeOtherGroup.style.display = 'none';
+                delegateTypeOtherInput.required = false;
+                delegateTypeOtherInput.value = ''; // Clear value when hidden
+            }
+        });
+    }
 });

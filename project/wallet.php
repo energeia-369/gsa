@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/config/Config.php';
 $pageTitle = "GLOBAL SPORTS ARENA | My NXL Wallet";
 require_once __DIR__ . '/includes/header.php';
@@ -117,6 +117,12 @@ body.light-theme #rechargeModal .method-option {
     </div>
 
     <!-- Transaction History -->
+    <!-- Pending NXL Requests Section -->
+    <div class="pending-requests-section" id="pendingRequestsContainer" style="display: none; margin-top: 40px; background: rgba(197, 168, 92, 0.05); border: 1px solid rgba(197, 168, 92, 0.4); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+      <h2 style="color: #c5a85c; margin: 0 0 15px 0; font-size: 1.5rem;">⚠️ Pending Payment Requests</h2>
+      <div id="pendingRequestsList" style="display: grid; gap: 15px;"></div>
+    </div>
+
     <div class="transactions-section" style="margin-top: 40px; background: #12131c; border: 1px solid rgba(197, 168, 92, 0.2); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
       <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(197,168,92,0.15); padding-bottom: 10px;">
         <h2 style="color: #c5a85c; margin: 0; font-size: 1.5rem;">Credit History</h2>
@@ -196,7 +202,81 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
     fetchWalletDetails();
+    fetchPendingRequests();
 });
+
+async function fetchPendingRequests() {
+    try {
+        const email = localStorage.getItem("userEmail");
+        if (!email) return;
+        const res = await fetch(`api/index.php/user/nxl-requests?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        
+        const container = document.getElementById('pendingRequestsContainer');
+        const list = document.getElementById('pendingRequestsList');
+        
+        if (data.success && data.requests && data.requests.length > 0) {
+            container.style.display = 'block';
+            list.innerHTML = data.requests.map(req => `
+                <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(197,168,92,0.2); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div style="font-weight: bold; color: #fff; font-size: 1.1rem;">Merchant Request: ${req.merchant_name}</div>
+                        <div style="color: #9aa0b4; font-size: 0.9rem; margin-top: 4px;">Requested: ${new Date(req.created_at).toLocaleString()}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 1.2rem; font-weight: bold; color: #ffca28;">${req.amount} NXL</div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="approveNxlRequest(${req.id})" style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); border: none; padding: 8px 16px; color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Approve</button>
+                            <button onclick="rejectNxlRequest(${req.id})" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Reject</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.style.display = 'none';
+            list.innerHTML = '';
+        }
+    } catch (e) {
+        console.error("Error fetching pending requests:", e);
+    }
+}
+
+async function approveNxlRequest(id) {
+    if (!confirm("Are you sure you want to approve this payment?")) return;
+    try {
+        const email = localStorage.getItem("userEmail");
+        const res = await fetch('api/index.php/user/approve-nxl-request', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ request_id: id, email: email })
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+            fetchPendingRequests();
+            fetchWalletDetails();
+        }
+    } catch (e) {
+        alert("Error approving request.");
+    }
+}
+
+async function rejectNxlRequest(id) {
+    if (!confirm("Are you sure you want to reject this request?")) return;
+    try {
+        const email = localStorage.getItem("userEmail");
+        const res = await fetch('api/index.php/user/reject-nxl-request', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ request_id: id, email: email })
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) fetchPendingRequests();
+    } catch (e) {
+        alert("Error rejecting request.");
+    }
+}
 
 async function fetchWalletDetails() {
     const container = document.getElementById("walletTransactionsContainer");
@@ -344,7 +424,7 @@ async function triggerRazorpayRecharge() {
         key: "<?php echo RAZORPAY_KEY_ID; ?>",
         amount: Math.round(rechargeTotalAmount * 100), // convert to paise
         currency: "INR",
-        name: "GLOBAL SPORTS ARENA Wallet",
+        name: "ENERGEIA'S Global Ventures",
         description: `Add Money & Earn NXL (Recharge ₹${amount})`,
         image: "https://cdn-icons-png.flaticon.com/512/857/857455.png",
         order_id: orderId,

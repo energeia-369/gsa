@@ -182,43 +182,21 @@ if ($route === '/auth/register' && $method === 'POST') {
                 } elseif ($user['credits'] < $amount) {
                     $response = ["success" => false, "message" => "User does not have enough NXL. Current balance: " . $user['credits']];
                 } else {
-                    // Deduct NXL from user (update all redundant columns)
-                    $updateUserStmt = $db->prepare("UPDATE users SET credits = credits - ?, wallet_balance = wallet_balance - ? WHERE id = ?");
-                    $updateUserStmt->execute([$amount, $amount, $user['id']]);
-                    $updateWalletStmt = $db->prepare("UPDATE nxl_wallets SET balance = balance - ? WHERE user_id = ?");
-                    $updateWalletStmt->execute([$amount, $user['id']]);
-                    
-                    // Add NXL to merchant's specific table
                     $merchantId = $_SESSION['merchant_id'] ?? 0;
-                    $merchantUpdateStmt = $db->prepare("UPDATE merchants SET nxl_balance = nxl_balance + ? WHERE id = ?");
-                    $merchantUpdateStmt->execute([$amount, $merchantId]);
-                    
-                    // Also add NXL to merchant's user wallet (so it shows up in wallet.php)
-                    $mQuery = $db->prepare("SELECT email FROM merchants WHERE id = ?");
-                    $mQuery->execute([$merchantId]);
-                    $mRow = $mQuery->fetch(PDO::FETCH_ASSOC);
-                    if ($mRow && !empty($mRow['email'])) {
-                        $mEmail = $mRow['email'];
-                        $mUserStmt = $db->prepare("SELECT id FROM users WHERE email = ?");
-                        $mUserStmt->execute([$mEmail]);
-                        $mUser = $mUserStmt->fetch(PDO::FETCH_ASSOC);
-                        if ($mUser) {
-                            $mUserId = $mUser['id'];
-                            $db->prepare("UPDATE users SET credits = credits + ?, wallet_balance = wallet_balance + ? WHERE id = ?")->execute([$amount, $amount, $mUserId]);
-                            $db->prepare("UPDATE nxl_wallets SET balance = balance + ? WHERE user_id = ?")->execute([$amount, $mUserId]);
+                    if (!$merchantId) {
+                        $response = ["success" => false, "message" => "Merchant session not found."];
+                    } else {
+                        // Check if there is already a pending request for this user and amount from this merchant
+                        $checkStmt = $db->prepare("SELECT id FROM nxl_payment_requests WHERE merchant_id = ? AND user_id = ? AND status = 'pending'");
+                        $checkStmt->execute([$merchantId, $user['id']]);
+                        if ($checkStmt->fetch()) {
+                            $response = ["success" => false, "message" => "A pending payment request already exists for this user."];
+                        } else {
+                            $insertReq = $db->prepare("INSERT INTO nxl_payment_requests (merchant_id, user_id, amount, status) VALUES (?, ?, ?, 'pending')");
+                            $insertReq->execute([$merchantId, $user['id'], $amount]);
+                            $response = ["success" => true, "message" => "Payment request sent to " . $user['full_name'] . " for " . $amount . " NXL. Awaiting user approval."];
                         }
                     }
-                    
-                    // Log transaction
-                    $merchantName = $_SESSION['merchant_name'] ?? 'Merchant';
-                    $description = "Paid to Merchant: " . $merchantName;
-                    $logStmt = $db->prepare("INSERT INTO nxl_transactions (user_id, type, amount, description, ref_id) VALUES (?, 'Spent', ?, ?, 'merchant_payment')");
-                    $logStmt->execute([$user['id'], $amount, $description]);
-                    
-                    $response = [
-                        "success" => true,
-                        "message" => "Successfully charged $amount NXL from {$user['full_name']}."
-                    ];
                 }
             } catch (Exception $e) {
                 error_log("Receive NXL Error: " . $e->getMessage());
@@ -351,6 +329,135 @@ elseif ($route === '/user/profile' && $method === 'GET') {
         }
         $response = ["success" => true, "passes" => $rows];
     }
+    $matched = true;
+} elseif ($route === '/user/delegate_passes' && $method === 'GET') {
+    $email = $_GET['email'] ?? '';
+    if (!$email) { header("HTTP/1.1 400 Bad Request"); $response = ["success" => false, "message" => "Email required"]; }
+    else {
+        require_once __DIR__ . '/../config/Database.php';
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT delegate_id, full_name, delegate_type, registration_status, payment_status, created_at FROM delegates WHERE email = ? ORDER BY id DESC");
+        $stmt->execute([$email]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+        foreach ($rows as &$r) {
+            $verifyUrl = $protocol . $_SERVER['HTTP_HOST'] . "/Mithraa_E_Project/project/delegate-details.php?id=" . $r['delegate_id'];
+            $r['qrUrl'] = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($verifyUrl);
+            $r['ticketUrl'] = "delegate-success.php?id=" . urlencode($r['delegate_id']);
+        }
+        $response = ["success" => true, "passes" => $rows];
+    }
+    $matched = true;
+} elseif ($route === '/user/nxl-requests' && $method === 'GET') {
+    $email = $_GET['email'] ?? '';
+    if (!$email) { header("HTTP/1.1 400 Bad Request"); $response = ["success" => false, "message" => "Email required."]; }
+    else {
+        require_once __DIR__ . '/../config/Database.php';
+        $db = Database::getConnection();
+        $userStmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+        $userStmt->execute([$email]);
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) { $response = ["success" => false, "message" => "User not found."]; }
+        else {
+            $stmt = $db->prepare("SELECT r.id, r.amount, r.created_at, m.merchant_name FROM nxl_payment_requests r JOIN merchants m ON r.merchant_id = m.id WHERE r.user_id = ? AND r.status = 'pending' ORDER BY r.created_at DESC");
+            $stmt->execute([$user['id']]);
+            $response = ["success" => true, "requests" => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+        }
+    }
+    $matched = true;
+} elseif ($route === '/user/approve-nxl-request' && $method === 'POST') {
+    $email = $jsonData['email'] ?? '';
+    $reqId = (int)($jsonData['request_id'] ?? 0);
+    if (!$email || !$reqId) { header("HTTP/1.1 400 Bad Request"); $response = ["success" => false, "message" => "Email and Request ID required."]; }
+    else {
+        require_once __DIR__ . '/../config/Database.php';
+        $db = Database::getConnection();
+        $db->beginTransaction();
+        try {
+            $userStmt = $db->prepare("SELECT id, credits FROM users WHERE email = ? FOR UPDATE");
+            $userStmt->execute([$email]);
+            $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$user) {
+                $response = ["success" => false, "message" => "User not found."];
+                $db->rollBack();
+            } else {
+                $stmt = $db->prepare("SELECT r.amount, r.merchant_id, m.merchant_name FROM nxl_payment_requests r JOIN merchants m ON r.merchant_id = m.id WHERE r.id = ? AND r.user_id = ? AND r.status = 'pending' FOR UPDATE");
+                $stmt->execute([$reqId, $user['id']]);
+                $reqData = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$reqData) {
+                    $response = ["success" => false, "message" => "Invalid or already processed request."];
+                    $db->rollBack();
+                } else {
+                    $amount = (int)$reqData['amount'];
+                    if ($user['credits'] < $amount) {
+                        $response = ["success" => false, "message" => "Insufficient NXL balance."];
+                        $db->rollBack();
+                    } else {
+                        // Deduct from user
+                        $db->prepare("UPDATE users SET credits = credits - ?, wallet_balance = wallet_balance - ? WHERE id = ?")->execute([$amount, $amount, $user['id']]);
+                        $db->prepare("UPDATE nxl_wallets SET balance = balance - ? WHERE user_id = ?")->execute([$amount, $user['id']]);
+                        
+                        // Add to merchant
+                        $merchantId = $reqData['merchant_id'];
+                        $db->prepare("UPDATE merchants SET nxl_balance = nxl_balance + ? WHERE id = ?")->execute([$amount, $merchantId]);
+                        
+                        // Add NXL to merchant's user wallet (if exists)
+                        $mQuery = $db->prepare("SELECT email FROM merchants WHERE id = ?");
+                        $mQuery->execute([$merchantId]);
+                        $mRow = $mQuery->fetch(PDO::FETCH_ASSOC);
+                        if ($mRow && !empty($mRow['email'])) {
+                            $mUserStmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+                            $mUserStmt->execute([$mRow['email']]);
+                            $mUser = $mUserStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($mUser) {
+                                $db->prepare("UPDATE users SET credits = credits + ?, wallet_balance = wallet_balance + ? WHERE id = ?")->execute([$amount, $amount, $mUser['id']]);
+                                $db->prepare("UPDATE nxl_wallets SET balance = balance + ? WHERE user_id = ?")->execute([$amount, $mUser['id']]);
+                            }
+                        }
+                        
+                        // Log transaction
+                        $merchantName = $reqData['merchant_name'] ?? 'Merchant';
+                        $description = "Paid to Merchant: " . $merchantName;
+                        $logStmt = $db->prepare("INSERT INTO nxl_transactions (user_id, type, amount, description, ref_id) VALUES (?, 'Spent', ?, ?, 'merchant_payment')");
+                        $logStmt->execute([$user['id'], $amount, $description]);
+                        
+                        $db->prepare("UPDATE nxl_payment_requests SET status = 'approved' WHERE id = ?")->execute([$reqId]);
+                        $db->commit();
+                        $response = ["success" => true, "message" => "Payment of $amount NXL approved successfully."];
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $db->rollBack();
+            error_log("Approve NXL Error: " . $e->getMessage());
+            $response = ["success" => false, "message" => "Error approving payment."];
+        }
+    }
+    $matched = true;
+} elseif ($route === '/user/reject-nxl-request' && $method === 'POST') {
+    $email = $jsonData['email'] ?? '';
+    $reqId = (int)($jsonData['request_id'] ?? 0);
+    if (!$email || !$reqId) { header("HTTP/1.1 400 Bad Request"); $response = ["success" => false, "message" => "Email and Request ID required."]; }
+    else {
+        require_once __DIR__ . '/../config/Database.php';
+        $db = Database::getConnection();
+        $userStmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+        $userStmt->execute([$email]);
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) { $response = ["success" => false, "message" => "User not found."]; }
+        else {
+            $db->prepare("UPDATE nxl_payment_requests SET status = 'rejected' WHERE id = ? AND user_id = ? AND status = 'pending'")->execute([$reqId, $user['id']]);
+            $response = ["success" => true, "message" => "Payment request rejected."];
+        }
+    }
+    $matched = true;
+}
+
+// Delegate Routes
+elseif ($route === '/delegate/register' && $method === 'POST') {
+    $delegateCtrl = new DelegateController();
+    $response = $delegateCtrl->registerDelegate($_POST, $_FILES);
     $matched = true;
 }
 
@@ -724,7 +831,7 @@ elseif ($route === '/event-registrations' && $method === 'POST') {
 // Public Orders
 elseif ($route === '/public-payment/create-razorpay-order' && $method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $amount = isset($data['amount']) ? intval($data['amount']) : 0;
+    $amount = isset($data['amount']) ? floatval($data['amount']) : 0;
     
     if ($amount <= 0) {
         http_response_code(400);
@@ -737,7 +844,7 @@ elseif ($route === '/public-payment/create-razorpay-order' && $method === 'POST'
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-        'amount' => $amount * 100, // convert INR to paise
+        'amount' => (int) round($amount * 100), // convert INR to paise
         'currency' => 'INR',
         'receipt' => 'rcptid_public_' . time()
     ]));
@@ -766,7 +873,7 @@ elseif ($route === '/public-payment/create-razorpay-order' && $method === 'POST'
 // Orders
 elseif ($route === '/orders/create-razorpay-order' && $method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $amount = isset($data['amount']) ? intval($data['amount']) : 0;
+    $amount = isset($data['amount']) ? floatval($data['amount']) : 0;
     
     if ($amount <= 0) {
         http_response_code(400);
@@ -779,7 +886,7 @@ elseif ($route === '/orders/create-razorpay-order' && $method === 'POST') {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-        'amount' => $amount * 100, // convert INR to paise
+        'amount' => (int) round($amount * 100), // convert INR to paise
         'currency' => 'INR',
         'receipt' => 'rcptid_' . time()
     ]));
@@ -886,14 +993,23 @@ elseif ($route === '/newsletter/subscribe' && $method === 'POST') {
     $matched = true;
 } elseif ($route === '/user-exhibitor-applications' && $method === 'GET') {
     $db = (new Database())->getConnection();
-    $userId = $_GET['user_id'] ?? null;
-    if ($userId) {
-        $stmt = $db->prepare("SELECT * FROM exhibitors WHERE user_id = ? ORDER BY created_at DESC");
-        $stmt->execute([$userId]);
-        $apps = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $response = ["success" => true, "data" => $apps];
+    $email = $_GET['email'] ?? null;
+    if ($email) {
+        // Fetch user ID from email first to support both user_id and email matching
+        $userStmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+        $userStmt->execute([$email]);
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user) {
+            $stmt = $db->prepare("SELECT * FROM exhibitors WHERE user_id = ? OR email = ? ORDER BY created_at DESC");
+            $stmt->execute([$user['id'], $email]);
+            $apps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $response = ["success" => true, "data" => $apps];
+        } else {
+            $response = ["success" => false, "message" => "User not found"];
+        }
     } else {
-        $response = ["success" => false, "message" => "User ID required"];
+        $response = ["success" => false, "message" => "Email required"];
     }
     $matched = true;
 } elseif ($route === '/booth-options' && $method === 'GET') {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'merchant') {
     header("Location: login.php");
@@ -124,23 +124,23 @@ require_once __DIR__ . '/includes/navbar.php';
 
 /* Registration Card */
 .merchant-reg-card {
-    background: #fff;
-    border: 1px solid rgba(184,156,98,0.35);
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
     border-radius: 16px;
     padding: 28px 32px;
     margin-top: 20px;
-    box-shadow: 0 4px 18px rgba(138,122,95,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 .merchant-reg-card-title {
     margin: 0 0 4px;
     font-size: 1.05rem;
-    color: #3A342B;
+    color: var(--text-primary);
     font-weight: 700;
 }
 .merchant-reg-card-desc {
     margin: 0 0 20px;
     font-size: 0.85rem;
-    color: #8a7a60;
+    color: var(--text-secondary);
 }
 .merchant-reg-btns {
     display: flex;
@@ -182,16 +182,26 @@ require_once __DIR__ . '/includes/navbar.php';
     color: #fff;
     box-shadow: 0 3px 10px rgba(2,136,209,0.3);
 }
+.merchant-reg-btn--delegate {
+    background: linear-gradient(135deg, #7b1fa2, #4a148c);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(123,31,162,0.3);
+}
 </style>
 
 <div class="merchant-page">
   <div class="merchant-container w-full max-w-7xl mx-auto px-4">
-    <h1 class="merchant-title">
-      Welcome to Merchant Dashboard, <?php echo htmlspecialchars($_SESSION['merchant_name']); ?>!
-    </h1>
-    <p class="merchant-subtitle">
-      Manage your store, track sales, and interact with the sports community.
-    </p>
+    <div class="merchant-header-card" style="background: var(--bg-card); border: 1px solid var(--border-glass); padding: 2rem; border-radius: 12px; margin-top: 20px; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <div class="admin-badge" style="background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%); color: #0b0c10; font-weight: bold; display: inline-block; padding: 4px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">
+        🛍️ Merchant Portal
+      </div>
+      <h1 class="merchant-title" style="margin-top: 0; font-size: 2.2rem; font-family: 'Playfair Display', serif; color: var(--text-primary);">
+        Welcome to Merchant Dashboard, <?php echo htmlspecialchars($_SESSION['merchant_name']); ?>!
+      </h1>
+      <p class="merchant-subtitle" style="margin-bottom: 0; color: var(--text-secondary); margin-top: 0.5rem;">
+        Manage your store, track sales, and interact with the sports community.
+      </p>
+    </div>
     
     <!-- Quick Actions -->
     <div class="merchant-actions">
@@ -215,6 +225,7 @@ require_once __DIR__ . '/includes/navbar.php';
       <p class="merchant-reg-card-desc">Register for events or view your QR entry passes below</p>
       <div class="merchant-reg-btns">
         <button onclick="viewMerchantEventPasses()" class="merchant-reg-btn merchant-reg-btn--event">🏆 Event QR Pass</button>
+        <button onclick="viewMerchantPasses('delegate')" class="merchant-reg-btn merchant-reg-btn--delegate">🎖️ Delegate Pass QR</button>
         <button onclick="viewMerchantPasses('visitor')" class="merchant-reg-btn merchant-reg-btn--visitor">🎫 Visitor Pass QR</button>
         <button onclick="viewMerchantPasses('exhibitor')" class="merchant-reg-btn merchant-reg-btn--exhibitor">🏢 Exhibitor Pass QR</button>
       </div>
@@ -222,6 +233,22 @@ require_once __DIR__ . '/includes/navbar.php';
       <div id="merchantEventPassesContainer" style="display:none; margin-top:20px; padding-top:20px; border-top:1px dashed rgba(184,156,98,0.4); grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:16px;"></div>
       <!-- Inline Visitor/Exhibitor QR container -->
       <div id="merchantPassesContainer" style="display:none; margin-top:20px; padding-top:20px; border-top:1px dashed rgba(184,156,98,0.4); grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:16px;"></div>
+    </div>
+
+    <!-- Exhibitor Applications Card -->
+    <div class="merchant-reg-card" style="display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
+          <div style="font-size: 3rem; background: rgba(197, 168, 92, 0.1); padding: 15px; border-radius: 12px; margin-right: 15px;">🏢</div>
+          <div style="flex: 1; min-width: 250px;">
+            <h3 class="merchant-reg-card-title" style="font-size: 1.3rem;">My Exhibitor Applications</h3>
+            <p class="merchant-reg-card-desc" style="margin: 0; font-size: 0.95rem;">Track the status of your event booth applications</p>
+          </div>
+          <div>
+            <button class="merchant-reg-btn" id="btnViewExhibitorApps" onclick="toggleExhibitorApps()" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #fff; border: 1px solid #059669;">View Applications</button>
+          </div>
+      </div>
+      <div id="exhibitorAppsContainer" style="display: none; width: 100%; margin-top: 25px; padding-top: 25px; border-top: 1px dashed rgba(184,156,98,0.4); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+      </div>
     </div>
 
     <!-- Analytics Section -->
@@ -265,9 +292,81 @@ require_once __DIR__ . '/includes/navbar.php';
 <!-- Success Toast -->
 <div class="profile-toast" id="profileToast">✅ Profile updated successfully!</div>
 
+<!-- Delegate Approved Modal -->
+<div id="delegateApprovedModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-content" style="background:#FFFFFF; border:1px solid #c5a85c; border-radius:12px; max-width:400px; width:90%; padding:30px; text-align:center; box-shadow:0 10px 40px rgba(197,168,92,0.2); position:relative;">
+    <button onclick="document.getElementById('delegateApprovedModal').style.display='none'" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+    <div style="font-size:3rem; margin-bottom:15px; color: #22c55e;">🎉</div>
+    <h2 style="color:#c5a85c; margin:0 0 15px 0; font-size:1.5rem;">Congratulations!</h2>
+    <p style="color:#333; font-size:1.1rem; font-weight: bold; margin-bottom:10px; line-height:1.5;">
+      Delegate Registration Approved
+    </p>
+    <p style="color:#7A7061; font-size:0.95rem; margin-bottom:25px; line-height:1.5;">
+      Your application has been reviewed and approved by the admin. Please proceed to payment to finalize your registration.
+    </p>
+    <div style="display:flex; justify-content:center;">
+      <a id="delegatePaymentBtn" href="#" style="padding:12px 25px; border-radius:6px; background:#B89C62; border:none; color:#FFFFFF; font-weight:bold; cursor:pointer; text-decoration: none; transition:all 0.3s;" onmouseover="this.style.background='#8A7A5F'" onmouseout="this.style.background='#B89C62'">Proceed to Payment</a>
+    </div>
+  </div>
+</div>
+
+<!-- Delegate Rejected Modal -->
+<div id="delegateRejectedModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-content" style="background:#FFFFFF; border:1px solid #ef4444; border-radius:12px; max-width:400px; width:90%; padding:30px; text-align:center; box-shadow:0 10px 40px rgba(239,68,68,0.2); position:relative;">
+    <button onclick="document.getElementById('delegateRejectedModal').style.display='none'" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+    <div style="font-size:3rem; margin-bottom:15px; color: #ef4444;">❌</div>
+    <h2 style="color:#ef4444; margin:0 0 15px 0; font-size:1.5rem;">Registration Unsuccessful</h2>
+    <p style="color:#7A7061; font-size:0.95rem; margin-bottom:25px; line-height:1.5;">
+      We regret to inform you that your registration for delegates was unsuccessful.
+    </p>
+    <div style="display:flex; justify-content:center;">
+      <button onclick="dismissDelegateRejectedModal()" style="padding:10px 20px; border-radius:6px; background:transparent; border:1px solid #ef4444; color:#ef4444; cursor:pointer; font-weight:bold; transition:all 0.3s;">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const MERCHANT_EMAIL = "<?php echo addslashes($_SESSION['merchant_email'] ?? ''); ?>";
 const MERCHANT_NAME  = "<?php echo addslashes($_SESSION['merchant_name'] ?? ''); ?>";
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (MERCHANT_EMAIL) {
+        checkMerchantDelegateStatus(MERCHANT_EMAIL);
+    }
+});
+
+async function checkMerchantDelegateStatus(email) {
+    try {
+        const res = await fetch(`api/index.php/user/delegate_passes?email=${encodeURIComponent(email)}`);
+        const result = await res.json();
+        
+        if (result.success && result.passes && result.passes.length > 0) {
+            for (const pass of result.passes) {
+                if (pass.registration_status === 'Rejected') {
+                    if (!sessionStorage.getItem('delegateRejectedShown_' + pass.delegate_id)) {
+                        document.getElementById('delegateRejectedModal').style.display = 'flex';
+                        window.currentRejectedDelegateId = pass.delegate_id;
+                        return;
+                    }
+                }
+                if (pass.registration_status === 'Approved' && pass.payment_status !== 'Paid') {
+                    document.getElementById('delegatePaymentBtn').href = `delegate-payment.php?id=${pass.delegate_id}`;
+                    document.getElementById('delegateApprovedModal').style.display = 'flex';
+                    return;
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Failed to check delegate status", e);
+    }
+}
+
+function dismissDelegateRejectedModal() {
+    if (window.currentRejectedDelegateId) {
+        sessionStorage.setItem('delegateRejectedShown_' + window.currentRejectedDelegateId, 'true');
+    }
+    document.getElementById('delegateRejectedModal').style.display = 'none';
+}
 
 /* -------- Edit Profile -------- */
 function openEditProfile(e) {
@@ -421,7 +520,7 @@ async function viewMerchantPasses(passType) {
 
             container.innerHTML = '';
             filtered.forEach(pass => {
-                const typeStr    = pass.type === 'visitor' ? 'Visitor Pass' : 'Exhibitor Pass';
+                const typeStr    = pass.type === 'visitor' ? 'Visitor Pass' : (pass.type === 'delegate' ? 'Delegate Pass' : 'Exhibitor Pass');
                 const isExpired  = pass.status === 'expired';
                 const qrUrl      = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(pass.qrUrl)}`;
                 const passName   = pass.pass_name || MERCHANT_NAME;
@@ -591,6 +690,83 @@ async function processNxlPayment() {
     } catch (err) {
         console.error(err);
         alert("JS Error: " + err.message);
+    }
+}
+
+async function toggleExhibitorApps() {
+    const container = document.getElementById('exhibitorAppsContainer');
+    const btn = document.getElementById('btnViewExhibitorApps');
+    
+    if (container.style.display !== 'none') {
+        container.style.display = 'none';
+        if (btn) btn.textContent = 'View Applications';
+        return;
+    }
+    
+    const email = MERCHANT_EMAIL;
+    if (!email) {
+        container.innerHTML = '<p style="color:#ef4444;">Please log in to view your applications.</p>';
+        container.style.display = 'block';
+        return;
+    }
+    
+    if (btn) btn.textContent = '⏳ Loading...';
+    
+    try {
+        const res = await fetch(`api/index.php/user-exhibitor-applications?email=${encodeURIComponent(email)}`);
+        const result = await res.json();
+        
+        container.innerHTML = '';
+        
+        if (result.success && result.data && result.data.length > 0) {
+            result.data.forEach(app => {
+                let statusBadge = '';
+                let actionBtn = '';
+                
+                if (app.approval_status === 'pending') {
+                    statusBadge = '<span style="background: #f59e0b; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Pending Review</span>';
+                } else if (app.approval_status === 'approved') {
+                    if (app.razorpay_payment_id) {
+                        statusBadge = '<span style="background: #10b981; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Approved & Paid</span>';
+                        actionBtn = `<button onclick="window.location.href='verify-pass.php?type=exhibitor&id=${app.id}'" style="width: 100%; padding: 10px; margin-top: 10px; background: #c5a85c; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">View QR Pass</button>`;
+                    } else {
+                        statusBadge = '<span style="background: #10b981; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Approved</span>';
+                        actionBtn = `<button id="payExhibitorBtn_${app.id}" onclick="payExhibitorFee(${app.id}, ${app.fee_amount})" style="width: 100%; padding: 10px; margin-top: 10px; background: #3b82f6; color: #fff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">Pay Now ₹${parseFloat(app.fee_amount).toLocaleString('en-IN')}</button>`;
+                    }
+                } else if (app.approval_status === 'rejected') {
+                    statusBadge = '<span style="background: #ef4444; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Rejected</span>';
+                    actionBtn = '<div style="margin-top:10px; font-size:0.85rem; color:#ef4444; text-align:center;">Sorry, Not Selected For The Exhibition List. Try Next Time.</div>';
+                }
+
+                const appHtml = `
+                    <div style="background: rgba(197, 168, 92, 0.05); border: 1px solid rgba(197, 168, 92, 0.2); padding: 18px; border-radius: 12px; position: relative;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-weight:bold; color:#c5a85c; font-size:1.1rem;">${app.company_name}</span>
+                            ${statusBadge}
+                        </div>
+                        <p style="font-size:0.85rem; color:#333; margin-bottom:4px;">🎫 Event: <strong>${app.event}</strong></p>
+                        <p style="font-size:0.85rem; color:#555; margin-bottom:4px;">🏢 Booth: ${app.booth}</p>
+                        <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">📅 Applied on: ${new Date(app.created_at).toLocaleDateString()}</p>
+                        ${actionBtn}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', appHtml);
+            });
+            container.style.display = 'grid';
+            if (btn) btn.textContent = 'View Applications ▲';
+        } else {
+            container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:25px; color:#777; background:rgba(197, 168, 92, 0.05); border:1px dashed rgba(197, 168, 92, 0.3); border-radius:10px;">
+                <p style="font-size:1.5rem; margin-bottom:8px;">🏢</p>
+                <p style="font-size:0.95rem;">No exhibitor applications found.</p>
+                <a href="exhibitor.php" style="color:#c5a85c; font-weight:bold; text-decoration:underline;">Apply to be an Exhibitor →</a>
+            </div>`;
+            container.style.display = 'block';
+            if (btn) btn.textContent = 'View Applications ▲';
+        }
+    } catch (e) {
+        container.innerHTML = '<p style="color:#ef4444;">Error loading applications.</p>';
+        container.style.display = 'block';
+        if (btn) btn.textContent = 'View Applications';
     }
 }
 </script>

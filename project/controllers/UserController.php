@@ -420,7 +420,19 @@ class UserController {
         $stmt2->execute([$email]);
         $exhibitorPasses = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
-        $allPasses = array_merge($visitorPasses, $exhibitorPasses);
+        $stmt3 = $db->prepare("
+            SELECT d.id, d.full_name as pass_name, 'delegate' as type, d.created_at, 
+                   IF(d.registration_status='Approved', 'active', 'pending') as status, 
+                   e.start_date as event_date, e.title as event 
+            FROM delegates d 
+            LEFT JOIN events e ON d.event_id = e.id 
+            WHERE d.email = ? 
+            ORDER BY d.created_at DESC
+        ");
+        $stmt3->execute([$email]);
+        $delegatePasses = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+        $allPasses = array_merge($visitorPasses, $exhibitorPasses, $delegatePasses);
         
         usort($allPasses, function($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);

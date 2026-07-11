@@ -26,7 +26,7 @@ require_once __DIR__ . '/includes/navbar.php';
   <div class="register-container flex flex-col lg:flex-row min-h-screen">
     <div class="register-brand hidden lg:flex flex-1 items-center justify-center p-12">
       <div class="brand-content max-w-md">
-        <div class="brand-logo text-[#c5a85c] text-2xl font-bold mb-4">🏆 GLOBAL SPORTS ARENA</div>
+        <div class="brand-logo text-[#c5a85c] text-2xl font-extrabold mb-4" style="line-height: 1.2;">ENERGEIA'S<br><span style="font-family: serif; font-weight: normal; font-size: 1.8rem; text-transform: none;">Global Ventures</span></div>
         <h2 class="text-4xl font-black text-white mb-6">Join the Sports Community</h2>
         <p class="text-gray-300 text-lg">
           Create your account to register for tournaments, shop sports gear, and earn NXL credits.

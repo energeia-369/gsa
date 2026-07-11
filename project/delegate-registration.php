@@ -6,7 +6,7 @@ require_once __DIR__ . '/config/Database.php';
 
 $pdo = Database::getConnection();
 // Fetch active events to populate the dropdown
-$eventsStmt = $pdo->query("SELECT id, title, delegate_fee, delegate_currency FROM events WHERE status = 'published' ORDER BY start_date ASC");
+$eventsStmt = $pdo->query("SELECT id, title, delegate_fee, delegate_currency FROM home_carousel_events ORDER BY id ASC");
 $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -19,8 +19,7 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
         Join Global Sports Academy events as an official delegate and become part of international sporting excellence.
     </p>
     <div>
-        <a href="#registrationFormSection" class="delegate-btn">Register Now</a>
-        <a href="#" class="delegate-btn delegate-btn-outline">Download Brochure</a>
+        <a href="#registrationFormSection" class="delegate-btn" onclick="document.getElementById('registrationFormSection').scrollIntoView({ behavior: 'smooth' }); return false;">Register Now</a>
     </div>
 </section>
 
@@ -124,8 +123,9 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
                 <select name="event_id" class="form-control" id="eventSelection">
                     <option value="">-- General Delegate Registration --</option>
                     <?php foreach ($activeEvents as $evt): ?>
-                        <option value="<?= $evt['id'] ?>" data-fee="<?= htmlspecialchars($evt['delegate_fee'] ?? '') ?>" data-currency="<?= htmlspecialchars($evt['delegate_currency'] ?? '') ?>">
-                            <?= htmlspecialchars($evt['title']) ?>
+                        <?php $isDisabled = empty($evt['delegate_fee']) || $evt['delegate_fee'] <= 0 ? 'disabled' : ''; ?>
+                        <option value="<?= $evt['id'] ?>" data-fee="<?= htmlspecialchars($evt['delegate_fee'] ?? '') ?>" data-currency="<?= htmlspecialchars($evt['delegate_currency'] ?? '') ?>" <?= $isDisabled ?>>
+                            <?= htmlspecialchars($evt['title']) ?> <?= $isDisabled ? '(Fee Not Set)' : '' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -151,8 +151,16 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
                             if (fee && fee > 0) {
                                 feePreviewAmount.textContent = `${currency || 'USD'} ${fee}`;
                                 feePreviewBox.style.display = 'block';
+                                const submitBtn = document.querySelector('button[type="submit"]');
+                                if (submitBtn) {
+                                    submitBtn.textContent = `Submit Registration (Fee: ${currency || 'USD'} ${fee})`;
+                                }
                             } else {
                                 feePreviewBox.style.display = 'none';
+                                const submitBtn = document.querySelector('button[type="submit"]');
+                                if (submitBtn) {
+                                    submitBtn.textContent = `Submit Registration`;
+                                }
                             }
                         });
                     }
@@ -223,7 +231,7 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="form-group">
                 <label>Delegate Type *</label>
-                <select name="delegate_type" class="form-control" required>
+                <select name="delegate_type" id="delegate_type" class="form-control" required>
                     <option value="">Select Type</option>
                     <option value="Student Delegate">Student Delegate</option>
                     <option value="Professional Delegate">Professional Delegate</option>
@@ -233,6 +241,10 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
                     <option value="Volunteer">Volunteer</option>
                     <option value="Other">Other</option>
                 </select>
+            </div>
+            <div class="form-group" id="delegate_type_other_group" style="display: none;">
+                <label>Describe The Type *</label>
+                <input type="text" name="delegate_type_other" id="delegate_type_other" class="form-control" placeholder="Please specify">
             </div>
 
             <h3 class="form-section-title">Address</h3>
@@ -282,12 +294,7 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Resume Upload (Optional - PDF/DOCX)</label>
-                <div class="file-upload-wrapper">
-                    <input type="file" name="resume_file" accept=".pdf,.doc,.docx">
-                </div>
-            </div>
+
 
             <h3 class="form-section-title">Preferences & Logistics</h3>
             <div class="form-row">
@@ -328,14 +335,14 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="form-row">
                 <div class="form-col form-group">
-                    <label>Hotel Required? *</label>
+                    <label>Hotel Required? * <span style="font-size: 0.8rem; color: #888; font-weight: normal; margin-left: 5px;">(extra charges will be taken for this)</span></label>
                     <select name="hotel_required" class="form-control" required>
                         <option value="No">No</option>
                         <option value="Yes">Yes</option>
                     </select>
                 </div>
                 <div class="form-col form-group">
-                    <label>Airport Pickup Required? *</label>
+                    <label>Airport Pickup Required? * <span style="font-size: 0.8rem; color: #888; font-weight: normal; margin-left: 5px;">(extra charges will be taken for this)</span></label>
                     <select name="airport_pickup" class="form-control" required>
                         <option value="No">No</option>
                         <option value="Yes">Yes</option>
@@ -363,7 +370,7 @@ $activeEvents = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
-                <button type="submit" class="delegate-btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Submit Registration & Proceed to Payment</button>
+                <button type="submit" class="delegate-btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Submit Registration</button>
             </div>
         </form>
     </div>

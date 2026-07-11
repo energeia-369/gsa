@@ -9,8 +9,13 @@ try {
     $db = Database::getConnection();
     $stmt = $db->query("SELECT * FROM team_profiles WHERE status = 'active' ORDER BY display_order ASC, id ASC");
     $team_profiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Fetch approved client reviews, newest first
+    $stmt2 = $db->query("SELECT * FROM client_reviews WHERE status = 'approved' ORDER BY created_at DESC LIMIT 36");
+    $client_reviews = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    // Silently ignore if table doesn't exist or other db error on frontend
+    // Silently ignore if tables don't exist
+    $client_reviews = [];
 }
 ?>
 
@@ -21,7 +26,7 @@ try {
   <section class="about-hero">
     <div class="about-hero-content">
       <h1>Welcome to ENERGEIA</h1>
-      <p>Sports Event & E-Commerce Platform</p>
+      <p class="hero-desc">Nexus Business Summit, Maytriya Franchise Meet,<br> Sports Event & E-Commerce Platform</p>
 
       <div class="about-buttons">
         <a href="sports-categories.php" class="about-primary-btn" style="display:inline-block; text-align:center;">
@@ -175,8 +180,100 @@ try {
   </section>
   <?php endif; ?>
 
-</div>
+  <!-- Reviews / Testimonials Section -->
+  <?php if (!empty($client_reviews)): ?>
+  <section id="reviews" class="reviews-section" style="padding: 5rem 5%; background-color: rgba(197, 168, 92, 0.03); border-top: 1px solid rgba(197, 168, 92, 0.1);">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+      <h2 style="font-size: 2.2rem; font-family: 'Playfair Display', serif; color: #1a1a1a; margin-bottom: 1rem;"><span>Client</span> Reviews</h2>
+      <div style="width: 60px; height: 3px; background: #c5a85c; margin: 0 auto;"></div>
+      <p style="color: #666; margin-top: 1rem; font-size: 0.95rem;">Hear what our community has to say about their ENERGEIA experience.</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5rem; max-width: 95%; margin: 0 auto; overflow-x: auto; padding-bottom: 2rem;">
+      
+      <?php foreach ($client_reviews as $index => $review): ?>
+      <div style="background: #fff; padding: 1.8rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border: 1px solid rgba(197, 168, 92, 0.2); transition: transform 0.3s ease; cursor: pointer; <?php if($index % 2 !== 0) echo 'transform: translateY(-8px);'; ?>"
+           onclick="openReadReviewModal('<?php echo htmlspecialchars(addslashes($review['name'])); ?>', '<?php echo htmlspecialchars(addslashes($review['role'])); ?>', <?php echo $review['rating']; ?>, '<?php echo htmlspecialchars(addslashes($review['review_text'])); ?>')">
+        <div style="font-size: 2rem; color: rgba(197, 168, 92, 0.15); position: absolute; top: 1rem; right: 1.5rem; font-family: serif;">"</div>
+        <div style="display: flex; gap: 4px; color: #f59e0b; margin-bottom: 0.8rem; font-size: 0.85rem;">
+          <?php for($i = 1; $i <= 5; $i++): ?>
+            <?php if($i <= $review['rating']): ?>
+              <i class="fa-solid fa-star"></i>
+            <?php else: ?>
+              <i class="fa-regular fa-star" style="color: #d4c8b2;"></i>
+            <?php endif; ?>
+          <?php endfor; ?>
+        </div>
+        <p style="color: #4a4a4a; line-height: 1.6; font-size: 0.85rem; font-style: italic; margin-bottom: 1.2rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+          "<?php echo htmlspecialchars($review['review_text']); ?>"
+        </p>
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #c5a85c; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 1rem;">
+            <?php echo strtoupper(substr(htmlspecialchars($review['name']), 0, 1)); ?>
+          </div>
+          <div>
+            <h4 style="margin: 0; color: #1a1a1a; font-size: 0.9rem;"><?php echo htmlspecialchars($review['name']); ?></h4>
+            <span style="font-size: 0.75rem; color: #888;"><?php echo htmlspecialchars($review['role']); ?></span>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
 
+    </div>
+  </section>
+
+  <!-- Read Review Modal -->
+  <div id="readReviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="background: #ffffff; padding: 2.5rem; border-radius: 12px; width: 90%; max-width: 550px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+      <button onclick="closeReadReviewModal()" style="position: absolute; top: 1rem; right: 1.5rem; background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #666;">&times;</button>
+      
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+        <div id="modalReviewerInitial" style="width: 50px; height: 50px; border-radius: 50%; background: #c5a85c; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 1.4rem;">
+          A
+        </div>
+        <div>
+          <h4 id="modalReviewerName" style="margin: 0; color: #1a1a1a; font-size: 1.2rem; font-family: 'Playfair Display', serif;">Name</h4>
+          <span id="modalReviewerRole" style="font-size: 0.85rem; color: #888;">Role</span>
+        </div>
+      </div>
+      
+      <div id="modalReviewStars" style="display: flex; gap: 4px; color: #f59e0b; margin-bottom: 1.2rem; font-size: 1.1rem;">
+        <!-- Stars injected by JS -->
+      </div>
+      
+      <p id="modalReviewText" style="color: #4a4a4a; line-height: 1.8; font-size: 1rem; font-style: italic; white-space: pre-wrap;">
+        <!-- Text injected by JS -->
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function openReadReviewModal(name, role, rating, text) {
+      document.getElementById('modalReviewerName').innerText = name;
+      document.getElementById('modalReviewerRole').innerText = role;
+      document.getElementById('modalReviewerInitial').innerText = name.charAt(0).toUpperCase();
+      document.getElementById('modalReviewText').innerText = '"' + text + '"';
+      
+      let starsHtml = '';
+      for(let i=1; i<=5; i++) {
+        if(i <= rating) {
+          starsHtml += '<i class="fa-solid fa-star"></i>';
+        } else {
+          starsHtml += '<i class="fa-regular fa-star" style="color: #d4c8b2;"></i>';
+        }
+      }
+      document.getElementById('modalReviewStars').innerHTML = starsHtml;
+      
+      document.getElementById('readReviewModal').style.display = 'flex';
+    }
+    
+    function closeReadReviewModal() {
+      document.getElementById('readReviewModal').style.display = 'none';
+    }
+  </script>
+  <?php endif; ?>
+
+</div>
 
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

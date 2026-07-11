@@ -34,10 +34,16 @@
   margin-bottom: 25px;
 }
 
-.about-hero p {
-  font-size: 26px;
-  color: #9aa0b4;
+.about-hero p.hero-desc {
+  font-size: 1.3rem !important;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9) !important;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  border-left: 4px solid #c5a85c;
+  padding-left: 1rem;
   margin-bottom: 40px;
+  line-height: 1.6;
 }
 
 .about-buttons {

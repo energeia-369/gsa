@@ -370,6 +370,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $badge_text = $_POST['badge_text'] ?? '';
     $btn_text = $_POST['btn_text'] ?? 'Explore';
     $btn_url = $_POST['btn_url'] ?? '';
+    $delegate_reg_url = $_POST['delegate_reg_url'] ?? '';
     $event_date = !empty($_POST['event_date']) ? $_POST['event_date'] : null;
     $display_order = (int)($_POST['display_order'] ?? 0);
     $is_featured = isset($_POST['is_featured']) ? 1 : 0;
@@ -795,7 +796,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($id > 0) {
         $stmt = $pdo->prepare("UPDATE home_carousel_events SET 
             title=?, subtitle=?, short_desc=?, description=?, category=?, country=?, state=?, location=?, badge_text=?,
-            hero_banner=?, carousel_img=?, home_banner_img=?, registration_image=?, btn_text=?, btn_url=?,
+            hero_banner=?, carousel_img=?, home_banner_img=?, registration_image=?, btn_text=?, btn_url=?, delegate_reg_url=?,
             event_date=?, display_order=?, is_featured=?, status=?,
             seo_title=?, seo_desc=?, seo_keywords=?, slug=?,
             end_date=?, timer_start_date=?, gala_title=?, gala_venue=?, gala_date=?, gala_time=?, gala_description=?, custom_html=?, delegate_fee=?, delegate_currency=?, schedule_data=?, sports_data=?, sponsors_data=?, exhibitor_data=?, locations_data=?, gala_passes_data=?,
@@ -804,7 +805,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE id=?");
         $stmt->execute([
             $title, $subtitle, $short_desc, $description, $category, $country, $state, $location, $badge_text,
-            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url,
+            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url, $delegate_reg_url,
             $event_date, $display_order, $is_featured, $status,
             $seo_title, $seo_desc, $seo_keywords, $slug, 
             $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
@@ -815,16 +816,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $pdo->prepare("INSERT INTO home_carousel_events (
             title, subtitle, short_desc, description, category, country, state, location, badge_text,
-            hero_banner, carousel_img, home_banner_img, registration_image, btn_text, btn_url,
+            hero_banner, carousel_img, home_banner_img, registration_image, btn_text, btn_url, delegate_reg_url,
             event_date, display_order, is_featured, status,
             seo_title, seo_desc, seo_keywords, slug,
             end_date, timer_start_date, gala_title, gala_venue, gala_date, gala_time, gala_description, custom_html, delegate_fee, delegate_currency, schedule_data, sports_data, sponsors_data, exhibitor_data, locations_data, gala_passes_data,
             show_on_home, show_on_gsa, show_home_banner, show_in_overseas,
             stat1_val, stat1_label, stat2_val, stat2_label, stat3_val, stat3_label, stat4_val, stat4_label
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->execute([
             $title, $subtitle, $short_desc, $description, $category, $country, $state, $location, $badge_text,
-            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url,
+            $hero_banner, $carousel_img, $home_banner_img, $registration_image, $btn_text, $btn_url, $delegate_reg_url,
             $event_date, $display_order, $is_featured, $status,
             $seo_title, $seo_desc, $seo_keywords, $slug, 
             $end_date, $timer_start_date, $gala_title, $gala_venue, $gala_date, $gala_time, $gala_description, $custom_html, $delegate_fee, $delegate_currency, $schedule_data, $sports_data, $sponsors_data, $exhibitor_data, $locations_data, $gala_passes_data,
@@ -861,7 +862,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .card { background: rgba(197, 168, 92, 0.05); border: 1px solid rgba(197, 168, 92, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
     .card-title { font-size: 1.2rem; color: #fff; border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 10px; margin-bottom: 20px; }
     
-    #editor-container { height: 300px; background: rgba(0,0,0,0.2); border-color: rgba(197,168,92,0.3); color: #fff; }
+    #editor-container { height: 300px; background: rgba(0,0,0,0.2); border-color: rgba(197,197,92,0.3); color: #fff; }
     .ql-toolbar { background: #1a1a2e; border-color: rgba(197,168,92,0.3) !important; }
     .ql-stroke { stroke: #c5a85c !important; }
     .ql-fill { fill: #c5a85c !important; }
@@ -955,6 +956,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <!-- Custom Content / Festival Concept -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(197, 168, 92, 0.2); padding-bottom: 10px; margin-bottom: 20px;">
+            <div class="card-title" style="border: none; margin: 0; padding: 0;">Custom Content / Festival Concept (Optional)</div>
+            <div>
+                <button type="button" id="clearTemplate" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; margin-right: 10px;">Clear Content</button>
+                <button type="button" id="loadSampleTemplate" style="background: rgba(197, 168, 92, 0.2); color: #c5a85c; border: 1px solid #c5a85c; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Load Example Layout Template</button>
+            </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 15px;">Use this section to manually write and format your custom layouts (like the Official Festival Concept boxes) for the frontend event details page.</p>
+        <div class="form-group">
+            <textarea name="custom_html" class="form-control" rows="8" placeholder="Type your content here..."><?= htmlspecialchars($event['custom_html'] ?? '') ?></textarea>
+        </div>
+        <!-- Load TinyMCE for floating table toolbars -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
+        <script>
+            const thailandTemplate = `<div class="dest-section card-glass thailand-festival-concept" style="margin-top: 4rem; text-align: left; background: rgba(255, 255, 255, 0.6); padding: 30px; border-radius: 16px; border: 1px solid rgba(197, 168, 92, 0.4); box-shadow: 0 10px 30px rgba(139,90,43,0.05);">
+          <h2 style="color: #8c7237; margin-bottom: 15px; font-size: 2rem; text-align: center; font-weight: 800;">GSA Thailand – Official Festival Concept</h2>
+          <p style="margin-bottom: 25px; line-height: 1.6; color: #555; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; font-weight: 500;">This three-city concept positions GSA Thailand as a destination festival that combines sports, business, tourism, investment, culture, sustainability, and international networking, making it attractive to participants, sponsors, government agencies, and global media.</p>
+          
+          <div class="festival-phases" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 1: Bangkok <br><span style="color: #3A342B; font-size: 1rem;">"NEXUS ELITE"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Queen Sirikit National Convention Center / Bangkok Intl Trade & Exhibition Centre</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>Global Opening Ceremony</li>
+                  <li>Sports Business Summit</li>
+                  <li>Investor & Startup Pitch Sessions</li>
+                  <li>Sports Technology & AI Expo</li>
+                  <li>EV & Sustainable Mobility Pavilion</li>
+                  <li>Health & Wellness Expo</li>
+                  <li>Government & Embassy Networking</li>
+                  <li>B2B and B2G Meetings</li>
+                  <li>Franchise & Investment Expo</li>
+                  <li>Innovation Awards</li>
+              </ul>
+            </div>
+
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 2: Pattaya <br><span style="color: #3A342B; font-size: 1rem;">"OCEAN ADVENTURE & SPORTS FEST"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Locations:</strong> Jomtien Beach, Pattaya Beach</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>Jet Ski Championship</li>
+                  <li>Parasailing & Flyboard Competition</li>
+                  <li>Beach Volleyball, Football & Kabaddi</li>
+                  <li>Dragon Boat Demonstration</li>
+                  <li>Paddle Board Competition</li>
+                  <li>Sailing Showcase</li>
+                  <li>Beach Fitness Challenge</li>
+                  <li>Food Festival</li>
+                  <li>Night Cultural Performances</li>
+              </ul>
+            </div>
+
+            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 3: Phuket <br><span style="color: #3A342B; font-size: 1rem;">"GLOBAL EXCELLENCE & AWARDS"</span></h3>
+              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
+              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Phuket Convention Exhibition Hall</p>
+              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
+              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
+                  <li>International Leadership Summit</li>
+                  <li>Tourism & Hospitality Forum</li>
+                  <li>Sustainability Forum</li>
+                  <li>Luxury Yacht Showcase</li>
+                  <li>Global Business Networking</li>
+                  <li>International Cultural Festival</li>
+                  <li>GSA Excellence Awards</li>
+                  <li>Closing Ceremony & Gala Dinner</li>
+                  <li>Entertainment Show & Intl Artist Performances</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 style="color: #8c7237; margin-bottom: 15px; font-size: 1.5rem; text-align: center; font-weight: 700;">Proposed 6-Day Schedule</h3>
+          <div style="overflow-x: auto; max-width: 900px; margin: 0 auto 30px auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; background: rgba(255, 255, 255, 0.8); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <thead>
+                <tr style="background: rgba(197, 168, 92, 0.2); color: #8c7237;">
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Day</th>
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">City</th>
+                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Theme</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 1</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Opening Ceremony & Expo</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 2</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Conferences, Investors & B2B</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 3</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Water Sports Festival</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 4</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Beach Sports & Cultural Night</td></tr>
+                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 5</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">Leadership Summit & Networking</td></tr>
+                <tr style="color: #444;"><td style="padding: 15px; font-weight: 600;">Day 6</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">GSA Global Awards & Grand Closing</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: rgba(197, 168, 92, 0.15); padding: 25px; border-radius: 8px; border-left: 5px solid #8c7237; max-width: 900px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <h4 style="color: #8c7237; margin-bottom: 15px; font-size: 1.1rem; font-weight: 700;">Why this format works:</h4>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem; line-height: 1.6; color: #444;">
+              <li style="margin-bottom: 8px;"><strong>Bangkok</strong> serves as the business and innovation hub.</li>
+              <li style="margin-bottom: 8px;"><strong>Pattaya</strong> becomes the sports and adventure destination.</li>
+              <li><strong>Phuket</strong> provides a premium setting for leadership, tourism, networking, and the prestigious GSA Awards Ceremony.</li>
+            </ul>
+          </div>
+        </div>`;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                tinymce.init({
+                    selector: 'textarea[name="custom_html"]',
+                    plugins: 'table lists link image code fullscreen',
+                    toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | table | bullist numlist | code fullscreen',
+                    menubar: false,
+                    height: 450,
+                    valid_elements: '*[*]',
+                    setup: function(editor) {
+                        document.getElementById('loadSampleTemplate').addEventListener('click', function() {
+                            if (confirm("This will overwrite any current content in the editor. Proceed?")) {
+                                editor.setContent(thailandTemplate);
+                            }
+                        });
+                        document.getElementById('clearTemplate').addEventListener('click', function() {
+                            if (confirm("Are you sure you want to clear all content in the editor?")) {
+                                editor.setContent('');
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    </div>
+
     <!-- Custom Statistics -->
     <div class="card">
         <div class="card-title">Custom Statistics (4 Boxes) <small style="color:#aaa; font-size:0.9rem;">(Leave blank to auto-calculate)</small></div>
@@ -1039,8 +1173,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="btn_text" class="form-control" value="<?= htmlspecialchars($event['btn_text'] ?? 'Explore') ?>">
             </div>
             <div class="form-group">
-                <label>Button URL (Leave blank to auto-generate details page)</label>
+                <label>Primary Button URL</label>
                 <input type="text" name="btn_url" class="form-control" placeholder="https://..." value="<?= htmlspecialchars($event['btn_url'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label>Delegate Registration URL (Optional)</label>
+                <input type="text" name="delegate_reg_url" class="form-control" placeholder="https://..." value="<?= htmlspecialchars($event['delegate_reg_url'] ?? '') ?>">
             </div>
         </div>
     </div>
@@ -1095,46 +1233,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-          <div class="form-group">
-          <label>End Date</label>
-          <input type="date" name="end_date" required value="<?= $event ? htmlspecialchars($event['end_date'] ?? '') : '' ?>">
-      </div>
+    <div class="form-group">
+        <label>End Date</label>
+        <input type="date" name="end_date" required value="<?= $event ? htmlspecialchars($event['end_date'] ?? '') : '' ?>">
+    </div>
 
-      <div class="form-group">
-          <label>Description</label>
-          <textarea name="description" rows="5"><?= $event ? htmlspecialchars($event['description'] ?? '') : '' ?></textarea>
-      </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" class="form-control" rows="5"><?= $event ? htmlspecialchars($event['description'] ?? '') : '' ?></textarea>
+    </div>
 
-      <div class="form-group">
-          <label>Custom HTML / Rich Text Section (Optional)</label>
-          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 8px;">Use this field to paste completely custom layouts, such as the Thailand Festival Concept. This will be rendered directly on the Event Details page below the overview.</p>
-          <textarea name="custom_html" rows="10" style="font-family: monospace;"><?= $event ? htmlspecialchars($event['custom_html'] ?? '') : '' ?></textarea>
-      </div>
-
-      <div class="dynamic-block">
-          <h3>Event-Specific Delegate Pricing (Optional)</h3>
-          <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 15px;">Leave blank to use the global delegate fee set in Delegate Settings.</p>
-          <div class="form-group" style="display: flex; gap: 15px;">
-              <div style="flex: 1;">
-                  <label>Delegate Registration Fee</label>
-                  <input type="number" step="0.01" name="delegate_fee" value="<?= $event ? htmlspecialchars($event['delegate_fee'] ?? '') : '' ?>" placeholder="e.g. 200.00">
-              </div>
-              <div style="flex: 1;">
-                  <label>Currency</label>
-                  <select name="delegate_currency">
-                      <option value="">Select Currency...</option>
-                      <option value="USD" <?= ($event && ($event['delegate_currency'] ?? '') == 'USD') ? 'selected' : '' ?>>USD ($)</option>
-                      <option value="EUR" <?= ($event && ($event['delegate_currency'] ?? '') == 'EUR') ? 'selected' : '' ?>>EUR (€)</option>
-                      <option value="GBP" <?= ($event && ($event['delegate_currency'] ?? '') == 'GBP') ? 'selected' : '' ?>>GBP (£)</option>
-                      <option value="AED" <?= ($event && ($event['delegate_currency'] ?? '') == 'AED') ? 'selected' : '' ?>>AED</option>
-                      <option value="INR" <?= ($event && ($event['delegate_currency'] ?? '') == 'INR') ? 'selected' : '' ?>>INR (₹)</option>
-                  </select>
-              </div>
-          </div>
-      </div>
-      <!-- Event Schedule Section -->
-      <hr>
-      <h3>Event Schedule (Dynamic)</h3>
+    <div class="dynamic-block">
+        <h3>Event-Specific Delegate Pricing (Optional)</h3>
+        <p style="font-size: 0.85rem; color: #9aa0b4; margin-bottom: 15px;">Leave blank to use the global delegate fee set in Delegate Settings.</p>
+        <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+                <label>Delegate Registration Fee</label>
+                <input type="number" step="0.01" name="delegate_fee" class="form-control" value="<?= $event ? htmlspecialchars($event['delegate_fee'] ?? '') : '' ?>" placeholder="e.g. 200.00">
+            </div>
+            <div style="flex: 1;">
+                <label>Currency</label>
+                <select name="delegate_currency" class="form-control">
+                    <option value="">Select Currency...</option>
+                    <option value="USD" <?= ($event && ($event['delegate_currency'] ?? '') == 'USD') ? 'selected' : '' ?>>USD ($)</option>
+                    <option value="EUR" <?= ($event && ($event['delegate_currency'] ?? '') == 'EUR') ? 'selected' : '' ?>>EUR (&#8364;)</option>
+                    <option value="GBP" <?= ($event && ($event['delegate_currency'] ?? '') == 'GBP') ? 'selected' : '' ?>>GBP (&#163;)</option>
+                    <option value="AED" <?= ($event && ($event['delegate_currency'] ?? '') == 'AED') ? 'selected' : '' ?>>AED</option>
+                    <option value="INR" <?= ($event && ($event['delegate_currency'] ?? '') == 'INR') ? 'selected' : '' ?>>INR (&#8377;)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Event Schedule Section -->
+    <hr>
+    <h3>Event Schedule (Dynamic)</h3>
       <p style="color:#666; margin-bottom: 15px;">Add the timeline schedule for this event.</p>
       
       <div id="schedule-container">

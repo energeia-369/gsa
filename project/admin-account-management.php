@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/navbar.php';
 
     <!-- Edit User Form -->
     <div id="userEditSection" class="admin-card" style="display: none; background: #12131c; border: 2px solid #c5a85c; border-radius: 20px; padding: 25px; margin-bottom: 30px;">
-      <h2 id="userEditTitle" style="color: #c5a85c; margin: 0 0 20px 0;">?? Edit Account Profile</h2>
+      <h2 id="userEditTitle" style="color: #c5a85c; margin: 0 0 20px 0;">✏️ Edit Account Profile</h2>
       <form id="userEditForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
         <input type="hidden" id="editUserId" value="">
         <div>
@@ -127,7 +127,7 @@ require_once __DIR__ . '/includes/navbar.php';
 
       <!-- Merchant List Panel -->
       <div id="sectionMerchant" class="account-section" style="display: none;">
-        <h3 style="color: #c5a85c; margin: 0 0 10px 0; font-size: 1.2rem;">?? Merchant Accounts</h3>
+        <h3 style="color: #c5a85c; margin: 0 0 10px 0; font-size: 1.2rem;">🏪 Merchant Accounts</h3>
         <p style="color: #9aa0b4; font-size: 0.85rem; margin-top: 0;">Edit profile information or remove merchant partners</p>
 
         <div id="merchantsContainer" style="display: grid; gap: 15px; margin-top: 20px;">
@@ -137,7 +137,7 @@ require_once __DIR__ . '/includes/navbar.php';
 
       <!-- Admin Staff Panel -->
       <div id="sectionAdmin" class="account-section" style="display: none;">
-        <h3 style="color: #38bdf8; margin: 0 0 10px 0; font-size: 1.2rem;">??? Administrative Staff</h3>
+        <h3 style="color: #38bdf8; margin: 0 0 10px 0; font-size: 1.2rem;">🛡️ Administrative Staff</h3>
         <p style="color: #9aa0b4; font-size: 0.85rem; margin-top: 0;">Edit administrative privileges or remove moderators</p>
 
         <div id="adminsContainer" style="display: grid; gap: 15px; margin-top: 20px;">
@@ -158,15 +158,15 @@ function createAccountCard(user) {
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <strong style="color: #f5f6fa; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">${user.username || user.first_name || 'User'} <span style="color: #c5a85c; font-size: 0.8rem;">(ID: ${user.id})</span></strong>
             </div>
-            <div style="color: #9aa0b4; margin-bottom: 5px;">?? ${user.email}</div>
+            <div style="color: #9aa0b4; margin-bottom: 5px;">✉️ ${user.email}</div>
             <div style="color: #9aa0b4; margin-bottom: 12px;">📞 Phone: ${user.phone || 'N/A'}</div>
           </div>
           <div style="display: flex; gap: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; margin-top: auto;">
               <button onclick="alert('Edit user ${user.id} functionality coming soon.')" style="flex: 1; padding: 8px; background: transparent; border: 1px solid #c5a85c; color: #c5a85c; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; font-weight: bold;" onmouseover="this.style.background='rgba(197,168,92,0.1)'" onmouseout="this.style.background='transparent'">
-                  ?? Edit
+                  ✏️ Edit
               </button>
               <button onclick="alert('Delete user ${user.id} functionality coming soon.')" style="flex: 1; padding: 8px; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; font-weight: bold;" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">
-                  ??? Delete
+                  🗑️ Delete
               </button>
           </div>
         </div>
@@ -249,12 +249,12 @@ function renderUsers() {
             <div style="background: ${cardBg}; border: ${borderStyle}; ${shadowStyle} padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: ${textColor};">${u.full_name || u.fullName || 'User'} ${badgeHtml} <span style="color: ${idColor}; font-size: 0.8rem;">(ID: ${u.id})</span></h4>
-                <div style="font-size: 0.8rem; color: ${subTextColor};">?? ${u.email}</div>
+                <div style="font-size: 0.8rem; color: ${subTextColor};">✉️ ${u.email}</div>
                 <div style="font-size: 0.8rem; color: ${subTextColor}; margin-top: 2px;">📞 Phone: ${u.phone_number || u.phoneNumber || "N/A"}</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${btnColor}; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">?? Edit</button>
-                <button onclick="handleDeleteUser(${u.id}, 'USER')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">??? Delete</button>
+                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${btnColor}; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">✏️ Edit</button>
+                <button onclick="handleDeleteUser(${u.id}, 'USER')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">🗑️ Delete</button>
               </div>
             </div>
             `;
@@ -267,12 +267,12 @@ function renderUsers() {
             <div class="regular-user-card" style="background: #0b0c10; border: ${borderStyle}; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: #f5f6fa;">${u.full_name || u.fullName || 'User'} <span style="color: #c5a85c; font-size: 0.8rem;">(ID: ${u.id})</span></h4>
-                <div style="font-size: 0.8rem; color: #9aa0b4;">?? ${u.email}</div>
+                <div style="font-size: 0.8rem; color: #9aa0b4;">✉️ ${u.email}</div>
                 <div style="font-size: 0.8rem; color: #9aa0b4; margin-top: 2px;">📞 Phone: ${u.phone_number || u.phoneNumber || "N/A"}</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(197,168,92,0.1); border: 1px solid #c5a85c; color: #c5a85c; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">?? Edit</button>
-                <button onclick="handleDeleteUser(${u.id}, 'USER')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">??? Delete</button>
+                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(197,168,92,0.1); border: 1px solid #c5a85c; color: #c5a85c; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">✏️ Edit</button>
+                <button onclick="handleDeleteUser(${u.id}, 'USER')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">🗑️ Delete</button>
               </div>
             </div>
             `;
@@ -291,11 +291,11 @@ function renderUsers() {
               }
             </style>
             <div style="display: flex; flex-direction: column; gap: 15px; background: transparent !important; border: none !important; box-shadow: none !important;">
-                <h3 style="color: #f5d87a; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(245,216,122,0.3); padding-bottom: 8px; text-transform: uppercase;">? Premium Users</h3>
+                <h3 style="color: #f5d87a; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(245,216,122,0.3); padding-bottom: 8px; text-transform: uppercase;">💎 Premium Users</h3>
                 ${premiumHtml || '<p style="color: #9aa0b4; text-align: center; margin-top: 20px;">No premium users.</p>'}
             </div>
             <div style="display: flex; flex-direction: column; gap: 15px; background: transparent !important; border: none !important; box-shadow: none !important;">
-                <h3 style="color: #c5a85c; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(197,168,92,0.3); padding-bottom: 8px; text-transform: uppercase;">?? Regular Users</h3>
+                <h3 style="color: #c5a85c; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(197,168,92,0.3); padding-bottom: 8px; text-transform: uppercase;">👤 Regular Users</h3>
                 ${normalHtml || '<p style="color: #9aa0b4; text-align: center; margin-top: 20px;">No regular users.</p>'}
             </div>
         `;
@@ -324,12 +324,12 @@ function renderUsers() {
             <div style="background: ${cardBg}; border: none !important; ${shadowStyle} padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: ${textColor};">${u.full_name || u.fullName || 'Merchant'} ${badgeHtml} <span style="color: ${idColor}; font-size: 0.8rem;">(ID: ${u.id})</span></h4>
-                <div style="font-size: 0.8rem; color: ${subTextColor};">?? ${u.email}</div>
+                <div style="font-size: 0.8rem; color: ${subTextColor};">✉️ ${u.email}</div>
                 <div style="font-size: 0.8rem; color: ${subTextColor}; margin-top: 2px;">📞 Phone: ${u.phone_number || u.phoneNumber || "N/A"}</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: ${btnBg}; border: 1px solid #0b0c10; color: #0b0c10; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">?? Edit</button>
-                <button onclick="handleDeleteUser(${u.id}, 'MERCHANT')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">??? Delete</button>
+                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: ${btnBg}; border: 1px solid #0b0c10; color: #0b0c10; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">✏️ Edit</button>
+                <button onclick="handleDeleteUser(${u.id}, 'MERCHANT')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">🗑️ Delete</button>
               </div>
             </div>
             `;
@@ -340,12 +340,12 @@ function renderUsers() {
             <div class="regular-merchant-card" style="background: #0b0c10; border: 1px solid rgba(168,85,247,0.15); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: #f5f6fa;">${u.full_name || u.fullName || 'Merchant'} <span style="color: #a855f7; font-size: 0.8rem;">(ID: ${u.id})</span></h4>
-                <div style="font-size: 0.8rem; color: #9aa0b4;">?? ${u.email}</div>
+                <div style="font-size: 0.8rem; color: #9aa0b4;">✉️ ${u.email}</div>
                 <div style="font-size: 0.8rem; color: #9aa0b4; margin-top: 2px;">📞 Phone: ${u.phone_number || u.phoneNumber || "N/A"}</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(168,85,247,0.1); border: 1px solid #a855f7; color: #a855f7; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">?? Edit</button>
-                <button onclick="handleDeleteUser(${u.id}, 'MERCHANT')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">??? Delete</button>
+                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(168,85,247,0.1); border: 1px solid #a855f7; color: #a855f7; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">✏️ Edit</button>
+                <button onclick="handleDeleteUser(${u.id}, 'MERCHANT')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">🗑️ Delete</button>
               </div>
             </div>
             `;
@@ -364,11 +364,11 @@ function renderUsers() {
               }
             </style>
             <div style="display: flex; flex-direction: column; gap: 15px; background: transparent !important; border: none !important; box-shadow: none !important;">
-                <h3 style="color: #f5d87a; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(245,216,122,0.3); padding-bottom: 8px; text-transform: uppercase;">? Premium Merchants</h3>
+                <h3 style="color: #f5d87a; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(245,216,122,0.3); padding-bottom: 8px; text-transform: uppercase;">💎 Premium Merchants</h3>
                 ${premiumMerchantsHtml || '<p style="color: #9aa0b4; text-align: center; margin-top: 20px;">No premium merchants.</p>'}
             </div>
             <div style="display: flex; flex-direction: column; gap: 15px; background: transparent !important; border: none !important; box-shadow: none !important;">
-                <h3 style="color: #a855f7; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 8px; text-transform: uppercase;">?? Regular Merchants</h3>
+                <h3 style="color: #a855f7; margin: 0 0 5px 0; font-size: 1.1rem; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 8px; text-transform: uppercase;">🏪 Regular Merchants</h3>
                 ${regularMerchantsHtml || '<p style="color: #9aa0b4; text-align: center; margin-top: 20px;">No regular merchants.</p>'}
             </div>
         `;
@@ -381,12 +381,12 @@ function renderUsers() {
             <div style="background: #0b0c10; border: 1px solid rgba(56,189,248,0.15); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: #f5f6fa;">${u.full_name || u.fullName || 'Admin'} <span style="color: #38bdf8; font-size: 0.8rem;">(ID: ${u.id})</span></h4>
-                <div style="font-size: 0.8rem; color: #9aa0b4;">?? ${u.email}</div>
+                <div style="font-size: 0.8rem; color: #9aa0b4;">✉️ ${u.email}</div>
                 <div style="font-size: 0.8rem; color: #9aa0b4; margin-top: 2px;">📞 Phone: ${u.phone_number || u.phoneNumber || "N/A"}</div>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(56,189,248,0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">?? Edit</button>
-                <button onclick="handleDeleteUser(${u.id}, 'ADMIN')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">??? Delete</button>
+                <button onclick="handleEditUserClick(${u.id})" style="flex: 1; background: rgba(56,189,248,0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">✏️ Edit</button>
+                <button onclick="handleDeleteUser(${u.id}, 'ADMIN')" style="flex: 1; background: rgba(220,38,38,0.15); border: 1px solid #dc2626; color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">🗑️ Delete</button>
               </div>
             </div>
         `).join('');

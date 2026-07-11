@@ -1,7 +1,9 @@
 <nav class="navbar" style="position: sticky; top: 0; z-index: 1000;">
 
   <!-- NEW BACKGROUND LOGO GIF -->
-  <img src="assets/images/logo_original_colors.gif?v=2" id="underNavLogo" alt="" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; transform: scale(1.45); mix-blend-mode: multiply; transform-origin: center center;">
+  <div id="underNavLogo" style="position: absolute; z-index: -1; pointer-events: none; border-radius: 50%; width: 52px; height: 52px; overflow: hidden; mix-blend-mode: screen;">
+    <video src="assets/images/logo%20moving%202.0.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.0); transform-origin: center center;"></video>
+  </div>
 
   <!-- ✨ THE PILL ✨ -->
   <div class="nav-container" id="mainNavContainer" style="background: transparent !important; border: none !important; box-shadow: none !important;">
@@ -105,7 +107,7 @@
 
         <!-- Auth: greeting + logout / login -->
         <span id="authButtonContainer">
-          <a href="login.php" class="login-btn" onclick="closeMenu()">Login</a>
+          <a href="login.php" class="nav-login-btn" onclick="closeMenu()">Login</a>
         </span>
 
       </div><!-- /nav-actions -->
@@ -172,32 +174,30 @@ function updateNavbarAuth() {
         container.style.display = 'flex';
         container.style.alignItems = 'center';
         container.style.justifyContent = 'center';
-        container.style.flexWrap = 'wrap';
+        container.style.flexWrap = 'nowrap';
         container.style.gap = '15px';
         
         container.innerHTML =
-            `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;">
+            `<div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.2; white-space: nowrap;">
                 <span class="nav-greeting" style="display: flex; align-items: center; gap: 6px;">Hi, <span style="${nameStyle}">${userName}</span>${roleHtml}</span>
-                <span id="adminNxlDisplay"></span>
+                <span id="navNxlDisplay"></span>
             </div>` +
-            `<button onclick="handleLogout()" class="login-btn">Logout</button>`;
+            `<button onclick="handleLogout()" class="nav-login-btn">Logout</button>`;
             
-        if (userRole === "ADMIN") {
-            const email = localStorage.getItem('userEmail') || '';
-            fetch(`api/index.php/wallet/balance?email=${encodeURIComponent(email)}`, {
-                headers: { "Authorization": "Bearer " + token }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.nxlCredits !== undefined && document.getElementById('adminNxlDisplay')) {
-                    document.getElementById('adminNxlDisplay').innerHTML = `<span style="font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 4px; color: inherit; letter-spacing: 0.5px; margin-top: 3px;">💎 ${data.nxlCredits.toLocaleString()}</span>`;
-                }
-            })
-            .catch(err => console.error("Error fetching admin NXL", err));
-        }
+        const email = localStorage.getItem('userEmail') || '';
+        fetch(`api/index.php/wallet/balance?email=${encodeURIComponent(email)}`, {
+            headers: { "Authorization": "Bearer " + token }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.nxlCredits !== undefined && document.getElementById('navNxlDisplay')) {
+                document.getElementById('navNxlDisplay').innerHTML = `<span style="font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 4px; color: inherit; letter-spacing: 0.5px; margin-top: 3px;">💎 ${data.nxlCredits.toLocaleString()}</span>`;
+            }
+        })
+        .catch(err => console.error("Error fetching NXL balance", err));
     } else {
         dashLink.href = "login.php";
-        container.innerHTML = `<a href="login.php" class="login-btn" onclick="closeMenu()">Login</a>`;
+        container.innerHTML = `<a href="login.php" class="nav-login-btn" onclick="closeMenu()">Login</a>`;
     }
 }
 

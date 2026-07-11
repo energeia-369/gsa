@@ -57,7 +57,7 @@ include 'includes/navbar.php';
 ?>
 
 <!-- Custom CSS for this page - External file -->
-<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=3">
+<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=6">
 
 <script>
     document.body.classList.add('gsa-pune-page');
@@ -273,101 +273,6 @@ if ($participantsCount < 1000) $participantsCount = 1000;
             </div>
         <?php endif; ?>
 
-        <?php if (stripos($event['title'], 'Thailand') !== false || stripos($event['slug'], 'thailand') !== false): ?>
-        <!-- Custom Thailand Festival Concept Section -->
-        <div class="dest-section card-glass thailand-festival-concept" style="margin-top: 4rem; text-align: left; background: rgba(255, 255, 255, 0.6); padding: 30px; border-radius: 16px; border: 1px solid rgba(197, 168, 92, 0.4); box-shadow: 0 10px 30px rgba(139,90,43,0.05);">
-          <h2 style="color: #8c7237; margin-bottom: 15px; font-size: 2rem; text-align: center; font-weight: 800;">GSA Thailand – Official Festival Concept</h2>
-          <p style="margin-bottom: 25px; line-height: 1.6; color: #555; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; font-weight: 500;">This three-city concept positions GSA Thailand as a destination festival that combines sports, business, tourism, investment, culture, sustainability, and international networking, making it attractive to participants, sponsors, government agencies, and global media.</p>
-          
-          <div class="festival-phases" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
-            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 1: Bangkok <br><span style="color: #3A342B; font-size: 1rem;">"NEXUS ELITE"</span></h3>
-              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
-              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Queen Sirikit National Convention Center / Bangkok Intl Trade & Exhibition Centre</p>
-              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
-              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
-                  <li>Global Opening Ceremony</li>
-                  <li>Sports Business Summit</li>
-                  <li>Investor & Startup Pitch Sessions</li>
-                  <li>Sports Technology & AI Expo</li>
-                  <li>EV & Sustainable Mobility Pavilion</li>
-                  <li>Health & Wellness Expo</li>
-                  <li>Government & Embassy Networking</li>
-                  <li>B2B and B2G Meetings</li>
-                  <li>Franchise & Investment Expo</li>
-                  <li>Innovation Awards</li>
-              </ul>
-            </div>
-
-            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 2: Pattaya <br><span style="color: #3A342B; font-size: 1rem;">"OCEAN ADVENTURE & SPORTS FEST"</span></h3>
-              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
-              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Locations:</strong> Jomtien Beach, Pattaya Beach</p>
-              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
-              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
-                  <li>Jet Ski Championship</li>
-                  <li>Parasailing & Flyboard Competition</li>
-                  <li>Beach Volleyball, Football & Kabaddi</li>
-                  <li>Dragon Boat Demonstration</li>
-                  <li>Paddle Board Competition</li>
-                  <li>Sailing Showcase</li>
-                  <li>Beach Fitness Challenge</li>
-                  <li>Food Festival</li>
-                  <li>Night Cultural Performances</li>
-              </ul>
-            </div>
-
-            <div class="phase-card" style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 168, 92, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-              <h3 style="color: #8c7237; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;">📍 Phase 3: Phuket <br><span style="color: #3A342B; font-size: 1rem;">"GLOBAL EXCELLENCE & AWARDS"</span></h3>
-              <p style="font-size: 0.95rem; margin-bottom: 5px; color: #444;"><strong>Duration:</strong> 2 Days</p>
-              <p style="font-size: 0.95rem; margin-bottom: 15px; color: #444;"><strong>Venue:</strong> Phuket Convention Exhibition Hall</p>
-              <h4 style="font-size: 1rem; color: #8A7A5F; margin-bottom: 8px; font-weight: 600;">Activities:</h4>
-              <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.6; color: #555; margin-bottom: 0;">
-                  <li>International Leadership Summit</li>
-                  <li>Tourism & Hospitality Forum</li>
-                  <li>Sustainability Forum</li>
-                  <li>Luxury Yacht Showcase</li>
-                  <li>Global Business Networking</li>
-                  <li>International Cultural Festival</li>
-                  <li>GSA Excellence Awards</li>
-                  <li>Closing Ceremony & Gala Dinner</li>
-                  <li>Entertainment Show & Intl Artist Performances</li>
-              </ul>
-            </div>
-          </div>
-
-          <h3 style="color: #8c7237; margin-bottom: 15px; font-size: 1.5rem; text-align: center; font-weight: 700;">Proposed 6-Day Schedule</h3>
-          <div style="overflow-x: auto; max-width: 900px; margin: 0 auto 30px auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; background: rgba(255, 255, 255, 0.8); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-              <thead>
-                <tr style="background: rgba(197, 168, 92, 0.2); color: #8c7237;">
-                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Day</th>
-                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">City</th>
-                  <th style="padding: 15px; border-bottom: 2px solid rgba(197,168,92,0.4); font-weight: 700;">Theme</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 1</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Opening Ceremony & Expo</td></tr>
-                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 2</td><td style="padding: 15px; font-weight: 500;">Bangkok</td><td style="padding: 15px;">Conferences, Investors & B2B</td></tr>
-                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 3</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Water Sports Festival</td></tr>
-                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 4</td><td style="padding: 15px; font-weight: 500;">Pattaya</td><td style="padding: 15px;">Beach Sports & Cultural Night</td></tr>
-                <tr style="border-bottom: 1px solid rgba(197,168,92,0.2); color: #444;"><td style="padding: 15px; font-weight: 600;">Day 5</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">Leadership Summit & Networking</td></tr>
-                <tr style="color: #444;"><td style="padding: 15px; font-weight: 600;">Day 6</td><td style="padding: 15px; font-weight: 500;">Phuket</td><td style="padding: 15px;">GSA Global Awards & Grand Closing</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div style="background: rgba(197, 168, 92, 0.15); padding: 25px; border-radius: 8px; border-left: 5px solid #8c7237; max-width: 900px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-            <h4 style="color: #8c7237; margin-bottom: 15px; font-size: 1.1rem; font-weight: 700;">Why this format works:</h4>
-            <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem; line-height: 1.6; color: #444;">
-              <li style="margin-bottom: 8px;"><strong>Bangkok</strong> serves as the business and innovation hub.</li>
-              <li style="margin-bottom: 8px;"><strong>Pattaya</strong> becomes the sports and adventure destination.</li>
-              <li><strong>Phuket</strong> provides a premium setting for leadership, tourism, networking, and the prestigious GSA Awards Ceremony.</li>
-            </ul>
-          </div>
-        </div>
-        <?php endif; ?>
-
     </div>
 </section>
 
@@ -491,7 +396,8 @@ if (count($sports) > 0):
                             <i class="fas fa-check-circle"></i> Event Completed
                         </button>
                     <?php else: ?>
-                        <a href="<?= !empty($event['slug']) ? 'event-registration.php?event=' . urlencode($event['slug']) . '&sport=' . urlencode($s['title']) : '#' ?>" class="btn-outline-gold text-center w-100">
+                        <?php $link = !empty($s['btn_url']) ? $s['btn_url'] : 'event-registration.php?event=' . urlencode($event['slug']) . '&sport=' . urlencode($s['title']); ?>
+                        <a href="<?= htmlspecialchars($link) ?>" class="btn-outline-gold text-center w-100">
                             <i class="fas fa-arrow-right"></i> Register
                         </a>
                     <?php endif; ?>
@@ -769,7 +675,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
     <div class="container">
         <div class="nxl-card">
             <div class="nxl-icon">
-                <i class="fab fa-bitcoin"></i>
+                <div class="nxl-circle-text">NXL</div>
                 <div class="nxl-pulse"></div>
             </div>
             <div class="nxl-content">

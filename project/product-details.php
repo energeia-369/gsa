@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Product Details";
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
@@ -124,47 +124,80 @@ foreach ($sizes as $s) {
     <!-- Color Options -->
     <div class="color-section">
       <?php
-      $productColors = !empty($product['colors']) ? explode(',', $product['colors']) : [];
+      $productColors = [];
+      $rawColors = $product['colors'] ?? '';
+      $isJson = false;
+      
+      if (!empty($rawColors)) {
+          $decoded = json_decode($rawColors, true);
+          if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+              $productColors = $decoded;
+              $isJson = true;
+          } else {
+              $productColors = explode(',', $rawColors);
+          }
+      }
+      
       if (!empty($productColors)):
-          $firstColorRaw = trim($productColors[0]);
-          $firstColorName = ucfirst($firstColorRaw);
-          if (strpos($firstColorRaw, '|') !== false) {
-              $firstColorName = trim(explode('|', $firstColorRaw)[0]);
+          if ($isJson) {
+              $firstColorName = $productColors[0]['color'] ?? 'Unknown';
+          } else {
+              $firstColorRaw = trim($productColors[0]);
+              $firstColorName = ucfirst($firstColorRaw);
+              if (strpos($firstColorRaw, '|') !== false) {
+                  $firstColorName = trim(explode('|', $firstColorRaw)[0]);
+              }
           }
       ?>
           <p>Color: <span class="selected-value" id="colorSelectedVal"><?php echo htmlspecialchars($firstColorName); ?></span></p>
           <div class="color-options">
-            <?php foreach ($productColors as $colorRaw): 
-                $color = trim($colorRaw);
-                if (empty($color)) continue;
-                $colorVal = $color;
-                $colorName = ucfirst($color);
-                if (strpos($color, '|') !== false) {
-                    $parts = explode('|', $color);
-                    $colorName = trim($parts[0]);
-                    $colorVal = trim($parts[1]);
+            <?php foreach ($productColors as $colorItem): 
+                $colorSizesData = [];
+                if ($isJson && !empty($colorItem['sizes'])) {
+                    $colorSizesData = $colorItem['sizes'];
+                } else if (!empty($sizes)) {
+                    $colorSizesData = $sizes;
                 }
+                $sizesAttr = htmlspecialchars(json_encode($colorSizesData), ENT_QUOTES, 'UTF-8');
+                
+                if ($isJson) {
+                    $colorName = htmlspecialchars($colorItem['color'] ?? '');
+                    $colorImg = htmlspecialchars($colorItem['image'] ?? '');
+                    if (!empty($colorImg)) {
+                        echo "<div class=\"color-circle\" style=\"background-image: url('{$colorImg}'); background-size: cover; background-position: center; border: 1px solid rgba(197,168,92,0.5);\" onclick=\"selectColorImage('{$colorImg}', '{$colorName}', this, '{$sizesAttr}')\" title=\"{$colorName}\"></div>";
+                    } else {
+                        echo "<div class=\"color-circle\" style=\"background-color: #555;\" onclick=\"selectColorImage('', '{$colorName}', this, '{$sizesAttr}')\" title=\"{$colorName}\"></div>";
+                    }
+                } else {
+                    $color = trim($colorItem);
+                    if (empty($color)) continue;
+                    $colorVal = $color;
+                    $colorName = ucfirst($color);
+                    if (strpos($color, '|') !== false) {
+                        $parts = explode('|', $color);
+                        $colorName = trim($parts[0]);
+                        $colorVal = trim($parts[1]);
+                    }
             ?>
-              <div class="color-circle" style="background-color: <?php echo htmlspecialchars($colorVal); ?>;" onclick="selectColor('<?php echo htmlspecialchars($colorVal); ?>', '<?php echo htmlspecialchars($colorName); ?>', this)"></div>
-            <?php endforeach; ?>
+              <div class="color-circle" style="background-color: <?php echo htmlspecialchars($colorVal); ?>;" onclick="selectColor('<?php echo htmlspecialchars($colorVal); ?>', '<?php echo htmlspecialchars($colorName); ?>', this, '<?php echo $sizesAttr; ?>')"></div>
+            <?php } endforeach; ?>
           </div>
       <?php else: ?>
           <p>Color: <span class="selected-value" id="colorSelectedVal">Neon Green</span></p>
           <div class="color-options">
-            <div class="color-circle" style="background-color: #22c55e;" onclick="selectColor('#22c55e', 'Neon Green', this)"></div>
-            <div class="color-circle" style="background-color: #3b82f6;" onclick="selectColor('#3b82f6', 'Royal Blue', this)"></div>
-            <div class="color-circle" style="background-color: #a855f7;" onclick="selectColor('#a855f7', 'Purple Velvet', this)"></div>
-            <div class="color-circle" style="background-color: #ef4444;" onclick="selectColor('#ef4444', 'Flame Red', this)"></div>
+            <div class="color-circle" style="background-color: #22c55e;" onclick="selectColor('#22c55e', 'Neon Green', this, '[]')"></div>
+            <div class="color-circle" style="background-color: #3b82f6;" onclick="selectColor('#3b82f6', 'Royal Blue', this, '[]')"></div>
+            <div class="color-circle" style="background-color: #a855f7;" onclick="selectColor('#a855f7', 'Purple Velvet', this, '[]')"></div>
+            <div class="color-circle" style="background-color: #ef4444;" onclick="selectColor('#ef4444', 'Flame Red', this, '[]')"></div>
           </div>
       <?php endif; ?>
     </div>
 
     <!-- Size Selection -->
-    <?php if (!empty($sizes)): ?>
-    <div class="size-section">
+    <div class="size-section" id="sizeSection" style="<?php echo empty($sizes) ? 'display: none;' : ''; ?>">
       <p>Select Size</p>
-      <div class="size-options">
-        <?php foreach ($sizes as $s): 
+      <div class="size-options" id="sizeOptionsContainer">
+        <?php if (!empty($sizes)): foreach ($sizes as $s): 
             $sz = htmlspecialchars($s['size']);
             $st = intval($s['stock'] ?? 0);
             $disabled = $st <= 0 ? 'disabled' : '';
@@ -172,10 +205,9 @@ foreach ($sizes as $s) {
             $active = ($sz == $firstAvailableSize) ? 'active' : '';
         ?>
             <button class="size-btn <?php echo $active; ?>" style="<?php echo $style; ?>" <?php echo $disabled; ?> onclick="selectSize('<?php echo $sz; ?>', this)"><?php echo $sz; ?></button>
-        <?php endforeach; ?>
+        <?php endforeach; endif; ?>
       </div>
     </div>
-    <?php endif; ?>
 
     <!-- Quantity Selector -->
     <div class="quantity-section">
@@ -240,13 +272,101 @@ function selectSize(size, btn) {
     btn.classList.add("active");
 }
 
-function selectColor(colorHex, colorName, element) {
+function renderSizes(sizesJsonStr) {
+    try {
+        const sizesArr = JSON.parse(sizesJsonStr);
+        const section = document.getElementById("sizeSection");
+        const container = document.getElementById("sizeOptionsContainer");
+        if (!sizesArr || sizesArr.length === 0) {
+            section.style.display = "none";
+            selectedSize = "";
+            return;
+        }
+        section.style.display = "block";
+        let html = "";
+        let firstAvailable = null;
+        sizesArr.forEach(s => {
+            const sz = s.size;
+            const st = parseInt(s.stock || 0);
+            const disabled = st <= 0 ? "disabled" : "";
+            const style = st <= 0 ? "opacity: 0.5; text-decoration: line-through; cursor: not-allowed;" : "";
+            if (st > 0 && !firstAvailable) firstAvailable = sz;
+            html += `<button class="size-btn" style="${style}" ${disabled} onclick="selectSize('${sz}', this)">${sz}</button>`;
+        });
+        container.innerHTML = html;
+        
+        // Auto select first available
+        if (firstAvailable) {
+            const firstBtn = container.querySelector(`button:not([disabled])`);
+            if (firstBtn) selectSize(firstAvailable, firstBtn);
+        } else {
+            selectedSize = "";
+        }
+    } catch (e) {}
+}
+
+function selectColorImage(imageUrl, colorName, element, sizesJson = '[]') {
+    selectedColorName = colorName;
+    document.getElementById("colorSelectedVal").textContent = colorName;
+    
+    // Visually mark active color option
+    const circles = document.querySelectorAll(".color-circle");
+    circles.forEach(c => c.style.outline = "none");
+    element.style.outline = "2px solid #c5a85c";
+
+    // Swap the main product image
+    const mainImg = document.querySelector('.product-image-box .product-image img');
+    if (mainImg && imageUrl) {
+        mainImg.src = imageUrl;
+    }
+
+    // Remove any existing tint if present
+    const tintOverlay = document.getElementById('imageColorTint');
+    if (tintOverlay) {
+        tintOverlay.style.opacity = '0';
+    }
+    
+    renderSizes(sizesJson);
+}
+
+function selectColor(colorHex, colorName, element, sizesJson = '[]') {
     selectedColorName = colorName;
     document.getElementById("colorSelectedVal").textContent = colorName;
     // Visually mark active color option
     const circles = document.querySelectorAll(".color-circle");
     circles.forEach(c => c.style.outline = "none");
     element.style.outline = "2px solid #c5a85c";
+
+    // Dynamically tint the product image
+    const imgContainer = document.querySelector('.product-image-box .product-image');
+    if (imgContainer) {
+        let tintOverlay = document.getElementById('imageColorTint');
+        if (!tintOverlay) {
+            tintOverlay = document.createElement('div');
+            tintOverlay.id = 'imageColorTint';
+            tintOverlay.style.position = 'absolute';
+            tintOverlay.style.top = '0';
+            tintOverlay.style.left = '0';
+            tintOverlay.style.width = '100%';
+            tintOverlay.style.height = '100%';
+            tintOverlay.style.pointerEvents = 'none';
+            tintOverlay.style.mixBlendMode = 'color'; // Applies the color while keeping shadows/highlights intact
+            tintOverlay.style.borderRadius = '15px';
+            tintOverlay.style.transition = 'background-color 0.4s ease';
+            
+            imgContainer.style.position = 'relative';
+            imgContainer.appendChild(tintOverlay);
+        }
+        
+        // If color is white or transparent, remove tint
+        if (colorHex.toLowerCase() === '#ffffff' || colorHex.toLowerCase() === 'white') {
+            tintOverlay.style.opacity = '0';
+        } else {
+            tintOverlay.style.backgroundColor = colorHex;
+            tintOverlay.style.opacity = '0.6';
+        }
+    }
+    renderSizes(sizesJson);
 }
 
 function adjustQty(amount) {

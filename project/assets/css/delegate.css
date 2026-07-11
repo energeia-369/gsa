@@ -48,7 +48,7 @@
 
 .delegate-btn-outline:hover {
     background: #12131c;
-    color: #f5f6fa;
+    color: #f5f6fa !important;
 }
 
 /* Sections */

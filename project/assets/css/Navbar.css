@@ -338,7 +338,7 @@ body.light-theme #themeIcon {
 }
 
 /* ── LOGOUT / LOGIN BUTTON ── */
-.login-btn {
+.nav-login-btn {
   background: linear-gradient(135deg, #c9a84c 0%, #a87b28 100%);
   color: #1a0a00;
   padding: 8px 20px;
@@ -358,7 +358,7 @@ body.light-theme #themeIcon {
   box-shadow: 0 3px 14px rgba(197, 168, 92, 0.4);
 }
 
-.login-btn:hover {
+.nav-login-btn:hover {
   background: linear-gradient(135deg, #f5d87a 0%, #c5a84c 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(197, 168, 92, 0.55);
@@ -644,7 +644,8 @@ body.light-theme #themeIcon {
     justify-content: center;
   }
 
-  .login-btn {
+  .nav-login-btn {
+    display: flex !important;
     width: 100%;
     justify-content: center;
     text-align: center;

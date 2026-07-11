@@ -57,8 +57,10 @@ if (!empty($dbProducts)) {
             $catMapped = "Equipment";
         } elseif (stripos($categoryName, 'accessories') !== false) {
             $catMapped = "Accessories";
+        } elseif (!empty($categoryName)) {
+            $catMapped = ucwords(trim($categoryName));
         } else {
-            $catMapped = "Equipment";
+            $catMapped = "Other";
         }
 
         // Generate a nice image url if it is just a local name
@@ -94,6 +96,13 @@ if (!empty($dbProducts)) {
 } else {
     $productList = $defaultProducts;
 }
+
+// Append any custom categories to the global list dynamically
+foreach ($productList as $p) {
+    if (!in_array($p['category'], $categories)) {
+        $categories[] = $p['category'];
+    }
+}
 ?>
 
 <link rel="stylesheet" href="assets/css/Products.css?v=2">
@@ -125,6 +134,13 @@ if (!empty($dbProducts)) {
     <div class="stat-item text-center">
       <span class="stat-number block text-2xl md:text-3xl font-bold">4.5+</span>
       <span class="stat-label text-sm text-gray-400">Rating</span>
+    </div>
+  </div>
+
+  <div class="search-bar-container max-w-7xl mx-auto px-4 mt-8 mb-2">
+    <div style="position: relative; max-width: 600px; margin: 0 auto;">
+      <input type="text" id="productSearch" oninput="handleSearch()" placeholder="Search sports products..." style="width: 100%; padding: 12px 20px 12px 45px; border-radius: 30px; border: 1px solid #c5a85c; outline: none; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease;">
+      <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #c5a85c;"></i>
     </div>
   </div>
 
@@ -160,14 +176,22 @@ if (!empty($dbProducts)) {
 const productsData = <?php echo json_encode($productList); ?>;
 let selectedCategory = "All";
 let sortBy = "featured";
+let searchQuery = "";
+
+function handleSearch() {
+    searchQuery = document.getElementById("productSearch").value.toLowerCase();
+    renderProducts();
+}
 
 function renderProducts() {
     const grid = document.getElementById("productsGrid");
     if (!grid) return;
 
-
-
-    let filtered = productsData.filter(p => selectedCategory === "All" || p.category === selectedCategory);
+    let filtered = productsData.filter(p => {
+        const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+    });
     
     // Sort
     if (sortBy === "price-low") {

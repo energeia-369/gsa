@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'includes/header.php';
 require_once 'includes/navbar.php';
 require_once 'config/Database.php';
@@ -218,7 +218,7 @@ document.getElementById('gc_checkout_form').addEventListener('submit', async fun
         const orderRes = await fetch("api/index.php/public-payment/create-razorpay-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: Math.round(finalAmount * 100) })
+            body: JSON.stringify({ amount: finalAmount })
         });
         const orderData = await orderRes.json();
         
@@ -235,7 +235,7 @@ document.getElementById('gc_checkout_form').addEventListener('submit', async fun
             amount: Math.round(finalAmount * 100),
             order_id: orderData.id,
             currency: "INR",
-            name: "GLOBAL SPORTS ARENA",
+            name: "ENERGEIA'S Global Ventures",
             description: "Gift Card Purchase",
             image: "assets/logo.png",
             handler: async function (response) {

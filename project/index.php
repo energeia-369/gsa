@@ -17,6 +17,7 @@ require_once __DIR__ . '/config/Database.php';
 // Fetch dynamic home event cards
 $dynamicCards = [];
 $dynamicBlogs = [];
+$homeEventCards = [];
 try {
     $dbConn = Database::getConnection();
     
@@ -38,7 +39,7 @@ try {
         $isDynamic = $c['dynamic_page_enabled'] ?? 0;
         $btnLink = $c['link'] ?? $c['button_link'] ?? '#';
         $slug = $c['slug'] ?? '';
-        $link = ($isDynamic == 1 && $slug !== '') ? 'home-event.php?slug=' . $slug : $btnLink;
+        $link = ($isDynamic == 1 && $slug !== '') ? 'home-event-details.php?slug=' . $slug : $btnLink;
         
         $countryStr = $c['country'] ?? '';
         if(isset($c['country_or_state'])) $countryStr = $c['country_or_state'];
@@ -141,7 +142,7 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="assets/css/Home.css?v=14">
+<link rel="stylesheet" href="assets/css/Home.css?v=7">
 <link rel="stylesheet" href="assets/css/Navbar.css?v=2">
 <link rel="stylesheet" href="assets/css/pillars.css">
 
@@ -197,7 +198,7 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
     
     <div class="destinations-slider-container">
       <button class="slider-control-btn prev" onclick="scrollDynamicCarousel('left')">
-        <span class="chevron-icon">◀</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
       </button>
       
       <div class="destinations-slider" id="dynamic-carousel-slider" style="display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 20px;">
@@ -231,7 +232,7 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
       </div>
 
       <button class="slider-control-btn next" onclick="scrollDynamicCarousel('right')">
-        <span class="chevron-icon">▶</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
       </button>
     </div>
   </section>
@@ -376,7 +377,7 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
 
     <div class="destinations-slider-container">
       <button class="slider-control-btn prev" onclick="scrollDestinations('left')">
-        <span class="chevron-icon">◀</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
       </button>
       
       <div 
@@ -387,7 +388,7 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
       </div>
 
       <button class="slider-control-btn next" onclick="scrollDestinations('right')">
-        <span class="chevron-icon">▶</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
       </button>
     </div>
     </div>
@@ -410,22 +411,22 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
           <div class="nxl-flow-connector hidden md:block"></div>
           
           <div class="nxl-flow-step" onclick="window.location.href='wallet.php'" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <div class="nxl-flow-icon-circle">👛</div>
+            <div class="nxl-flow-icon-circle"><i class="fas fa-wallet" style="color: #8b6508; text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2);"></i></div>
             <span>Create Wallet</span>
           </div>
           
           <div class="nxl-flow-step" onclick="window.location.href='event-registration.php'" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <div class="nxl-flow-icon-circle">💎</div>
+            <div class="nxl-flow-icon-circle"><i class="fas fa-gem" style="color: #8b6508; text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2);"></i></div>
             <span>Earn Credits</span>
           </div>
           
           <div class="nxl-flow-step" onclick="window.location.href='products.php'" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <div class="nxl-flow-icon-circle">🛒</div>
+            <div class="nxl-flow-icon-circle"><i class="fas fa-shopping-cart" style="color: #8b6508; text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2);"></i></div>
             <span>Use Credits</span>
           </div>
           
           <div class="nxl-flow-step" onclick="window.location.href='credits.php'" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <div class="nxl-flow-icon-circle">🎁</div>
+            <div class="nxl-flow-icon-circle"><i class="fas fa-gift" style="color: #8b6508; text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2);"></i></div>
             <span>Redeem Rewards</span>
           </div>
         </div>
@@ -436,8 +437,8 @@ $displayedTournaments = !empty($dbTournaments) ? $dbTournaments : $defaultEvents
       </div>
 
       <div class="nxl-banner-visual">
-        <span class="nxl-coin-sub" style="margin-bottom: 5px; display: block;">Redeem Loyalty Discount</span>
-        <span class="nxl-coin-large">💎</span>
+        <span class="nxl-coin-sub" style="margin-bottom: 25px; display: block;">Redeem Loyalty Discount</span>
+        <div class="nxl-coin-large" style="width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, #fcd036 30%, #dfa019 80%, #b8860b 100%); border: 3px solid #b8860b; box-shadow: inset 0 0 0 4px #ffe76e, inset 0 0 6px 4px rgba(184,134,11,0.5), 0 8px 15px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; letter-spacing: 2px; color: #8b6508; text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2); margin: 0 auto 1rem auto;">NXL</div>
         <span class="nxl-coin-label">1 Rupee = 1 NXL Credits</span>
         <span class="nxl-coin-sub" style="display: block; font-size: 0.85rem; letter-spacing: 1px; color: #555; margin-top: -5px; margin-bottom: 5px; text-transform: uppercase;">Only in Store Purchase</span>
       </div>
@@ -652,7 +653,7 @@ foreach ($tierMetadata as $tierKey => $meta) {
 
     <div class="partners-slider-container">
       <button class="slider-control-btn prev" onclick="scrollPartners('left')">
-        <span class="chevron-icon">◀</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
       </button>
       
       <div 
@@ -663,7 +664,7 @@ foreach ($tierMetadata as $tierKey => $meta) {
       </div>
 
       <button class="slider-control-btn next" onclick="scrollPartners('right')">
-        <span class="chevron-icon">▶</span>
+        <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
       </button>
     </div>
   </section>
@@ -707,12 +708,30 @@ foreach ($tierMetadata as $tierKey => $meta) {
         <?php
           // Handle DB column names vs default array keys
           $tId = $tournament['id'];
-          $tName = $tournament['name'] ?? $tournament['title'] ?? $tournament['tournament_name'] ?? 'Tournament';
-          $tSport = $tournament['sport'] ?? $tournament['category'] ?? $tournament['sport_category'] ?? 'Sports';
-          $tVenue = $tournament['venue'] ?? $tournament['gala_venue'] ?? 'Arena';
-          $tDate = $tournament['date'] ?? $tournament['event_date'] ?? 'Scheduled';
-          $tFee = $tournament['registration_fee'] ?? $tournament['prize_pool'] ?? 0;
-          $tBadge = $tournament['badge'] ?? ($tournament['status'] === 'published' ? 'Live Pool' : ($tournament['reg_status'] ?? 'Live Pool'));
+          $tName = $tournament['title'] ?? $tournament['name'] ?? $tournament['tournament_name'] ?? 'Tournament';
+          $tSport = $tournament['category'] ?? $tournament['sport'] ?? $tournament['sport_category'] ?? 'Sports';
+          $tVenue = !empty($tournament['location']) ? $tournament['location'] : (!empty($tournament['state']) ? $tournament['state'] : (!empty($tournament['gala_venue']) ? $tournament['gala_venue'] : 'Arena'));
+          $tDate = !empty($tournament['event_date']) ? $tournament['event_date'] : (!empty($tournament['date']) ? $tournament['date'] : 'Scheduled');
+          
+          $tFee = 0;
+          if (!empty($tournament['sports_data'])) {
+              $sportsArr = json_decode($tournament['sports_data'], true);
+              if (is_array($sportsArr)) {
+                  foreach ($sportsArr as $s) {
+                      if (!empty($s['prize'])) {
+                          $val = str_replace([',', ' '], '', $s['prize']);
+                          if (is_numeric($val)) $tFee += (float)$val;
+                      }
+                  }
+              }
+          }
+          if ($tFee == 0) {
+              $tFeeStr = !empty($tournament['delegate_fee']) ? $tournament['delegate_fee'] : 'TBA';
+          } else {
+              $tFeeStr = '₹' . number_format($tFee);
+          }
+          
+          $tBadge = !empty($tournament['badge_text']) ? $tournament['badge_text'] : ($tournament['badge'] ?? (($tournament['status'] ?? '') === 'published' ? 'Live Event' : 'Upcoming'));
           $slug = $tournament['slug'] ?? '';
           $targetUrl = !empty($slug) ? "home/events/" . urlencode($slug) : "register.php";
         ?>
@@ -732,7 +751,7 @@ foreach ($tierMetadata as $tierKey => $meta) {
             </p>
             <p class="event-price" style="color: #c5a85c; font-weight: bold;">
               <span class="event-icon">💰</span>
-              Pool: <?php echo htmlspecialchars($tFee); ?>
+              Pool: <?php echo htmlspecialchars($tFeeStr); ?>
             </p>
           </div>
 
@@ -928,15 +947,19 @@ function renderDestinations() {
               <img src="${dest.image}" alt="${dest.country}" class="destination-image" />
               <div class="destination-flag-overlay">${dest.country}</div>
             </div>
-            <div class="destination-body">
-              <div class="destination-detail-row">
-                <span class="destination-icon">📅</span> ${dest.date}
-              </div>
-              <div class="destination-detail-row">
-                <span class="destination-icon">📍</span> ${dest.city}
-              </div>
-              <div class="destination-detail-row">
-                <span class="destination-icon">📍</span> ${dest.region}
+            <div class="destination-body" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; justify-content: space-between;">
+              <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin: 0;">Where Sports, Tourism & Entertainment come together on a global stage.</p>
+              <button class="nexus-btn" style="pointer-events: none; padding: 0.6rem 1.2rem; font-size: 0.75rem;">KNOW MORE</button>
+              <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📅</span> ${dest.date}
+                </div>
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📍</span> ${dest.city}
+                </div>
+                <div class="destination-detail-row">
+                  <span class="destination-icon">📍</span> ${dest.region}
+                </div>
               </div>
             </div>
           </a>

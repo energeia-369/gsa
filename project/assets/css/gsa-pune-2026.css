@@ -165,31 +165,48 @@ a {
 
 .particle {
   position: absolute;
-  width: var(--size);
-  height: var(--size);
-  background: var(--gold);
+  /* Circle container */
+  width: calc(var(--size) * 2.5 + 25px);
+  height: calc(var(--size) * 2.5 + 25px);
+  background: rgba(197, 168, 92, 0.15);
+  border: 1.5px solid rgba(197, 168, 92, 0.4);
   border-radius: 50%;
-  opacity: 0.15;
-  animation: floatParticle var(--duration) ease-in-out infinite;
+  
+  /* Center text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Text styling */
+  color: var(--gold);
+  font-size: calc(var(--size) * 0.8 + 8px);
+  font-weight: 800;
+  letter-spacing: 1px;
+  
+  opacity: 0;
+  animation: floatParticle var(--duration) linear infinite;
   animation-delay: var(--delay);
   left: var(--left);
-  top: -10%;
+  top: -20%; /* Start above screen */
+}
+.particle::after {
+  content: "NXL";
 }
 
 @keyframes floatParticle {
   0% {
-    transform: translateY(0) rotate(0deg) scale(1);
-    opacity: 0.15;
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
   }
-
-  50% {
-    opacity: 0.3;
-    transform: translateY(50vh) rotate(180deg) scale(1.5);
+  10% {
+    opacity: 0.8;
   }
-
+  90% {
+    opacity: 0.8;
+  }
   100% {
-    transform: translateY(110vh) rotate(360deg) scale(1);
-    opacity: 0.15;
+    transform: translateY(120vh) scale(1.2);
+    opacity: 0;
   }
 }
 
@@ -1306,6 +1323,20 @@ body.dark-theme .toggle-switch .slider {
   flex-shrink: 0;
 }
 
+.nxl-circle-text {
+  width: 80px;
+  height: 80px;
+  background-color: var(--gold);
+  color: #111;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
 .nxl-pulse {
   position: absolute;
   top: 50%;
@@ -1852,6 +1883,7 @@ body.light-theme .dest-filter-btn.active {
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  padding: 0 45px;
 }
 
 .destinations-slider {
@@ -1869,14 +1901,17 @@ body.light-theme .dest-filter-btn.active {
 }
 
 .destination-card {
-  flex: 0 0 200px;
+  flex: 0 0 260px;
+  min-height: 520px;
+  height: auto;
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
-  border-radius: 16px;
+  border-radius: 24px;
   overflow: hidden;
   box-shadow: var(--shadow);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
 }
 
@@ -1887,7 +1922,8 @@ body.light-theme .dest-filter-btn.active {
 }
 
 .destination-image-box {
-  height: 240px;
+  height: 260px;
+  flex: 0 0 260px;
   background-color: #12131c;
   position: relative;
   overflow: hidden;
@@ -1921,8 +1957,13 @@ body.light-theme .dest-filter-btn.active {
 }
 
 .destination-body {
-  padding: 1.2rem;
+  height: auto;
+  flex: 1;
+  padding: 1.5rem;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .destination-detail-row {
@@ -1975,11 +2016,11 @@ body.light-theme .dest-filter-btn.active {
 }
 
 .slider-control-btn.prev {
-  left: -19px;
+  left: 0;
 }
 
 .slider-control-btn.next {
-  right: -19px;
+  right: 0;
 }
 
 /* Destinations Carousel Light Theme Overrides */
@@ -2013,6 +2054,18 @@ body.light-theme .destination-detail-row {
 
 body.light-theme .destination-icon {
   color: #8c6010 !important;
+}
+
+body.light-theme .slider-control-btn {
+  background: #ffffff !important;
+  border-color: #c5a85c !important;
+  color: #8c6010 !important;
+  box-shadow: 0 4px 12px rgba(197, 168, 92, 0.2) !important;
+}
+
+body.light-theme .slider-control-btn:hover {
+  background: #c5a85c !important;
+  color: #ffffff !important;
 }
 
 /* ============================================

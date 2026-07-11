@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Secure Checkout";
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
@@ -345,7 +345,7 @@ async function handleCheckoutPayment() {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
-            body: JSON.stringify({ amount: Math.round(activeOrder.total * 100) })
+            body: JSON.stringify({ amount: activeOrder.total })
         });
         const orderData = await orderRes.json();
         
@@ -371,7 +371,7 @@ async function handleCheckoutPayment() {
         amount: Math.round(activeOrder.total * 100), // in paise
         order_id: rzpOrderId,
         currency: "INR",
-        name: "GLOBAL SPORTS ARENA",
+        name: "ENERGEIA'S Global Ventures",
         description: "Sports Tournaments & Gear",
         image: "assets/logo.png",
         handler: async function (response) {

@@ -58,6 +58,53 @@ class ProductController {
         }
         return $product;
     }
+    
+    private function processColorImages($data, $files, &$imageUrl) {
+        $colorNames = $data['colorNames'] ?? [];
+        $colorExistingUrls = $data['colorExistingUrls'] ?? [];
+        $colorSizes = $data['colorSizes'] ?? [];
+        
+        $colorsList = [];
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        $uploadDir = __DIR__ . '/../uploads/products/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+        for ($i = 0; $i < count($colorNames); $i++) {
+            $cName = trim($colorNames[$i]);
+            if (empty($cName)) continue;
+            
+            $cImage = $colorExistingUrls[$i] ?? '';
+            
+            if (isset($files['colorImages']['name'][$i]) && $files['colorImages']['error'][$i] === UPLOAD_ERR_OK) {
+                $type = $files['colorImages']['type'][$i];
+                if (in_array($type, $allowedTypes)) {
+                    $extension = pathinfo($files['colorImages']['name'][$i], PATHINFO_EXTENSION);
+                    $filename = uniqid('prod_color_') . '.' . $extension;
+                    if (move_uploaded_file($files['colorImages']['tmp_name'][$i], $uploadDir . $filename)) {
+                        $cImage = 'uploads/products/' . $filename;
+                    }
+                }
+            }
+            
+            $cSizes = [];
+            if (isset($colorSizes[$i])) {
+                $decoded = json_decode($colorSizes[$i], true);
+                if (is_array($decoded)) {
+                    $cSizes = $decoded;
+                }
+            }
+            
+            $colorsList[] = ["color" => $cName, "image" => $cImage, "sizes" => $cSizes];
+            
+            // Set first color image as main image if not set
+            if ($i === 0 && empty($imageUrl) && !empty($cImage)) {
+                $imageUrl = $cImage;
+            }
+        }
+        
+        return !empty($colorsList) ? json_encode($colorsList) : null;
+    }
+
 
     public function addProduct($data, $files = []) {
         $name        = $data['name']        ?? '';
@@ -79,20 +126,7 @@ class ProductController {
             }
         }
 
-        if (isset($files['productImage']) && $files['productImage']['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            $file = $files['productImage'];
-            if (in_array($file['type'], $allowedTypes)) {
-                $uploadDir = __DIR__ . '/../uploads/products/';
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-                $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = uniqid('prod_') . '.' . $extension;
-                $destination = $uploadDir . $filename;
-                if (move_uploaded_file($file['tmp_name'], $destination)) {
-                    $imageUrl = 'uploads/products/' . $filename;
-                }
-            }
-        }
+        $colors = $this->processColorImages($data, $files, $imageUrl);
 
         return $this->productModel->create($name, $category, $price, $description, $imageUrl, $stock, $colors, $merchantId, $sizes);
     }
@@ -107,20 +141,7 @@ class ProductController {
         $colors = $data['colors'] ?? null;
         $sizes = $data['sizes'] ?? null;
 
-        if (isset($files['productImage']) && $files['productImage']['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            $file = $files['productImage'];
-            if (in_array($file['type'], $allowedTypes)) {
-                $uploadDir = __DIR__ . '/../uploads/products/';
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-                $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = uniqid('prod_') . '.' . $extension;
-                $destination = $uploadDir . $filename;
-                if (move_uploaded_file($file['tmp_name'], $destination)) {
-                    $imageUrl = 'uploads/products/' . $filename;
-                }
-            }
-        }
+        $colors = $this->processColorImages($data, $files, $imageUrl);
 
         return $this->productModel->update($id, $name, $category, $price, $description, $imageUrl, $stock, $colors, $sizes);
     }

@@ -107,20 +107,108 @@ require_once __DIR__ . '/includes/navbar.php';
         <p>Earn 3% back in credits</p>
         <button onclick="window.location.href='products.php'" class="earn-btn">Shop Now</button>
       </div>
-      <div class="earn-card">
-        <div class="earn-icon">👥</div>
-        <h4>Refer Friends</h4>
-        <p>Earn 100 credits per referral</p>
-        <button class="earn-btn" onclick="alert('Referral program details coming soon!')">Invite Now</button>
-      </div>
+
       <div class="earn-card">
         <div class="earn-icon">⭐</div>
         <h4>Write Reviews</h4>
-        <p>Earn 25 credits per review</p>
-        <button class="earn-btn" onclick="alert('Reviews module coming soon!')">Write Review</button>
+        <button class="earn-btn" onclick="openReviewModal()">Write Review</button>
       </div>
     </div>
   </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="background: #ffffff; padding: 2.5rem; border-radius: 12px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+      <button onclick="closeReviewModal()" style="position: absolute; top: 1rem; right: 1.5rem; background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #666;">&times;</button>
+      
+      <h2 style="font-family: 'Playfair Display', serif; color: #1a1a1a; margin-bottom: 0.5rem; font-size: 1.8rem;">Write a Review</h2>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 2rem;">Share your experience with ENERGEIA.</p>
+      
+      <form onsubmit="submitReview(event)">
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; font-size: 0.9rem;">Your Rating</label>
+          <div style="display: flex; gap: 8px; color: #d4c8b2; font-size: 1.5rem; cursor: pointer;" id="starRating">
+            <i class="fa-solid fa-star star-icon" onclick="setRating(1)"></i>
+            <i class="fa-solid fa-star star-icon" onclick="setRating(2)"></i>
+            <i class="fa-solid fa-star star-icon" onclick="setRating(3)"></i>
+            <i class="fa-solid fa-star star-icon" onclick="setRating(4)"></i>
+            <i class="fa-solid fa-star star-icon" onclick="setRating(5)"></i>
+          </div>
+          <input type="hidden" id="reviewRating" value="0" required>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; font-size: 0.9rem;">Your Review</label>
+          <textarea required placeholder="Tell us what you loved..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; height: 120px; resize: vertical; font-family: inherit; font-size: 0.9rem; outline: none;"></textarea>
+        </div>
+        
+        <button type="submit" style="width: 100%; background: #a88c4d; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.3s ease;">
+          Submit Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openReviewModal() {
+      document.getElementById('reviewModal').style.display = 'flex';
+    }
+    
+    function closeReviewModal() {
+      document.getElementById('reviewModal').style.display = 'none';
+    }
+    
+    function setRating(rating) {
+      document.getElementById('reviewRating').value = rating;
+      const stars = document.querySelectorAll('#starRating .star-icon');
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.style.color = '#f59e0b';
+        } else {
+          star.style.color = '#d4c8b2';
+        }
+      });
+    }
+    
+    async function submitReview(e) {
+      e.preventDefault();
+      const rating = document.getElementById('reviewRating').value;
+      const reviewText = e.target.querySelector('textarea').value;
+      
+      if(rating == 0) {
+        alert("Please select a star rating first.");
+        return;
+      }
+      
+      try {
+        const userName = localStorage.getItem("userName") || localStorage.getItem("userEmail") || "Guest User";
+        const userRole = localStorage.getItem("userRole") || "Community Member";
+        
+        const response = await fetch('api/submit-review.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            rating: parseInt(rating), 
+            review_text: reviewText,
+            name: userName,
+            role: userRole
+          })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('Thank you! Your review has been submitted successfully.');
+          closeReviewModal();
+          e.target.reset();
+          setRating(0);
+        } else {
+          alert('Failed to submit review: ' + data.message);
+        }
+      } catch (err) {
+        alert('An error occurred. Please try again.');
+      }
+    }
+  </script>
 
   <!-- Transaction History -->
   <div class="transactions-section">

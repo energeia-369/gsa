@@ -50,7 +50,7 @@
       <ul>
         <li><a href="index.php#membership">Membership Plans</a></li>
         <li><a href="index.php#membership">Member Benefits</a></li>
-        <li><a href="register.php">How to Join</a></li>
+        <li><a href="index.php#membership">How to Join</a></li>
       </ul>
     </div>
 
@@ -66,21 +66,21 @@
     </div>
   </div>
 
-  <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem; gap: 0.75rem;">
-    <form class="newsletter-form flex flex-col sm:flex-row gap-2 items-center w-full max-w-md" id="newsletterForm" onsubmit="handleSubscribe(event)">
+  <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.2rem; gap: 0.8rem;">
+    <form class="newsletter-form w-full max-w-md" id="newsletterForm" onsubmit="handleSubscribe(event)">
       <input
         type="email"
         id="newsletterEmail"
         placeholder="Your email address"
         class="w-full flex-1"
         style="
-          background: rgba(22, 24, 38, 0.9);
-          border: 1px solid rgba(197, 168, 92, 0.3);
-          padding: 10px 15px;
-          border-radius: 8px;
-          color: #fff;
+          background: #ffffff;
+          border: 1px solid #d4c8b2;
+          padding: 8px 14px;
+          border-radius: 6px;
+          color: #1a1a1a;
           outline: none;
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           box-sizing: border-box;
         "
         required
@@ -88,24 +88,24 @@
       <button
         type="submit"
         id="newsletterBtn"
-        class="w-full sm:w-auto mt-2 sm:mt-0"
         style="
-          background: linear-gradient(135deg, #c5a85c 0%, #8c7237 100%);
-          color: #0b0c10;
+          background: #a88c4d;
+          color: #ffffff;
           border: none;
-          padding: 10px 15px;
-          border-radius: 8px;
+          padding: 8px 18px;
+          border-radius: 6px;
           font-weight: 700;
           cursor: pointer;
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           white-space: nowrap;
+          transition: background 0.3s ease;
         "
       >
         Subscribe
       </button>
     </form>
 
-    <div class="footer-socials" style="display: flex; gap: 1rem; align-items: center;">
+    <div class="footer-socials">
       <a href="index.php" title="Home"><i class="fa-solid fa-house"></i></a>
       <a href="gallery.php" title="Photo Gallery"><i class="fa-brands fa-instagram"></i></a>
       <a href="media-hub.php" title="Event Highlights & Media"><i class="fa-brands fa-youtube"></i></a>

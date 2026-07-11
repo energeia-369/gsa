@@ -19,6 +19,10 @@ $punePricing = $exhibitorPricing['pune'] ?? [
     'pavilion' => ['size' => 'Custom', 'price' => '2,00,000+']
 ];
 
+$eventStmt = $db->prepare("SELECT * FROM events WHERE slug = 'gsa-pune-2026'");
+$eventStmt->execute();
+$event = $eventStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
 $pageTitle = "GSA Pune 2026 Championship | PlayArena";
 $disableAdminTheme = true; // Prevents the global admin theme from breaking this page's custom dark/light theme!
 include 'includes/header.php';
@@ -26,7 +30,7 @@ include 'includes/navbar.php';
 ?>
 
 <!-- Custom CSS for this page - External file -->
-<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=3">
+<link rel="stylesheet" href="assets/css/gsa-pune-2026.css?v=6">
 
 <script>
     document.body.classList.add('gsa-pune-page');
@@ -217,149 +221,77 @@ if ($participantsCount < 1000) $participantsCount = 1000;
         </div>
 
         <div class="row g-4">
-            <!-- Badminton -->
-            <div class="col-md-4 col-6">
-                <div class="glass-card sport-card sport-card-1">
-                    <div class="sport-img-wrap">
-                        <div class="sport-prize-badge">
-                            <i class="fas fa-trophy"></i> ₹2,50,000
+            <?php if (!empty($sports)): ?>
+                <?php foreach ($sports as $index => $s): ?>
+                <?php $cardClass = 'sport-card-' . (($index % 4) + 1); ?>
+                <div class="col-md-4 col-6">
+                    <div class="glass-card sport-card <?= $cardClass ?>">
+                        <div class="sport-img-wrap">
+                            <?php if (!empty($s['prize'])): ?>
+                            <div class="sport-prize-badge">
+                                <i class="fas fa-trophy"></i> <?= (isset($s['prize_currency']) && $s['prize_currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['prize']) ?>
+                            </div>
+                            <?php endif; ?>
+                            <div class="sport-image-bg">
+                                <?php if (!empty($s['image'])): ?>
+                                    <img src="<?= htmlspecialchars($s['image']) ?>" alt="<?= htmlspecialchars($s['title']) ?>" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                                <?php else: ?>
+                                    <i class="fas <?= htmlspecialchars($s['icon'] ?? 'fa-trophy') ?> sport-icon"></i>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($s['badge'])): ?>
+                            <div class="sport-overlay">
+                                <span class="sport-tag"><?= htmlspecialchars($s['badge']) ?></span>
+                            </div>
+                            <?php endif; ?>
                         </div>
-                        <div class="sport-image-bg">
-                            <img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80" alt="Badminton" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                        <h3><?= htmlspecialchars($s['title']) ?></h3>
+                        
+                        <?php if (!empty($s['categories'])): ?>
+                        <div class="sport-categories">
+                            <?php 
+                            $cats = array_map('trim', explode(',', $s['categories']));
+                            foreach ($cats as $cat) {
+                                $icon = stripos($cat, 'double') !== false || stripos($cat, 'pair') !== false || stripos($cat, 'corporate') !== false || stripos($cat, 'team') !== false ? 'fa-users' : 'fa-user';
+                                echo '<span class="cat-tag"><i class="fas ' . $icon . '"></i> ' . htmlspecialchars($cat) . '</span>';
+                            }
+                            ?>
                         </div>
-                        <div class="sport-overlay">
-                            <span class="sport-tag">Popular</span>
+                        <?php endif; ?>
+                        
+                        <div class="sport-fees">
+                            <?php if (!empty($s['price_individual'])): ?>
+                            <div class="fee-item">
+                                <span><i class="fas fa-user"></i> Individual</span>
+                                <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_individual']) ?></span>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($s['price_pair'])): ?>
+                            <div class="fee-item">
+                                <span><i class="fas fa-users"></i> Pair</span>
+                                <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_pair']) ?></span>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($s['price_team'])): ?>
+                            <div class="fee-item">
+                                <span><i class="fas fa-users"></i> Team</span>
+                                <span><?= (isset($s['currency']) && $s['currency'] === 'USD') ? '$' : '₹' ?><?= htmlspecialchars($s['price_team']) ?></span>
+                            </div>
+                            <?php endif; ?>
                         </div>
+                        <a href="event-registration.php?event=gsa-pune-2026&sport=<?= urlencode($s['title']) ?>" class="btn-outline-gold text-center w-100">
+                            <i class="fas fa-arrow-right"></i> Register
+                        </a>
                     </div>
-                    <h3>Badminton Championship</h3>
-                    <div class="sport-categories">
-                        <span class="cat-tag"><i class="fas fa-user"></i> U14</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> U18</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> Open</span>
-                        <span class="cat-tag"><i class="fas fa-users"></i> Doubles</span>
-                    </div>
-                    <div class="sport-fees">
-                        <div class="fee-item">
-                            <span><i class="fas fa-user"></i> Individual</span>
-                            <span>₹1,500</span>
-                        </div>
-                        <div class="fee-item">
-                            <span><i class="fas fa-users"></i> Pair</span>
-                            <span>₹2,500</span>
-                        </div>
-                    </div>
-                    <a href="event-registration.php?event=gsa-pune-2026&sport=badminton" class="btn-outline-gold text-center w-100">
-                        <i class="fas fa-arrow-right"></i> Register
-                    </a>
                 </div>
-            </div>
-
-            <!-- Table Tennis -->
-            <div class="col-md-4 col-6">
-                <div class="glass-card sport-card sport-card-2">
-                    <div class="sport-img-wrap">
-                        <div class="sport-prize-badge">
-                            <i class="fas fa-trophy"></i> ₹2,00,000
-                        </div>
-                        <div class="sport-image-bg">
-                            <img src="https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600&q=80" alt="Table Tennis" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
-                        </div>
-                        <div class="sport-overlay">
-                            <span class="sport-tag">Trending</span>
-                        </div>
-                    </div>
-                    <h3>Table Tennis Championship</h3>
-                    <div class="sport-categories">
-                        <span class="cat-tag"><i class="fas fa-user"></i> U14</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> U18</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> Open</span>
-                        <span class="cat-tag"><i class="fas fa-users"></i> Doubles</span>
-                    </div>
-                    <div class="sport-fees">
-                        <div class="fee-item">
-                            <span><i class="fas fa-user"></i> Individual</span>
-                            <span>₹1,200</span>
-                        </div>
-                        <div class="fee-item">
-                            <span><i class="fas fa-users"></i> Pair</span>
-                            <span>₹2,000</span>
-                        </div>
-                    </div>
-                    <a href="event-registration.php?event=gsa-pune-2026&sport=tt" class="btn-outline-gold text-center w-100">
-                        <i class="fas fa-arrow-right"></i> Register
-                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <p style="color: #9aa0b4;">No sports have been added to this event yet.</p>
                 </div>
-            </div>
-
-            <!-- Lawn Tennis -->
-            <div class="col-md-4 col-6">
-                <div class="glass-card sport-card sport-card-3">
-                    <div class="sport-img-wrap">
-                        <div class="sport-prize-badge">
-                            <i class="fas fa-trophy"></i> ₹2,50,000
-                        </div>
-                        <div class="sport-image-bg">
-                            <img src="https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&q=80" alt="Lawn Tennis" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
-                        </div>
-                        <div class="sport-overlay">
-                            <span class="sport-tag">Premium</span>
-                        </div>
-                    </div>
-                    <h3>Lawn Tennis Championship</h3>
-                    <div class="sport-categories">
-                        <span class="cat-tag"><i class="fas fa-user"></i> U14</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> U18</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> Open</span>
-                        <span class="cat-tag"><i class="fas fa-users"></i> Doubles</span>
-                    </div>
-                    <div class="sport-fees">
-                        <div class="fee-item">
-                            <span><i class="fas fa-user"></i> Individual</span>
-                            <span>₹2,500</span>
-                        </div>
-                        <div class="fee-item">
-                            <span><i class="fas fa-users"></i> Pair</span>
-                            <span>₹4,000</span>
-                        </div>
-                    </div>
-                    <a href="event-registration.php?event=gsa-pune-2026&sport=tennis" class="btn-outline-gold text-center w-100">
-                        <i class="fas fa-arrow-right"></i> Register
-                    </a>
-                </div>
-            </div>
-
-            <!-- Football -->
-            <div class="col-md-4 col-6">
-                <div class="glass-card sport-card sport-card-4">
-                    <div class="sport-img-wrap">
-                        <div class="sport-prize-badge">
-                            <i class="fas fa-trophy"></i> ₹3,00,000
-                        </div>
-                        <div class="sport-image-bg">
-                            <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80" alt="Football" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
-                        </div>
-                        <div class="sport-overlay">
-                            <span class="sport-tag">Featured</span>
-                        </div>
-                    </div>
-                    <h3>Football Cup <br><small>(7-a-side)</small></h3>
-                    <div class="sport-categories">
-                        <span class="cat-tag"><i class="fas fa-user"></i> U14</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> U18</span>
-                        <span class="cat-tag"><i class="fas fa-user"></i> Open</span>
-                        <span class="cat-tag"><i class="fas fa-building"></i> Corporate</span>
-                    </div>
-                    <div class="sport-fees mt-auto" style="border-top:none;">
-                        <div class="fee-item" style="border-top: 1px solid var(--border-light); padding-top:10px;">
-                            <span><i class="fas fa-users"></i> Team</span>
-                            <span>₹10,000</span>
-                        </div>
-                    </div>
-                    <a href="event-registration.php?event=gsa-pune-2026&sport=football" class="btn-outline-gold text-center w-100">
-                        <i class="fas fa-arrow-right"></i> Register
-                    </a>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -612,7 +544,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
     <div class="container">
         <div class="nxl-card">
             <div class="nxl-icon">
-                <i class="fab fa-bitcoin"></i>
+                <div class="nxl-circle-text">NXL</div>
                 <div class="nxl-pulse"></div>
             </div>
             <div class="nxl-content">
@@ -709,7 +641,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
 
   <div class="destinations-slider-container">
     <button class="slider-control-btn prev" onclick="scrollDestinations('left')">
-      <span class="chevron-icon">◀</span>
+      <span class="chevron-icon"><i class="fas fa-chevron-left"></i></span>
     </button>
     
     <div 
@@ -720,7 +652,7 @@ $isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] === 'ADMIN');
     </div>
 
     <button class="slider-control-btn next" onclick="scrollDestinations('right')">
-      <span class="chevron-icon">▶</span>
+      <span class="chevron-icon"><i class="fas fa-chevron-right"></i></span>
     </button>
   </div>
 </section>
@@ -796,7 +728,7 @@ const defaultDestinations = [
     { id: 2, country: "SINGAPORE", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=500&auto=format&fit=crop&q=60", date: "18-20 Sept 2026", city: "Singapore", region: "Singapore", link: "#" },
     { id: 3, country: "SWITZERLAND", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60", date: "May - Sep", city: "Zurich", region: "Switzerland", link: "#" },
     { id: 4, country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=60", date: "23-25 Oct 2026", city: "Dubai / Abu Dhabi", region: "UAE", link: "#" },
-    { id: 5, country: "THAILAND", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=500&auto=format&fit=crop&q=60", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
+    { id: 5, country: "THAILAND", image: "assets/images/Thailand Card.png", date: "18-20 Dec 2026", city: "Phuket / Bangkok", region: "Thailand", link: "#" },
     { id: 6, country: "USA - LAS VEGAS", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "Las Vegas", region: "USA", link: "#" },
     { id: 7, country: "USA - NEW YORK", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&auto=format&fit=crop&q=60", date: "23-25 July 2026", city: "New York", region: "USA", link: "#" },
     { id: 8, country: "MALAYSIA", image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=60", date: "20-22 Nov 2026", city: "Kuala Lumpur", region: "Malaysia", link: "#" },

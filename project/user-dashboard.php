@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "GLOBAL SPORTS ARENA | Dashboard";
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
@@ -133,7 +133,10 @@ require_once __DIR__ . '/includes/navbar.php';
         <h2 id="creditsLabel">0</h2>
         <p>Redeem credits for rewards and offers</p>
       </div>
-      <button class="card-btn" onclick="window.location.href='credits.php'">Credits</button>
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button class="card-btn" onclick="window.location.href='credits.php'" style="flex: 1;">Credits</button>
+        <button class="card-btn" onclick="checkPendingNxlRequests(true)" style="flex: 1; background: #c5a85c; color: white; border: none;">Pending</button>
+      </div>
     </div>
 
     <div class="dashboard-card">
@@ -170,6 +173,7 @@ require_once __DIR__ . '/includes/navbar.php';
             <button class="card-btn" onclick="viewMyPasses('visitor')" style="margin-top:0; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: #fff; border: 1px solid #4caf50;">See Visitor pass</button>
             <button class="card-btn" onclick="viewMyPasses('exhibitor')" style="margin-top:0; background: linear-gradient(135deg, #0288d1 0%, #01579b 100%); color: #fff; border: 1px solid #03a9f4;">See Exhibitor pass</button>
             <button class="card-btn" id="btnEventsQrPass" onclick="viewEventQrPasses()" style="margin-top:0; background: linear-gradient(135deg, #7b1fa2 0%, #4a0072 100%); color: #fff; border: 1px solid #ab47bc;">🏅 Events QR Pass</button>
+            <button class="card-btn" id="btnDelegatePasses" onclick="viewDelegatePasses()" style="margin-top:0; background: linear-gradient(135deg, #f57c00 0%, #e65100 100%); color: #fff; border: 1px solid #f57c00;">👔 Delegate Pass</button>
             <button class="card-btn" id="btnAwardPasses" onclick="viewAwardPasses()" style="margin-top:0; background: linear-gradient(135deg, #c5a85c 0%, #8c6010 100%); color: #fff; border: 1px solid #c5a85c;">🏆 Gala Pass</button>
         </div>
       </div>
@@ -182,6 +186,9 @@ require_once __DIR__ . '/includes/navbar.php';
       </div>
       <div id="inlineAwardPassesContainer" style="display: none; width: 100%; flex-basis: 100%; margin-top: 25px; padding-top: 25px; border-top: 1px dashed rgba(189, 168, 131, 0.4); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
           <!-- Award Gala passes will be injected here -->
+      </div>
+      <div id="inlineDelegatePassesContainer" style="display: none; width: 100%; flex-basis: 100%; margin-top: 25px; padding-top: 25px; border-top: 1px dashed rgba(189, 168, 131, 0.4); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+          <!-- Delegate passes will be injected here -->
       </div>
     </div>
   </div>
@@ -291,6 +298,39 @@ require_once __DIR__ . '/includes/navbar.php';
     <div style="display:flex; gap:10px; justify-content:center;">
       <button onclick="dismissExpiryModal()" style="padding:10px 20px; border-radius:6px; background:transparent; border:1px solid #B89C62; color:#B89C62; cursor:pointer; font-weight:bold; transition:all 0.3s;" onmouseover="this.style.background='rgba(184, 156, 98, 0.1)'" onmouseout="this.style.background='transparent'">Remind Me Later</button>
       <button onclick="window.location.href='index.php?scrollTo=membership'" style="padding:10px 20px; border-radius:6px; background:#B89C62; border:none; color:#FFFFFF; font-weight:bold; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='#8A7A5F'" onmouseout="this.style.background='#B89C62'">Upgrade Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delegate Approved Modal -->
+<div id="delegateApprovedModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-content" style="background:#FFFFFF; border:1px solid #c5a85c; border-radius:12px; max-width:400px; width:90%; padding:30px; text-align:center; box-shadow:0 10px 40px rgba(197,168,92,0.2); position:relative;">
+    <button onclick="document.getElementById('delegateApprovedModal').style.display='none'" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+    <div style="font-size:3rem; margin-bottom:15px; color: #22c55e;">🎉</div>
+    <h2 style="color:#c5a85c; margin:0 0 15px 0; font-size:1.5rem;">Congratulations!</h2>
+    <p style="color:#333; font-size:1.1rem; font-weight: bold; margin-bottom:10px; line-height:1.5;">
+      Delegate Registration Approved
+    </p>
+    <p style="color:#7A7061; font-size:0.95rem; margin-bottom:25px; line-height:1.5;">
+      Your application has been reviewed and approved by the admin. Please proceed to payment to finalize your registration.
+    </p>
+    <div style="display:flex; justify-content:center;">
+      <a id="delegatePaymentBtn" href="#" style="padding:12px 25px; border-radius:6px; background:#B89C62; border:none; color:#FFFFFF; font-weight:bold; cursor:pointer; text-decoration: none; transition:all 0.3s;" onmouseover="this.style.background='#8A7A5F'" onmouseout="this.style.background='#B89C62'">Proceed to Payment</a>
+    </div>
+  </div>
+</div>
+
+<!-- Delegate Rejected Modal -->
+<div id="delegateRejectedModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-content" style="background:#FFFFFF; border:1px solid #ef4444; border-radius:12px; max-width:400px; width:90%; padding:30px; text-align:center; box-shadow:0 10px 40px rgba(239,68,68,0.2); position:relative;">
+    <button onclick="document.getElementById('delegateRejectedModal').style.display='none'" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+    <div style="font-size:3rem; margin-bottom:15px; color: #ef4444;">❌</div>
+    <h2 style="color:#ef4444; margin:0 0 15px 0; font-size:1.5rem;">Registration Unsuccessful</h2>
+    <p style="color:#7A7061; font-size:0.95rem; margin-bottom:25px; line-height:1.5;">
+      We regret to inform you that your registration for delegates was unsuccessful.
+    </p>
+    <div style="display:flex; justify-content:center;">
+      <button onclick="dismissDelegateRejectedModal()" style="padding:10px 20px; border-radius:6px; background:transparent; border:1px solid #ef4444; color:#ef4444; cursor:pointer; font-weight:bold; transition:all 0.3s;">Close</button>
     </div>
   </div>
 </div>
@@ -421,6 +461,44 @@ function renderDashboardData(user) {
     
     // Fetch notifications
     loadNotifications(user.email);
+    
+    // Check delegate status
+    checkDelegateStatus(user.email);
+}
+
+async function checkDelegateStatus(email) {
+    try {
+        const res = await fetch(`api/index.php/user/delegate_passes?email=${encodeURIComponent(email)}`);
+        const result = await res.json();
+        
+        if (result.success && result.passes && result.passes.length > 0) {
+            for (const pass of result.passes) {
+                // If rejected and hasn't been acknowledged
+                if (pass.registration_status === 'Rejected') {
+                    if (!sessionStorage.getItem('delegateRejectedShown_' + pass.delegate_id)) {
+                        document.getElementById('delegateRejectedModal').style.display = 'flex';
+                        window.currentRejectedDelegateId = pass.delegate_id;
+                        return; // Show one modal at a time
+                    }
+                }
+                // If approved and not paid
+                if (pass.registration_status === 'Approved' && pass.payment_status !== 'Paid') {
+                    document.getElementById('delegatePaymentBtn').href = `delegate-payment.php?id=${pass.delegate_id}`;
+                    document.getElementById('delegateApprovedModal').style.display = 'flex';
+                    return; // Show one modal at a time
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Failed to check delegate status", e);
+    }
+}
+
+function dismissDelegateRejectedModal() {
+    if (window.currentRejectedDelegateId) {
+        sessionStorage.setItem('delegateRejectedShown_' + window.currentRejectedDelegateId, 'true');
+    }
+    document.getElementById('delegateRejectedModal').style.display = 'none';
 }
 
 document.addEventListener("DOMContentLoaded", loadDashboard);
@@ -897,6 +975,110 @@ async function viewAwardPasses() {
     }
 }
 
+async function viewDelegatePasses() {
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userEmail) {
+        alert("You must be logged in to view your Delegate passes.");
+        return;
+    }
+
+    const btn = document.getElementById('btnDelegatePasses');
+    const inlineContainer = document.getElementById('inlineDelegatePassesContainer');
+
+    if (inlineContainer.style.display !== 'none') {
+        inlineContainer.style.display = 'none';
+        if (btn) btn.textContent = '👔 Delegate Pass';
+        return;
+    }
+
+    if (btn) btn.textContent = '⏳ Loading...';
+
+    try {
+        const res = await fetch(`api/index.php/user/delegate_passes?email=${encodeURIComponent(userEmail)}`);
+        const result = await res.json();
+
+        inlineContainer.innerHTML = '';
+
+        if (result.success && result.passes && result.passes.length > 0) {
+            let passesRendered = 0;
+            result.passes.forEach(pass => {
+                if (pass.registration_status === 'Rejected') {
+                    return; // Skip rendering rejected passes
+                }
+                passesRendered++;
+                
+                const isApproved = pass.registration_status === 'Approved';
+                const isPaid = (pass.payment_status || '').toLowerCase() === 'paid';
+                const isFullyRegistered = isApproved && isPaid;
+
+                const regType = pass.delegate_type || 'Delegate Pass';
+                const name = pass.full_name || 'N/A';
+                
+                let cardBg, cardBorder, badgeHtml;
+                if (!isApproved) {
+                    cardBg = 'rgba(245,124,0,0.08)';
+                    cardBorder = '#f57c00';
+                    badgeHtml = `<span style="display:inline-block;background:#f57c00;color:#fff;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;">⏳ PENDING APPROVAL</span>`;
+                } else if (!isPaid) {
+                    cardBg = 'rgba(245,124,0,0.08)';
+                    cardBorder = '#f57c00';
+                    badgeHtml = `<span style="display:inline-block;background:#f57c00;color:#fff;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;">⏳ PENDING PAYMENT</span>`;
+                } else {
+                    cardBg = 'rgba(197, 168, 92, 0.08)';
+                    cardBorder = '#c5a85c';
+                    badgeHtml = `<span style="display:inline-block;background:#c5a85c;color:#fff;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;">✓ RESERVED</span>`;
+                }
+
+                const qrFilter = !isFullyRegistered ? 'filter: blur(4px) grayscale(100%) opacity(0.3); pointer-events: none;' : '';
+                const scanText = !isFullyRegistered ? 'REGISTRATION INCOMPLETE' : 'SCAN AT VENUE ENTRY';
+
+                const passHtml = `
+                    <div style="background:${cardBg}; border: 2px solid ${cardBorder}; padding: 18px; border-radius: 12px; text-align: center; position: relative;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-weight:bold; color:${cardBorder}; font-size:1.1rem;">👔 Delegate</span>
+                            ${badgeHtml}
+                        </div>
+                        <p style="font-size:0.82rem; color:#555; margin-bottom:4px;">👤 Name: <strong>${name}</strong></p>
+                        <p style="font-size:0.82rem; color:#555; margin-bottom:12px;">🎟 Type: <strong>${regType}</strong></p>
+                        <div style="position:relative; width:170px; margin:0 auto;">
+                            <img src="${pass.qrUrl}" alt="Delegate QR Pass" style="width:150px; height:150px; background:#fff; padding:10px; border-radius:8px; margin:0 auto; ${qrFilter}" />
+                            ${!isFullyRegistered ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:${cardBorder}; font-size:2rem;"><i class="fa-solid fa-lock"></i></div>` : ''}
+                        </div>
+                        <p style="color:${cardBorder}; font-weight:bold; font-size:0.85rem; margin-top:10px; letter-spacing:1px;">${scanText}</p>
+                        <button onclick="window.location.href='${pass.ticketUrl}'" style="width: 100%; padding: 10px; background: ${cardBorder}; color: #fff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px;">
+                            View Details
+                        </button>
+                    </div>
+                `;
+                inlineContainer.insertAdjacentHTML('beforeend', passHtml);
+            });
+            
+            if (passesRendered === 0) {
+                inlineContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:25px; color:#777; background:rgba(245,124,0, 0.05); border:1px dashed rgba(245,124,0, 0.3); border-radius:10px;">
+                    <p style="font-size:1.5rem; margin-bottom:8px;">👔</p>
+                    <p style="font-size:0.95rem;">No active Delegate registrations found.</p>
+                    <a href="delegate-registration.php" style="color:#f57c00; font-weight:bold; text-decoration:underline;">Register as Delegate →</a>
+                </div>`;
+            }
+
+            inlineContainer.style.display = 'grid';
+            if (btn) btn.textContent = '👔 Delegate Pass ▲';
+        } else {
+            inlineContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:25px; color:#777; background:rgba(245,124,0, 0.05); border:1px dashed rgba(245,124,0, 0.3); border-radius:10px;">
+                <p style="font-size:1.5rem; margin-bottom:8px;">👔</p>
+                <p style="font-size:0.95rem;">No Delegate registrations found.</p>
+                <a href="delegate-registration.php" style="color:#f57c00; font-weight:bold; text-decoration:underline;">Register as Delegate →</a>
+            </div>`;
+            inlineContainer.style.display = 'grid';
+            if (btn) btn.textContent = '👔 Delegate Pass ▲';
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error fetching Delegate passes. Please try again.');
+        if (btn) btn.textContent = '👔 Delegate Pass';
+    }
+}
+
 async function toggleMyGiftCards() {
     const container = document.getElementById('myGiftCardsContainer');
     if (container.style.display !== 'none') {
@@ -948,8 +1130,8 @@ async function toggleExhibitorApps() {
         return;
     }
     
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
+    const email = localStorage.getItem('userEmail');
+    if (!email) {
         container.innerHTML = '<p style="color:#ef4444;">Please log in to view your applications.</p>';
         container.style.display = 'block';
         return;
@@ -958,7 +1140,7 @@ async function toggleExhibitorApps() {
     if (btn) btn.textContent = '⏳ Loading...';
     
     try {
-        const res = await fetch(`api/index.php/user-exhibitor-applications?user_id=${userId}`);
+        const res = await fetch(`api/index.php/user-exhibitor-applications?email=${encodeURIComponent(email)}`);
         const result = await res.json();
         
         container.innerHTML = '';
@@ -1027,7 +1209,7 @@ async function payExhibitorFee(applicationId, feeAmount) {
         const orderRes = await fetch("api/index.php/public-payment/create-razorpay-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: amountInPaise })
+            body: JSON.stringify({ amount: feeAmount })
         });
 
         if (!orderRes.ok) {
@@ -1040,7 +1222,7 @@ async function payExhibitorFee(applicationId, feeAmount) {
             key: "<?php echo RAZORPAY_KEY_ID; ?>",
             amount: amountInPaise,
             currency: "INR",
-            name: "GLOBAL SPORTS ARENA",
+            name: "ENERGEIA'S Global Ventures",
             description: "Exhibitor Booth Payment",
             order_id: orderData.id,
             handler: async function (response) {
@@ -1087,5 +1269,96 @@ async function payExhibitorFee(applicationId, feeAmount) {
     }
 }
 </script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+<!-- Pending NXL Request Modal for Dashboard -->
+<div class="modal-overlay" id="dashboardNxlModal" style="display: none; background: rgba(0,0,0,0.85); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; justify-content: center; align-items: center;">
+  <div class="modal-content" style="background: #ffffff; border: 2px solid rgba(197,168,92,0.5); color: #1a1a1a; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; border-radius: 16px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(197,168,92,0.3); padding-bottom: 10px; margin-bottom: 20px;">
+      <h2 style="color: #c5a85c; margin: 0; font-size: 1.5rem;">⚠️ Pending Payment Requests</h2>
+      <button onclick="document.getElementById('dashboardNxlModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+    </div>
+    <div id="dashboardNxlRequestsList" style="display: grid; gap: 15px;"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    checkPendingNxlRequests();
+});
+
+async function checkPendingNxlRequests(forceShow = false) {
+    try {
+        const email = localStorage.getItem("userEmail");
+        if (!email) return;
+        const res = await fetch(`api/index.php/user/nxl-requests?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        
+        const list = document.getElementById('dashboardNxlRequestsList');
+        if (data.success && data.requests && data.requests.length > 0) {
+            list.innerHTML = data.requests.map(req => `
+                <div style="background: #F9F6F0; border: 1px solid rgba(189,168,131,0.4); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div>
+                        <div style="font-weight: bold; color: #3A342B; font-size: 1.1rem;">Merchant: ${req.merchant_name}</div>
+                        <div style="color: #7A7061; font-size: 0.9rem; margin-top: 4px;">Requested: ${new Date(req.created_at).toLocaleString()}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+                        <div style="font-size: 1.2rem; font-weight: bold; color: #B89C62;">${req.amount} NXL</div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="dashApproveNxl(${req.id})" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: none; padding: 8px 16px; color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Approve</button>
+                            <button onclick="dashRejectNxl(${req.id})" style="background: #FFFFFF; border: 1px solid #B89C62; padding: 8px 16px; color: #B89C62; border-radius: 6px; cursor: pointer; font-weight: bold;">Reject</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('dashboardNxlModal').style.display = 'flex';
+        } else if (forceShow) {
+            list.innerHTML = `<div style="text-align: center; color: #7A7061; padding: 20px;">No pending requests.</div>`;
+            document.getElementById('dashboardNxlModal').style.display = 'flex';
+        }
+    } catch (e) {
+        console.error("Error checking pending requests:", e);
+    }
+}
+
+async function dashApproveNxl(id) {
+    if (!confirm("Are you sure you want to approve this payment?")) return;
+    try {
+        const email = localStorage.getItem("userEmail");
+        const res = await fetch('api/index.php/user/approve-nxl-request', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ request_id: id, email: email })
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+            document.getElementById('dashboardNxlModal').style.display = 'none';
+            checkPendingNxlRequests();
+            // optionally reload page to update balances
+            window.location.reload();
+        }
+    } catch (e) {
+        alert("Error approving request.");
+    }
+}
+
+async function dashRejectNxl(id) {
+    if (!confirm("Are you sure you want to reject this request?")) return;
+    try {
+        const email = localStorage.getItem("userEmail");
+        const res = await fetch('api/index.php/user/reject-nxl-request', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ request_id: id, email: email })
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+            document.getElementById('dashboardNxlModal').style.display = 'none';
+            checkPendingNxlRequests();
+        }
+    } catch (e) {
+        alert("Error rejecting request.");
+    }
+}
+</script>
